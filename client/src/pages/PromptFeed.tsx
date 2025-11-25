@@ -1,8 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { TrendingUp, Clock, Star } from 'lucide-react';
 
 interface Prompt {
   id: number;
@@ -40,62 +43,84 @@ function PromptCardSkeleton() {
 }
 
 export default function PromptFeed() {
-  const [offset, setOffset] = useState(0);
+  const [, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState<string>('trending');
   const limit = 20;
 
-  const { data: prompts, isLoading, error } = useQuery<Prompt[]>({
-    queryKey: ['/api/prompts', { limit, offset }],
+  const { data: trendingPrompts, isLoading: trendingLoading } = useQuery<Prompt[]>({
+    queryKey: ['/api/feed/trending', { limit }],
+    enabled: activeTab === 'trending',
   });
 
-  const handleLoadMore = () => {
-    setOffset(offset + limit);
+  const { data: newPrompts, isLoading: newLoading } = useQuery<Prompt[]>({
+    queryKey: ['/api/feed/new', { limit }],
+    enabled: activeTab === 'new',
+  });
+
+  const { data: featuredPrompts, isLoading: featuredLoading } = useQuery<Prompt[]>({
+    queryKey: ['/api/feed/editors-choice', { limit }],
+    enabled: activeTab === 'featured',
+  });
+
+  const getCurrentData = () => {
+    switch (activeTab) {
+      case 'trending': return trendingPrompts;
+      case 'new': return newPrompts;
+      case 'featured': return featuredPrompts;
+      default: return [];
+    }
   };
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <p className="text-muted-foreground">Failed to load prompts. Please try again.</p>
-      </div>
-    );
-  }
+  const isLoading = trendingLoading || newLoading || featuredLoading;
+  const prompts = getCurrentData();
 
   return (
     <div className="container max-w-7xl mx-auto p-6 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-semibold">Prompt Feed</h1>
+        <h1 className="text-3xl font-semibold">Discover Prompts</h1>
         <p className="text-muted-foreground">
-          Discover and share AI prompts from the community
+          Explore trending, new, and featured AI prompts from the community
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading
-          ? Array.from({ length: 6 }).map((_, i) => <PromptCardSkeleton key={i} />)
-          : prompts?.map((prompt) => (
-              <PromptCard key={prompt.id} prompt={prompt} />
-            ))}
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsTrigger value="trending" className="flex items-center gap-2" data-testid="tab-trending">
+            <TrendingUp className="h-4 w-4" />
+            Trending
+          </TabsTrigger>
+          <TabsTrigger value="new" className="flex items-center gap-2" data-testid="tab-new">
+            <Clock className="h-4 w-4" />
+            New
+          </TabsTrigger>
+          <TabsTrigger value="featured" className="flex items-center gap-2" data-testid="tab-featured">
+            <Star className="h-4 w-4" />
+            Featured
+          </TabsTrigger>
+        </TabsList>
 
-      {!isLoading && prompts && prompts.length === 0 && (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-          <p className="text-muted-foreground">No prompts found</p>
-          <Button onClick={() => window.location.href = '/prompts/new'}>
-            Create your first prompt
-          </Button>
-        </div>
-      )}
+        <TabsContent value={activeTab} className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, i) => <PromptCardSkeleton key={i} />)
+              : prompts?.map((prompt) => (
+                  <PromptCard key={prompt.id} prompt={prompt} />
+                ))}
+          </div>
 
-      {!isLoading && prompts && prompts.length >= limit && (
-        <div className="flex justify-center">
-          <Button
-            onClick={handleLoadMore}
-            variant="outline"
-            data-testid="button-load-more"
-          >
-            Load More
-          </Button>
-        </div>
-      )}
+          {!isLoading && prompts && prompts.length === 0 && (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+              <p className="text-muted-foreground">No prompts found</p>
+              <Button 
+                onClick={() => setLocation('/prompts/new')}
+                data-testid="button-create-prompt"
+              >
+                Create your first prompt
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

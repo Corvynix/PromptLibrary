@@ -1,203 +1,259 @@
-# Design Guidelines: AI Prompt Library & Social Platform
+# Design Guidelines: Viral AI Prompt Library & Social Platform
 
 ## Design Approach
 
-**Reference-Based Technical Polish**
-Drawing inspiration from Linear's modern minimalism, GitHub's information density, and Notion's workspace clarity. This platform demands crystal-clear information hierarchy while maintaining approachability for mass adoption across all scientific and creative domains.
+**Reference-Based Social Platform**
+Drawing from ProductHunt's engagement mechanics, Linear's technical polish, and Notion's workspace clarity. This platform balances professional credibility with creative energy to appeal across all domains—engineering, medicine, arts, science, and beyond.
 
 **Core Principles:**
-- Technical clarity over decorative elements
-- Scannable information architecture for rapid discovery
-- Trust signals through consistent quality indicators (PQAS badges)
-- Frictionless contribution flow to maximize viral growth
-- Dense yet breathable layouts for power users
+- Quality signals front and center (PQAS badges dominate visual hierarchy)
+- Viral engagement loops through social proof and gamification
+- Information density with breathing room for scan-ability
+- Frictionless sharing and remix flows
+- Trust through transparency (scores, karma, lineage)
 
 ---
 
 ## Typography System
 
 **Font Stack:**
-- Primary: Inter (via Google Fonts CDN) - exceptional readability at all sizes, extensive weight range
-- Monospace: JetBrains Mono - for prompt content, code snippets, technical metadata
+- Primary: Inter (Google Fonts) - all UI, body text, labels
+- Monospace: JetBrains Mono - prompt code, technical content
 
 **Hierarchy:**
-- Hero Headlines: text-5xl md:text-6xl font-bold (60-72px)
-- Page Titles: text-3xl md:text-4xl font-semibold (36-48px)
-- Section Headers: text-2xl font-semibold (24px)
-- Card Titles: text-lg font-semibold (18px)
-- Body Text: text-base font-normal (16px)
-- Metadata/Labels: text-sm font-medium (14px)
-- Micro Copy: text-xs font-normal (12px)
-- PQAS Scores: text-2xl font-bold with tabular-nums
-
-**Weight Distribution:**
-Use font-normal (400) for body, font-medium (500) for labels, font-semibold (600) for emphasis, font-bold (700) sparingly for critical CTAs and scores.
+- Hero Headlines: text-5xl md:text-6xl font-bold
+- Page Titles: text-3xl md:text-4xl font-semibold
+- Section Headers: text-2xl font-semibold
+- Card Titles: text-lg font-semibold
+- Body: text-base font-normal
+- Metadata: text-sm font-medium
+- Micro Copy: text-xs
+- PQAS Scores: text-3xl md:text-4xl font-bold tabular-nums
 
 ---
 
 ## Layout & Spacing System
 
-**Tailwind Spacing Units:** Standardize on 4, 8, 12, 16, 20, 24 (p-4, gap-8, mb-12, py-16, mt-20, space-y-24)
+**Tailwind Units:** 4, 8, 12, 16, 24 (p-4, gap-8, py-16, mb-24)
 
 **Container Strategy:**
-- Max widths: max-w-7xl (1280px) for main content, max-w-prose (65ch) for long-form text
-- Landing page sections: full-width with inner max-w-7xl containers
-- App layout: sidebar 280px + main content area with max-w-6xl
-- Prompt detail: max-w-4xl centered for readability
+- Landing sections: max-w-7xl centered
+- App feed: max-w-6xl with 280px fixed sidebar (desktop)
+- Prompt detail: max-w-4xl for readability
+- Modals: max-w-3xl
 
 **Grid Patterns:**
 - Feed cards: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6
-- Feature showcases: grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8
-- User profiles portfolio: grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
-- Always stack to single column on mobile
+- User portfolios: grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
+- Feature sections: grid-cols-1 md:grid-cols-3 gap-8
 
 **Vertical Rhythm:**
-- Landing sections: py-20 md:py-32 for generous breathing room
-- App content sections: py-12 md:py-16
-- Card internal padding: p-6
-- Form spacing: space-y-6 for groups, space-y-4 for related fields
+- Landing sections: py-20 md:py-32
+- App sections: py-12 md:py-16
+- Card padding: p-6
+- Form groups: space-y-6
 
 ---
 
 ## Component Library
 
-### Navigation & Layout
+### Navigation & Headers
 
-**Header (Landing):**
-- Sticky top, backdrop-blur with subtle border-b
-- Logo left, nav links center, CTA buttons right
-- Mobile: hamburger menu with slide-out drawer
+**Landing Header:**
+- Sticky with backdrop-blur-lg
+- Logo left, nav center (Explore, Creators, Workflows, PQAS)
+- CTA buttons right (Login, Join Free - gradient background)
+- Mobile: slide-out drawer
 
 **App Header:**
-- Logo + search bar (40% width) + notification bell + profile dropdown
-- Breadcrumb trail below on detail pages
+- Search bar (50% width, prominent positioning)
+- Icons: Notifications (with red dot), Messages, Profile dropdown
+- Breadcrumbs below on detail pages
 
-**Sidebar (App):**
-- Fixed 280px width on desktop, collapsible to icons on tablet, slide-over on mobile
-- Primary nav (Explore, My Prompts, Following, Workflows)
-- Secondary section (Domains tree-select, Top Tags)
-- Bottom: User card with avatar + karma score
+**App Sidebar (280px):**
+- Logo + collapse toggle
+- Primary nav with icons (Feed, Discover, My Prompts, Following)
+- Domain filter tree-select (collapsible)
+- Trending tags (top 5 with post counts)
+- User karma card at bottom (avatar, username, score with sparkline)
 
-### Cards & Content
+### Cards & Feed
 
-**Prompt Card (Feed):**
-- Border with rounded-xl, hover:shadow-lg transition
-- Header: Domain badge + PQAS ribbon (top-right corner)
-- Title (text-lg font-semibold, 2-line clamp)
-- Description (text-sm, 3-line clamp)
-- Metadata row: AI model icons + tags (max 3 visible)
-- Footer: User avatar + name, stats (uses/remixes/upvotes), bookmark icon
-- Sponsored cards: subtle blue border-l-4 + "SPONSORED" label top-left
+**Prompt Card:**
+- Rounded-xl border with hover:shadow-xl transition
+- Corner ribbon: PQAS score with gradient background (gold/silver/bronze)
+- Domain badge (top-left, small pill)
+- Title: text-lg font-semibold, 2-line clamp, link underline on hover
+- Description: text-sm, 3-line clamp
+- Model tags: small pills with AI icons, max 3 visible + "+2 more"
+- Engagement row: upvote count + button, remix count, bookmark icon
+- Footer: avatar (32px) + username + "3h ago"
+- Sponsored: subtle gradient border-l-4 + "SPONSORED" label
 
-**PQAS Badge System:**
-- Gold (90-100): Solid badge with star icon
-- Silver (75-89): Outlined badge with check icon
-- Bronze (60-74): Minimal badge with dot icon
-- Display as pill: rounded-full px-3 py-1 with score number
+**Featured Prompt Card (Hero):**
+- Larger format: p-8, gradient background overlay
+- PQAS badge prominent (text-4xl)
+- "Featured" label with star icon
+- Larger title (text-2xl)
+- Full description visible
+- Primary CTA: "View Prompt" button
+
+### Social Features
+
+**User Profile Card:**
+- Large avatar (120px) centered
+- Username (text-2xl font-bold)
+- Bio (text-sm, max-w-prose)
+- Stats row: Karma • Prompts • Followers • Following (clickable)
+- Follow/Unfollow button (prominent)
+- Badge showcase below (earned badges, 48px each)
+
+**Activity Feed Item:**
+- Avatar + username in header
+- Action text: "remixed [Prompt Title]" or "earned [Badge Name]"
+- Preview card of affected prompt/achievement
+- Timestamp + engagement (upvotes, comments)
 
 **Comment Thread:**
-- Nested with left border-l-2 and pl-4 for each depth level
-- Avatar + username + timestamp in header
-- Upvote/downvote arrows left of content
-- Collapse/expand for deep threads (>3 levels)
+- Nested with border-l-2, pl-4 per level
+- Upvote/downvote inline left of avatar
+- Username (font-semibold) + verified badge + karma score
+- Collapse toggle for threads >3 deep
 
-### Forms & Inputs
+### Forms & Creation
 
-**Prompt Creation Wizard:**
-- Multi-step with progress indicator (1/5 steps)
-- Large text areas with character counts
-- Tag input with autocomplete dropdown
-- AI model selector: checkbox grid with logos
-- Image upload: drag-drop zone with preview thumbnails
+**Prompt Upload Flow:**
+- Progress stepper (5 steps, filled circles for completed)
+- Step 1: Title + Description (large textareas with char counts)
+- Step 2: Tags (autocomplete input with pill display)
+- Step 3: AI Models (checkbox grid with logos)
+- Step 4: Domain selection (dropdown with icons)
+- Step 5: Preview card before publish
+- Bottom actions: Back (ghost), Save Draft (outlined), Publish (gradient primary)
 
-**Search Interface:**
-- Prominent search bar with icon, instant results dropdown
-- Advanced filters: collapsible panel with multi-select, sliders, toggles
-- Active filters displayed as dismissible pills above results
+**Search & Discovery:**
+- Large search input with icon, rounded-2xl
+- Instant dropdown results (grouped: Prompts, Users, Tags)
+- Filters panel (collapsible): PQAS range slider, domains multi-select, models checkboxes, sort dropdown
+- Active filters: dismissible pills above results
+
+### Gamification & Scores
+
+**PQAS Display (Prompt Detail):**
+- Hero section with massive score (text-6xl font-bold)
+- Gradient background matching tier (gold/silver/bronze)
+- Icon (star/check/dot) beside score
+- Breakdown grid below: 4 cards showing Quality, Consistency, Safety, Efficiency
+- Each card: icon + label + score + horizontal meter bar
+
+**Karma Breakdown:**
+- Horizontal stacked bar (4 segments with distinct gradients)
+- Tooltip on hover showing exact values
+- Legend below: Prompts Created • Remixes • Upvotes Received • Quality Bonus
+
+**Badge Showcase:**
+- Grid display: unlocked badges in full vibrancy, locked in grayscale opacity-30
+- Hover tooltip: badge name + criteria + progress bar
+- Rarity indicators: Common (bronze ring), Rare (silver), Epic (gold), Legendary (gradient ring)
+
+**Leaderboard:**
+- Table with sticky header
+- Rank (medals for top 3), Avatar, Username, Karma (with trend sparkline), Top Domain
+- Current user highlighted row
+
+### Data Visualization
+
+**Lineage Graph (React Flow):**
+- Nodes: rounded rectangles with mini PQAS badge
+- Original prompt: larger node with gradient border
+- Edges: curved arrows
+- Zoom controls + minimap (bottom-right)
+- Node click: quick preview modal
+
+**Engagement Chart:**
+- Line chart showing upvotes/remixes/views over time
+- Toggle buttons: 7D, 30D, 90D, All Time
+- Tooltips on data point hover
 
 ### Modals & Overlays
 
 **Remix Modal:**
-- Large centered modal (max-w-3xl)
-- Side-by-side diff viewer (original left, fork right)
+- Split view: original (left), your fork (right)
+- Diff highlighting for changes
 - Summary textarea at bottom
-- Action buttons: Cancel (ghost), Fork & Edit (primary)
+- Actions: Cancel (ghost), Fork & Edit (primary gradient)
 
-**Notification Center:**
-- Dropdown from bell icon, max-h-96 overflow-scroll
-- Grouped by date (Today, Yesterday, This Week)
-- Unread: subtle background highlight
-- Icons per notification type
+**Share Modal:**
+- Quick copy link button
+- Social share buttons (Twitter, LinkedIn, Discord with icons)
+- Embed code snippet (monospace)
+- QR code generator option
 
-### Data Visualization
-
-**Karma Breakdown Chart:**
-- Horizontal stacked bar showing 4 components
-- Tooltip on hover with exact values
-- Legend below with component names
-
-**PQAS Ribbon (Prompt Detail):**
-- Large hero display showing composite score (text-6xl)
-- Breakdown cards below: Quality, Consistency, Safety, Efficiency
-- Each card: icon + label + score with visual meter
-
-**Lineage Graph (React Flow):**
-- Nodes: rounded rectangles with avatar + PQAS badge
-- Edges: curved lines with arrow
-- Minimap bottom-right corner
-- Zoom controls bottom-left
-
-### Gamification Elements
-
-**Badge Display:**
-- Grid of earned badges (grayscale for locked)
-- Hover reveals name + criteria
-- Progress bar below for next tier
-
-**Leaderboard Table:**
-- Rank column with medal icons (top 3)
-- Avatar + username + karma score
-- Sparkline showing trend
-- Sticky header on scroll
+**Notification Dropdown:**
+- Max-h-96 with scroll
+- Grouped by date headers
+- Unread: subtle background highlight + blue dot
+- Icons per type (upvote, comment, follow, remix, badge)
+- "Mark all read" link at bottom
 
 ---
 
 ## Images & Visual Assets
 
-**Hero Section (Landing):**
-- Large hero with abstract gradient mesh background (purple/blue/cyan gradients)
-- Overlay with semi-transparent backdrop-blur cards showcasing featured prompts
-- No need for stock photography - use dynamic prompt cards as visual interest
+**Hero Image (Landing Page):**
+Large, full-width hero section (min-h-[600px]) featuring a vibrant abstract gradient mesh background (purple, blue, cyan, pink gradients blending). Overlay this with a semi-transparent grid of 6 featured prompt cards (3x2 on desktop, 2x3 on tablet, stacked on mobile) showcasing real PQAS scores and diverse domains. Cards should have subtle backdrop-blur and appear to float over the gradient. Center the main headline and CTA buttons with backdrop-blur-md rounded backgrounds for legibility.
 
-**Prompt Cards:**
-- User avatars: rounded-full, 40x40px in feeds, 80x80px in profiles
-- AI model icons: use Font Awesome or Heroicons brand icons (20x20px)
-- Domain icons: simple line icons from Heroicons (24x24px)
+**User Avatars:**
+Rounded-full throughout: 32px in feeds, 48px in comments, 80px in profiles, 120px in profile headers. Fallback to colorful initials with gradient backgrounds when no image uploaded.
 
-**Empty States:**
-- Illustration-free approach using large icons + helpful text
-- Example: "No prompts yet" with plus-circle icon from Heroicons
+**AI Model Icons:**
+Use Font Awesome or Heroicons brand icons (24px) in pill tags. Include: OpenAI, Anthropic, Google, Meta, Mistral logos.
+
+**Domain Icons:**
+Line icons from Heroicons (32px): BeakerIcon (science), CodeBracketIcon (engineering), HeartIcon (medicine), PaintBrushIcon (arts), etc.
 
 **Achievement Badges:**
-- SVG icon library with consistent style (outlined, 2px stroke)
-- Badge designs: shield/star/ribbon shapes with icons inside
+Custom SVG designs with consistent 2px stroke outlined style. Shield, star, and ribbon shapes containing domain-specific icons. Use gradient fills for rarity tiers.
 
-**No stock photos needed** - the content (prompts, user contributions, PQAS scores) provides all visual interest. Use iconography and data visualization instead.
+**Empty States:**
+Large Heroicon (96px, opacity-20) centered above helpful text. Examples: "No prompts yet - create your first!", "You're not following anyone - discover creators"
 
 ---
 
 ## Animation Strategy
 
-**Minimal, Purposeful Motion:**
-- Page transitions: none (instant navigation)
-- Card hover: subtle shadow elevation (150ms ease)
-- Badge unlock: confetti burst (once, 2s duration)
-- PQAS score: count-up animation on first view
-- Loading states: skeleton shimmer, spinner for actions
-- Notification badge: gentle pulse animation
+**Viral Engagement Animations:**
+- Upvote button: scale(1.2) + color fill animation (300ms)
+- Badge unlock: confetti particle burst (2s, once)
+- PQAS score reveal: count-up animation on scroll into view
+- New follower: gentle slide-in notification toast
+- Karma increase: number ticker with green glow pulse
 
-**Avoid:** Parallax scrolling, scroll-triggered animations, auto-playing carousels
+**Micro-interactions:**
+- Card hover: shadow-xl + subtle lift (-2px translateY)
+- Button hover: handled by component (no custom on images)
+- Loading: skeleton shimmer pulse
+- Infinite scroll: spinner at bottom
+
+**Avoid:** Parallax, auto-play carousels, excessive scroll animations
 
 ---
 
-This design system prioritizes **information density without clutter**, **instant recognition of quality signals (PQAS)**, and **frictionless contribution flows** to maximize viral engagement across all scientific and creative domains.
+## Call-to-Action Strategy
+
+**Landing Page CTAs:**
+- Hero: Large gradient button "Get Started Free" + ghost "View Top Prompts"
+- Section CTAs: "Join 50K+ Creators" with user avatar stack social proof
+- Footer: "Start Sharing Prompts Today" with email signup
+
+**App CTAs:**
+- Floating "Create Prompt" button (bottom-right, gradient background, plus icon)
+- Follow buttons: prominent on profiles, subtle in cards
+- Share everywhere: icon button with share icon, opens modal
+
+**Social Proof Integration:**
+- User count ticker in header ("125,342 prompts shared")
+- Live activity feed in sidebar ("Sarah just earned Gold Badge")
+- Testimonial avatars in landing sections
+
+This design system optimizes for **viral growth through visible quality signals, frictionless engagement, and strategic gamification** while maintaining **professional credibility across all domains**.

@@ -438,6 +438,150 @@ export class DatabaseStorage implements IStorage {
       .values({ userId, badgeId })
       .onConflictDoNothing();
   }
+
+  // Referral operations implementation
+  async generateReferralCode(userId: number): Promise<string> {
+    const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+    await db.insert(referrals).values({
+      referrerId: userId,
+      referralCode: code,
+      referredUserId: null,
+      converted: false,
+    });
+    return code;
+  }
+
+  async getReferralByCode(code: string): Promise<Referral | undefined> {
+    const [referral] = await db
+      .select()
+      .from(referrals)
+      .where(eq(referrals.referralCode, code));
+    return referral || undefined;
+  }
+
+  async trackReferralConversion(code: string, referredUserId: number): Promise<void> {
+    await db
+      .update(referrals)
+      .set({
+        referredUserId,
+        converted: true,
+        convertedAt: new Date(),
+      })
+      .where(eq(referrals.referralCode, code));
+  }
+
+  // Activity feed operations
+  async getFollowingActivity(userId: number, limit: number = 20): Promise<any[]> {
+    // Get users that this user follows
+    const followingList = await db
+      .select({ followingId: follows.followingId })
+      .from(follows)
+      .where(eq(follows.followerId, userId));
+    
+    const followingIds = followingList.map(f => f.followingId);
+    if (followingIds.length === 0) return [];
+
+    // Get recent prompts from following users
+    const recentPrompts = await db
+      .select({
+        type: sql<string>`'prompt_created'`,
+        id: prompts.id,
+        userId: prompts.ownerId,
+        timestamp: prompts.createdAt,
+        data: sql`json_build_object('promptId', ${prompts.id}, 'title', ${prompts.title}, 'slug', ${prompts.slug})`,
+      })
+      .from(prompts)
+      .where(inArray(prompts.ownerId, followingIds))
+      .orderBy(desc(prompts.createdAt))
+      .limit(limit);
+
+    return recentPrompts;
+  }
+
+  // Execution logs implementation
+  async createExecutionLog(workflowId: number, userId: number | undefined): Promise<any> {
+    const [log] = await db
+      .insert(executionLogs)
+      .values({
+        workflowId,
+        userId: userId || null,
+        status: 'pending',
+      })
+      .returning();
+    return log;
+  }
+
+  async updateExecutionLog(id: number, status: string, results?: any): Promise<void> {
+    await db
+      .update(executionLogs)
+      .set({
+        status: status as any,
+        results: results || null,
+        completedAt: status === 'completed' || status === 'failed' ? new Date() : null,
+      })
+      .where(eq(executionLogs.id, id));
+  }
+
+  async getExecutionLogs(workflowId: number): Promise<any[]> {
+    return await db
+      .select()
+      .from(executionLogs)
+      .where(eq(executionLogs.workflowId, workflowId))
+      .orderBy(desc(executionLogs.createdAt))
+      .limit(10);
+  }
+
+  // Statistics for karma/badges
+  async getUserPromptStats(userId: number): Promise<any> {
+    const promptCount = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(prompts)
+      .where(eq(prompts.ownerId, userId));
+
+    const avgPQAS = await db
+      .select({ avg: sql<number>`avg((pqas_score->>'composite')::numeric)` })
+      .from(promptVersions)
+      .innerJoin(prompts, eq(promptVersions.promptId, prompts.id))
+      .where(and(
+        eq(prompts.ownerId, userId),
+        sql`pqas_score IS NOT NULL`
+      ));
+
+    const totalUses = await db
+      .select({ sum: sql<number>`sum(total_uses)` })
+      .from(prompts)
+      .where(eq(prompts.ownerId, userId));
+
+    const remixCount = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(remixes)
+      .where(eq(remixes.userId, userId));
+
+    return {
+      promptCount: Number(promptCount[0]?.count || 0),
+      avgPQAS: Number(avgPQAS[0]?.avg || 0),
+      totalUses: Number(totalUses[0]?.sum || 0),
+      remixCount: Number(remixCount[0]?.count || 0),
+    };
+  }
+
+  // Get comments with user data
+  async getCommentsWithUsers(promptId: number): Promise<any[]> {
+    return await db
+      .select({
+        comment: comments,
+        user: {
+          id: users.id,
+          email: users.email,
+          displayName: users.displayName,
+          avatarUrl: users.avatarUrl,
+        }
+      })
+      .from(comments)
+      .innerJoin(users, eq(comments.userId, users.id))
+      .where(eq(comments.promptId, promptId))
+      .orderBy(desc(comments.createdAt));
+  }
 }
 
 export const storage = new DatabaseStorage();

@@ -1,10 +1,16 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { db } from "./db";
+import { prompts, promptVersions, usageLogs } from "@shared/schema";
+import { sql, eq, and, desc } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { insertUserSchema, insertPromptSchema, insertPromptVersionSchema, insertCommentSchema, insertWorkflowSchema, insertNotificationSchema } from "@shared/schema";
+import { calculatePQAS } from "./services/pqas";
+import { updateUserKarma, recalculateAllKarma } from "./services/karma";
+import { checkAndAwardBadges, seedBadges } from "./services/badges";
 
 const JWT_SECRET = process.env.SESSION_SECRET || "your-secret-key-change-in-production";
 
@@ -289,6 +295,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const version = await storage.createPromptVersion(data);
+      
+      // Auto-trigger PQAS scoring in background
+      if (version.content) {
+        setTimeout(async () => {
+          try {
+            const pqasScore = calculatePQAS(version.content);
+            await storage.updatePromptVersion(version.id, { pqasScore });
+            
+            // Send notification when PQAS is complete
+            await storage.createNotification({
+              userId: req.user!.id,
+              type: 'pqas_completed',
+              title: 'PQAS scoring completed',
+              message: `Your prompt version scored ${pqasScore.composite}/100`,
+              link: `/prompts/${promptId}`,
+            });
+          } catch (err) {
+            console.error('PQAS scoring error:', err);
+          }
+        }, 0);
+      }
+      
       res.json(version);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -528,6 +556,296 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { userId, promptVersionId, action, metadata } = req.body;
       await storage.logUsage(userId, promptVersionId, action, metadata);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ PQAS ROUTES ============
+  
+  // Trigger PQAS scoring for a version
+  app.post("/api/prompt-versions/:id/pqas", authenticate, async (req: AuthRequest, res: Response) => {
+    try {
+      const versionId = parseInt(req.params.id);
+      const version = await storage.getPromptVersion(versionId);
+      
+      if (!version) {
+        return res.status(404).json({ error: "Version not found" });
+      }
+      
+      const pqasScore = calculatePQAS(version.content);
+      await storage.updatePromptVersion(versionId, { pqasScore });
+      
+      res.json({ pqasScore });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Get PQAS score for a version
+  app.get("/api/prompt-versions/:id/pqas", async (req: Request, res: Response) => {
+    try {
+      const version = await storage.getPromptVersion(parseInt(req.params.id));
+      if (!version) {
+        return res.status(404).json({ error: "Version not found" });
+      }
+      res.json({ pqasScore: version.pqasScore });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ FEED ALGORITHM ROUTES ============
+  
+  // Get trending prompts
+  app.get("/api/feed/trending", async (req: Request, res: Response) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+      
+      // Trending algorithm: engagement_24h × 0.3 + engagement_7d × time_decay × 0.25 + novelty_bonus × 0.2 + pqas × 0.15 + domain_diversity × 0.1
+      const trending = await db.select({
+        prompt: prompts,
+        trendingScore: sql<number>`
+          (${prompts.popularityScore} * 0.5) + 
+          (${prompts.totalUses} * 0.3) +
+          (CASE WHEN ${prompts.featured} THEN 20 ELSE 0 END)
+        `
+      })
+      .from(prompts)
+      .where(eq(prompts.visibility, 'public'))
+      .orderBy(desc(sql`
+        (${prompts.popularityScore} * 0.5) + 
+        (${prompts.totalUses} * 0.3) +
+        (CASE WHEN ${prompts.featured} THEN 20 ELSE 0 END)
+      `))
+      .limit(limit);
+      
+      res.json(trending.map(t => t.prompt));
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Get new prompts
+  app.get("/api/feed/new", async (req: Request, res: Response) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+      const newPrompts = await db
+        .select()
+        .from(prompts)
+        .where(eq(prompts.visibility, 'public'))
+        .orderBy(desc(prompts.createdAt))
+        .limit(limit);
+      res.json(newPrompts);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Get editor's choice (featured prompts)
+  app.get("/api/feed/editors-choice", async (req: Request, res: Response) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+      const featured = await db
+        .select()
+        .from(prompts)
+        .where(and(
+          eq(prompts.visibility, 'public'),
+          eq(prompts.featured, true)
+        ))
+        .orderBy(desc(prompts.featuredAt))
+        .limit(limit);
+      res.json(featured);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ ACTIVITY FEED ROUTES ============
+  
+  // Get activity from followed users
+  app.get("/api/activity/following", authenticate, async (req: AuthRequest, res: Response) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+      const activity = await storage.getFollowingActivity(req.user!.id, limit);
+      res.json(activity);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ ANALYTICS ROUTES ============
+  
+  // Get user statistics
+  app.get("/api/users/:id/stats", async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const stats = await storage.getUserPromptStats(userId);
+      const user = await storage.getUser(userId);
+      
+      res.json({
+        ...stats,
+        karmaScore: user?.karmaScore || 0,
+        karmaBreakdown: user?.metrics || {},
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Get prompt analytics
+  app.get("/api/prompts/:id/analytics", async (req: Request, res: Response) => {
+    try {
+      const promptId = parseInt(req.params.id);
+      
+      // Get usage stats
+      const usageStats = await db
+        .select({
+          action: usageLogs.action,
+          count: sql<number>`count(*)`
+        })
+        .from(usageLogs)
+        .innerJoin(promptVersions, eq(usageLogs.promptVersionId, promptVersions.id))
+        .where(eq(promptVersions.promptId, promptId))
+        .groupBy(usageLogs.action);
+      
+      // Get version count
+      const versions = await storage.getPromptVersions(promptId);
+      
+      // Get comments count
+      const comments = await storage.getComments(promptId);
+      
+      res.json({
+        usageStats,
+        versionCount: versions.length,
+        commentCount: comments.length,
+        latestPQAS: versions[0]?.pqasScore || null,
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ KARMA & BADGE ROUTES ============
+  
+  // Update karma for a user (manual trigger)
+  app.post("/api/users/:id/karma/update", authenticate, async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      await updateUserKarma(userId);
+      
+      // Check and award badges
+      await checkAndAwardBadges(userId);
+      
+      const user = await storage.getUser(userId);
+      res.json({ karmaScore: user?.karmaScore, metrics: user?.metrics });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ ADMIN ROUTES ============
+  
+  // Get moderation queue (flagged prompts and comments)
+  app.get("/api/admin/moderation", authenticate, requireRole('moderator', 'curator', 'super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      const flaggedPrompts = await db
+        .select()
+        .from(prompts)
+        .leftJoin(promptVersions, eq(prompts.id, promptVersions.promptId))
+        .where(eq(promptVersions.status, 'flagged'))
+        .limit(50);
+      
+      res.json({ flagged: flaggedPrompts });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Approve/reject flagged content
+  app.post("/api/admin/moderate/:type/:id", authenticate, requireRole('moderator', 'curator', 'super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      const { type, id } = req.params;
+      const { action } = req.body; // 'approve', 'reject', 'delete'
+      
+      if (type === 'prompt_version') {
+        const versionId = parseInt(id);
+        
+        if (action === 'approve') {
+          await storage.updatePromptVersion(versionId, { status: 'production' });
+        } else if (action === 'reject') {
+          await storage.updatePromptVersion(versionId, { status: 'deprecated' });
+        }
+      }
+      
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Feature a prompt (Editor's Choice)
+  app.post("/api/admin/prompts/:id/feature", authenticate, requireRole('curator', 'super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      const promptId = parseInt(req.params.id);
+      const { featureReason } = req.body;
+      
+      await storage.updatePrompt(promptId, {
+        featured: true,
+        featuredAt: new Date(),
+        featureReason: featureReason || 'Featured by curator',
+      });
+      
+      // Send notification to prompt owner
+      const prompt = await storage.getPrompt(promptId);
+      if (prompt) {
+        await storage.createNotification({
+          userId: prompt.ownerId,
+          type: 'featured_by_curator',
+          title: "Your prompt was featured!",
+          message: "A curator featured your prompt in Editor's Choice",
+          link: `/prompts/${prompt.slug}`,
+        });
+      }
+      
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Recalculate all karma (admin only)
+  app.post("/api/admin/karma/recalculate-all", authenticate, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      // Run in background
+      setTimeout(async () => {
+        await recalculateAllKarma();
+      }, 0);
+      
+      res.json({ success: true, message: 'Karma recalculation started in background' });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Seed badges (admin only, run once)
+  app.post("/api/admin/badges/seed", authenticate, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      await seedBadges();
+      res.json({ success: true, message: 'Badges seeded successfully' });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Ban/unban user
+  app.post("/api/admin/users/:id/ban", authenticate, requireRole('moderator', 'super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { banned } = req.body;
+      
+      await storage.updateUser(userId, { isBanned: banned });
       res.json({ success: true });
     } catch (error: any) {
       res.status(500).json({ error: error.message });

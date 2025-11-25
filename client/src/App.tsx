@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Header } from "@/components/Header";
 import NotFound from "@/pages/not-found";
+import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import PromptFeed from "@/pages/PromptFeed";
@@ -20,6 +21,7 @@ function Router() {
   return (
     <Switch>
       {/* Public routes */}
+      <Route path="/" component={Landing} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
 
@@ -50,13 +52,6 @@ function Router() {
             <UserProfile userId={parseInt(params.id)} />
           </ProtectedRoute>
         )}
-      </Route>
-
-      {/* Redirect root to feed */}
-      <Route path="/">
-        <ProtectedRoute>
-          <PromptFeed />
-        </ProtectedRoute>
       </Route>
 
       {/* Fallback to 404 */}
