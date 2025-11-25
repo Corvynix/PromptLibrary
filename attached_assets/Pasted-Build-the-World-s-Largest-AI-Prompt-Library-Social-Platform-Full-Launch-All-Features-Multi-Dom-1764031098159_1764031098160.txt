@@ -1,0 +1,164 @@
+Build the World's Largest AI Prompt Library & Social Platform – Full Launch, All Features, Multi-Domain, Scalable, UI/UX Mastery
+
+Prompt Objective:
+Develop a production-grade, zero-cost viral AI prompt library and social platform capable of supporting hundreds of millions of users, covering all domains and scientific fields, with full text, image, and small video prompt support, advanced UI/UX, and all social & gamification features, built for maximum engagement and viral growth.
+
+Platform Requirements:
+
+User System:
+
+Email/password + OAuth login (Google/GitHub)
+
+Roles: guest, user, moderator, curator, org_admin, super_admin
+
+Permission-based middleware + row-level access control
+
+User profiles: avatar, bio, portfolio (top prompts), karma/reputation, followers/following, activity timeline
+
+Content & Prompts:
+
+Support all domains/sciences: Engineering, Medicine, Physics, Chemistry, Biology, Economics, Law, Arts, Education, AI, Social Sciences, Creative, Finance, and more
+
+Support text prompts, image generation prompts, and short video prompts
+
+Prompt versioning & lineage: forks, remixes, version history, visual remix graph (React Flow)
+
+Rich metadata: title, description, industry tags, social hashtags, AI model compatibility
+
+One-click copy-to-clipboard + optional attribution
+
+Multi-format storage: JSON for text, Storage for images/videos
+
+Auto-tagging using free open-source ML models (Hugging Face) for domain, hashtags, and difficulty levels
+
+PQAS – Prompt Quality Assessment System:
+
+Open-source LLM-based evaluation (LLaMA, Mistral, Qwen or equivalents)
+
+Metrics: Quality, Consistency, Safety, Efficiency
+
+Composite score & visual badges: Gold >90, Silver >75, Bronze >60
+
+Stored in JSONB per prompt version
+
+Visual Remix Editor:
+
+Drag-and-drop interface for prompt relationships and workflows
+
+Step-by-step chaining with input/output mapping
+
+Real-time collaboration indicators
+
+Fork/remix modal with summary of changes
+
+Auto PQAS evaluation on save
+
+Karma & Gamification Engine:
+
+Transparent formula: contributions, remix success, engagement (upvotes, shares, comments), referral conversions
+
+Badges & achievements: First Prompt, Viral Hit, Quality Master, Helpful Contributor, Remix Champion, Community Leader, Early Adopter
+
+Progress bars and notifications on unlock
+
+Feeds & Discovery:
+
+Trending, New, Editor's Choice, Personalized feeds
+
+Infinite scroll + virtualized rendering for scale
+
+Algorithmic ranking using engagement, novelty, PQAS
+
+Search: full-text PostgreSQL with filters (industry, AI model, PQAS, tags, visibility, license)
+
+Social Features:
+
+Follow/unfollow, activity feeds, notifications
+
+Nested threaded comments with unlimited depth
+
+Upvote/downvote with unique constraints
+
+Share links with referral tracking
+
+Workflow Templates:
+
+Multi-step prompt sequences with sequential execution
+
+Adoption counter, sharing, and visibility controls
+
+Execution history logs
+
+Monetization:
+
+Non-intrusive ads (Google AdSense) asynchronously loaded
+
+Sidebar, feed insertion, sponsored prompts labeled 'Sponsored'
+
+Admin-configurable slots, lazy-loading, fallback skeletons
+
+Admin Dashboard:
+
+Moderation queue (prompts/comments) with bulk actions
+
+PQAS thresholds, auto-approve, production promotion
+
+Viral metrics: K-factor, top referrers, growth charts
+
+User management: search, roles, ban/unban
+
+Ad slot configuration & platform settings
+
+PWA & Performance:
+
+Full PWA support: manifest, service worker, offline caching, install prompt
+
+Mobile-first responsive design with Tailwind CSS
+
+Skeleton loaders, code splitting, lazy-loaded images
+
+Optimized for millions of concurrent users
+
+Landing Page:
+
+Hero section with animated tagline and CTA buttons
+
+Live platform metrics counters (prompts, users, industries, average PQAS)
+
+Featured prompts carousel, trending hashtags cloud
+
+Testimonials, “How it works” explainer, social proof
+
+Footer with About, Blog, API Docs, Terms, Privacy, Contact
+
+Budget & Scale Guidance:
+
+$100M USD for global infrastructure, marketing, domain experts, and operational costs
+
+Scalable cloud architecture ready for millions of daily active users
+
+Open-source AI models only, no paid API dependencies
+
+Deliverables:
+
+Full-stack web application (React + Tailwind + PostgreSQL + Supabase storage or S3 alternative)
+
+Backend API for prompt CRUD, versioning, PQAS, workflows, social features, karma engine
+
+Real-time feed and notifications
+
+Visual remix editor with workflow builder
+
+Analytics and admin dashboards
+
+Landing page with viral hooks and onboarding
+
+Success Criteria:
+
+Users can find prompts in any field
+
+Users can upload prompts (text, image, short video) and remix others’ prompts
+
+Viral loops generate >1M daily active users
+
+Scalable and performant system, zero reliance on paid AI APIs

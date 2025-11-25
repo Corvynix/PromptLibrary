@@ -1,0 +1,359 @@
+SYSTEM / PROJECT PROMPT — Build Prompt Library Mega Platform (Production, Supabase, Zero Fees, Ad-Slate Friendly UI)
+
+You are an expert full-stack team (product + backend + frontend + infra + ML systems) building a production-grade Prompt Library Mega Platform. Follow these instructions precisely. Deliver a complete, deployable Replit project that:
+
+• Uses Supabase as the primary backend (Auth, Postgres, Storage, Edge Functions)
+• Targets zero fees by using free/open-source tools and free tiers where possible; justify any service that requires payment and provide OSS alternatives.
+• Includes Google Ads / ad slots integrated non-intrusively and customizable from admin (no overlay modals that hurt UX). Ads must be clearly labeled and accessible.
+• Is designed, implemented, and deployed as a full production release (not experimental).
+• Is UX/UI polished and performant — the product should feel like a $100M app in polish and architecture.
+• Provides automated tests, CI/CD, monitoring, and deployment instructions on Replit.
+• Delivers documentation, Postgres schema, API docs (OpenAPI), and admin dashboard.
+• Prioritizes security, scale, observability, and maintainability.
+
+Below are exact functional & technical specs, DB schema, API endpoints, frontend pages/components, ML/automation systems, and acceptance criteria. Implement everything end-to-end.
+
+0. High-level goals / non-functional requirements
+
+Quality-first: PQAS-driven content ranking, auto-updates, version control, lineage (fork) tracking, and cross-model conversion.
+
+Community-first: UGC, remix/fork, comments, likes, reputation (karma), challenges, badges, trending feed.
+
+Enterprise-safe: Prompt version gating, PQAS thresholds before “production” releases, API keys & rate-limits for commercial use.
+
+Scalability: Use Supabase Postgres + indexing + vector search (we will include an OSS vector option using pgvector extension on Supabase or an external free vector store if needed).
+
+Observability: Request logs, error tracking, metrics, and health checks.
+
+Zero fees approach: Use free tiers / open-source libs. Where paid options are proposed, include open alternatives and migration path.
+
+Ad UX: Place ads in dedicated slots (sidebar card, below fold, between feed cards, and optional sponsored prompts), labeled “Sponsored” — never intermix ads with organic PQAS ribbon unless promoted.
+
+1. Tech stack (required)
+
+Frontend: React (Vite or Next.js if SSR required) + Tailwind CSS, component library (shadcn or Radix optional). Use React Query or SWR for data fetching.
+
+Backend: Supabase (Auth, Postgres, Storage, Realtime, Edge Functions). Use pgvector extension for embeddings (Supabase supports it in many setups).
+
+Vector search: pgvector (in Supabase) or Milvus / Weaviate OSS if pgvector unavailable. Provide configuration for both; default to pgvector.
+
+Worker / orchestrator: Supabase Edge Functions (TypeScript) for background PQAS testing and AAKE tasks.
+
+CI/CD: Use Replit deployment or GitHub Actions (provide both).
+
+Monitoring: Sentry (free tier) or open-source Prometheus/Grafana if self-hosting. Provide sample Sentry integration.
+
+Auth: Supabase Auth (Email, OAuth with Google/GitHub). Roles: guest, user, moderator, curator, org_admin, super_admin.
+
+Storage: Supabase Storage for thumbnails, attachments.
+
+Search: Postgres full-text search + vector similarity + filters.
+
+Caching / CDN: Use Supabase CDN + Cloudflare optional.
+
+Ads: Google AdSense/Google Ad Manager integration for slots; admin can toggle ads and set sponsored tags. Provide UI settings and placeholders.
+
+Dev tooling: ESLint, Prettier, TypeScript, testing (Jest + React Testing Library), Playwright for E2E.
+
+2. Data model & DB schema (Postgres / Supabase)
+
+Provide SQL schema and migrations. Use UUIDs, timestamps, and relationships. Include pgvector column type for embeddings.
+
+Main tables
+
+users
+
+id (uuid PK)
+
+email, display_name, avatar_url, bio, roles (jsonb), karma_score (float), metrics (jsonb), created_at, updated_at
+
+prompts
+
+id (uuid PK)
+
+slug (unique), title, short_desc, industry_tags (text[]), social_tags (text[]), visibility (public/private), license (text), owner_id (uuid FK users), created_at, updated_at, total_uses (int), popularity_score (float)
+
+prompt_versions
+
+id (uuid PK)
+
+prompt_id (fk), version_number (int), content (jsonb) — content includes system/user/instructions, model_compatibility list, image_prompt fields, negative_prompt, sampler, seed, cfg, examples (array)
+
+pqas_score (jsonb) — includes quality, consistency, cost_estimate, latency_ms, last_checked_at
+
+embeddings (vector) — pgvector
+
+status (enum: draft/reviewed/production/deprecated)
+
+parent_version_id (nullable) — for lineage/forking
+
+created_by (user id), created_at, updated_at
+
+workflows
+
+id, title, steps (jsonb: ordered list referencing prompt_version ids or inline prompts), industry, description, adopted_by_count, created_by, created_at
+
+remixes (fork tracking)
+
+id, original_prompt_id, from_version_id, to_version_id, user_id, summary_of_changes, created_at
+
+pqas_test_cases
+
+id, prompt_version_id, input_case, expected_output_signature (jsonb), last_run_results (jsonb), created_at
+
+usage_logs
+
+id, user_id, prompt_version_id, model_name, tokens_used, latency_ms, result_hash, created_at
+
+comments
+
+id, user_id, prompt_id, prompt_version_id (nullable), content, parent_comment_id, upvotes, downvotes, created_at
+
+badges / achievements
+
+id, name, criteria, metadata
+
+sponsored_slots / ads
+
+id, slot_name, position (feed, sidebar, prompt_page), is_active, provider (google), config (jsonb), created_at
+
+audit_logs
+
+id, actor_id, action, target_type, target_id, metadata, created_at
+
+settings (platform-level)
+
+key, value (jsonb)
+
+Indexes: GIN on tags arrays, full-text index on title/short_desc, vector index on prompt_versions.embeddings.
+
+Provide SQL migration files for Supabase.
+
+3. Core backend services & Edge Functions (Supabase)
+
+Implement Edge functions (TypeScript) for asynchronous and scheduled tasks:
+
+PQAS Runner (Edge Fn / background worker)
+
+Runs test cases for a prompt_version across configured provider models (e.g., GPT4o/GPT-5/Gemini/Claude).
+
+Computes PQAS metrics (quality, consistency, tokens, latency) and stores results in prompt_versions.pqas_score and pqas_test_cases.last_run_results.
+
+Triggers auto-adaptation pipeline when drift detected.
+
+AAKE (Auto-updating AI Knowledge Engine) orchestrator
+
+Watches model provider release feeds (via RSS / API / changelogs) — when detecting a model update, triggers PQAS retesting for affected prompts and flags drift: status -> ‘drift-risk’.
+
+Applies automated small fixes (append system context, few-shot examples) and re-runs PQAS; records actions in audit_logs.
+
+Remix Processor
+
+Handles forking logic, lineage tracking, re-evaluating PQAS on new versions, auto-notifying followers.
+
+Converts prompts between model formats (basic ruleset for GPT/Gemini/Claude; more complex conversions raise curator review request).
+
+Embedding generator & vector ingestion
+
+Generates embeddings for each prompt_version (OpenAI / open-source model) and stores in pgvector. Provide config for open embeddings (e.g., any OSS model) to avoid fees.
+
+Search API
+
+Composite search combining: vector similarity, full-text, filters (industry, model_compatibility, PQAS thresholds) and ranking by composite_score = alphaPQAS + betapopularity + gammafreshness + deltarelevance.
+
+Usage & Billing API (even if free public tiers exist, track usage)
+
+Tracks calls, tokens, and offers API keys for orgs with rate limits.
+
+Admin API / Moderation
+
+Approve/reject prompt submissions, set PQAS gates for production, manage sponsors/ads, moderation queue.
+
+Ad integration Fn
+
+Manage ad slots and toggle provider scripts in frontend (Google Ads) safely, load scripts asynchronously, provide fallback placeholders if ad not loaded.
+
+Webhook / Notifications
+
+Webhooks for critical events (drift detected, version promoted, new remix trending). Use webhooks or Supabase Realtime for in-app notifications.
+
+All functions must be typed (TypeScript), tested, and documented.
+
+4. PQAS design & evaluation flow
+
+Provide an LLM-as-judge specification: a stable rubric for automatic scoring. Provide explicit evaluation prompts to the judge LLM to compute quality, consistency, cost_estimate, and safety flags. Save judge outputs and confidence levels.
+
+Provide deterministic test harness to run each prompt_version against test_cases set. Each test run returns: output sample, semantic similarity to expected signature, hallucination detection, token usage, latency.
+
+The PQAS score = weighted sum: Quality(40%) + Consistency(25%) + Efficiency(15%) + Safety(20%). Provide configuration to tune weights.
+
+For drift: define threshold values that set status to drift-risk and auto-attempt adaptation. Log all automatic changes. Admin can require manual approval before promoting to production.
+
+5. Social Graph Engine (SGE) & recommendation rules
+
+Implement SGE using a graph model (edges stored in graph DB or Postgres tables). Provide functions to compute: follow suggestions, “people like you use” recommendations, trending prompts per domain, and lineage-based recommendations.
+
+Reputation (karma) algorithm: combine user engagement with PQAS-weighted contributions. Show exact formula (sample):
+karma = w1*avg_contributor_pqas + w2*total_remix_successes + w3*referrals_converted + w4*engagement_signals (define weights).
+
+Provide seed algorithms for recommendation and trending: early activity multiplier, decay function, novelty bonus.
+
+6. Frontend — pages & components
+
+Implement a modern, responsive UI with Tailwind; key pages:
+
+Landing / Marketing site — hero, features, metrics, CTA to signup, demo video.
+
+Explore / Feed — infinite feed mixing trending, personalized recommendations, and sponsored card placements. Provide filters: industry, model, PQAS_min, tags, difficulty, license.
+
+Prompt detail page — title, PQAS ribbon, versions list, run demo (in-page sandbox), copy button (one-click copy), run in playground, remix/fork button, comments, usage stats, sponsor badge if sponsored. Include an “Ad slot below content” labeled Sponsored.
+
+Prompt editor / Remix visualizer — visual graph flow editor (drag-n-drop steps), templates, fill-in-the-blanks, preview runner. When saving fork, create new prompt_version with lineage.
+
+Workflows page — curated workflow maps, adopt/export workflow (as JSON), step-runner UI to execute steps via API.
+
+Profile page — activity, top prompts, karma, badges, followers, portfolio, organization membership.
+
+Collections / Playlists — users can save grouped prompts/workflows.
+
+Admin dashboard — moderation queue, PQAS monitoring, ad slot manager, platform settings, analytics.
+
+Organization / Team space — private repo of prompts, access controls, API keys, and version gating.
+
+Search & advanced filters — instant search using vector + full text.
+
+Signup & onboarding flow — quick tutorial to create first remix, earn first badge, invite friends.
+
+Settings & Monetization page — ad preferences, data export, API keys.
+
+UI specifics: microinteractions, skeleton loaders, accessible color contrast, keyboard shortcuts, proper mobile breakpoints. Use component-driven design with Storybook.
+
+7. Ads & monetization (non-intrusive UX)
+
+Reserve ad slots: left/right sidebar card, between every 6 feed items, single slot below prompt content. Each ad slot must be configurable to show: Google Ads, sponsored prompt, or empty placeholder. Ads must be labeled “Sponsored” and accessible (ARIA).
+
+Provide admin page to map sponsors to slots, set CPM/CPC placeholders, and toggle sponsor moderation.
+
+Users can opt-out of ads if they subscribe (paid premium plan). Provide sample free tier + premium plan page (note: premium requires payment provider - provide free-tier first).
+
+For zero fees, initial MVP uses Google AdSense (free to sign up). Provide instructions to plug the client ad script into ad slots asynchronously. Also provide an OSS fallback (showcase sponsored prompt cards uploaded to Supabase Storage).
+
+Ensure ad scripts load lazily and never block PQAS or Remix Engine scripts.
+
+8. Security & compliance
+
+Roles & permissions: implement row-level security (RLS) policies in Supabase to restrict editing and promoting to production.
+
+Sanitize prompts and user inputs to avoid XSS, code injection, or malicious prompt content. Flag PII/sensitive content automatically via safety checks.
+
+Rate limiting: per API key & per IP for public endpoints.
+
+GDPR: data export and delete endpoints for users.
+
+Secure storage of secrets in Replit env / Supabase secrets.
+
+Use strong password policy and 2FA optional.
+
+9. DevOps, CI/CD & deployment (Replit + GitHub Actions)
+
+Provide a Replit-ready project with environment variables documented.
+
+Provide GitHub Actions pipeline to test, build, and deploy to Replit or to a cloud host if needed. Steps: lint, unit tests, integration tests, build, migrate DB, run smoke tests, create release.
+
+Provide database migration scripts and instructions for provisioning Supabase.
+
+Provide scheduled jobs for PQAS / AAKE using Supabase scheduled functions or external cron (Replit Cron).
+
+Provide rollback strategy for releases and DB migrations (use feature flags and gated promotion).
+
+10. Documentation & deliverables
+
+Deliver these artifacts as part of the Replit repo:
+
+README with architecture diagram, setup steps, environment variables, deployment guide, and one-click Replit run instructions.
+
+SQL migration files for Supabase, and scripts to enable pgvector.
+
+API docs (OpenAPI/Swagger) covering endpoints: /search, /prompts, /prompts/:id/versions, /workflows, /users, /admin.
+
+PQAS rubric & judge prompts.
+
+Frontend Storybook with main components.
+
+End-to-end and unit tests with coverage report.
+
+Monitoring config & sample Sentry integration.
+
+Admin manual for ad integration and sponsored content.
+
+Handover checklist for sysadmins and devops.
+
+11. Acceptance criteria (must pass before “production”)
+
+End-to-end flows work: signup -> create/remix prompt -> run test_case -> PQAS result -> publish (if PQAS > threshold) -> social share.
+
+Search returns relevant vector & text results with rank explainability.
+
+Remix flow creates new version, logs lineage, re-runs PQAS, and updates SGE recommendations.
+
+Admin can moderate, toggle ad slots, and configure PQAS gate thresholds.
+
+Scheduled AAKE runs and detects model updates (simulate feed in dev) and flags drift.
+
+System supports at least 10k prompts and 100k vector index items on local testing w/ acceptable query times (<300ms median for vector search).
+
+Security checks pass: RLS enforced, PII detection working, rate limiting operational.
+
+UI is responsive, accessible (WCAG AA), and polished with provided design tokens.
+
+Provide one-click deploy instructions to provision Supabase and run migrations.
+
+12. Implementation plan + milestones (deliverable schedule)
+
+Week 0 (Prep): Repo scaffold, infra plan, Supabase project provisioning instructions, SQL migrations, DIAGRAMS.
+
+Week 1–4 (P0 Build & Core): Auth, prompts CRUD, prompt_versions, embeddings ingestion, vector search, basic feed, prompt detail, copy/run sandbox. PQAS minimal runner (single model).
+
+Week 5–8 (P1 Social + Remix): Remix editor (visual), lineage tracking, comments, likes, karma system, admin moderation, ad slots & admin controls.
+
+Week 9–12 (P1 Stabilize + AAKE layer 1): PQAS auto-tests, AAKE monitoring layer 1, scheduled PQAS jobs, admin gating. Add basic org API keys.
+
+Week 13–20 (P2 Enterprise): Multi-model PQAS, cross-model conversion, Auto-adapt engine, API for enterprises, scaling & performance optimizations, Sentry + metrics, launch readiness.
+
+Deliverable at end of each milestone: working deployment, tests, docs, demo video snippets for the milestone flows.
+
+13. Extra dev notes / pragmatic zero-fees guidance
+
+Default to open-source embeddings (e.g., sentence-transformers on local or hosted free tiers) to avoid Embeddings API costs. If costs are unavoidable, instrument usage and provide daily quotas.
+
+Use Supabase free tier for initial deployment, and give clear scaling plan (move vector store to self-hosted Weaviate/Milvus when >100k vectors).
+
+Use GitHub Student / open-source credits if needed. Provide migration docs to paid options when scale demands.
+
+Implement feature flags (LaunchDarkly OSS or simple Replit ENV toggle) to gate paid features.
+
+Provide analytics via Plausible (OSS / privacy-friendly) to avoid big analytics bills.
+
+14. Final instructions for the Replit builder
+
+Create a new Replit project with the repo and base scaffold.
+
+Add a setup script that provisions a Supabase project skeleton and runs migrations locally (or instruct user to create Supabase project, then paste env vars).
+
+Implement each component above starting from the backend schema and API, then frontend pages, then PQAS runner, then AAKE orchestration. Use a test-driven approach.
+
+Write a demo seed script that imports 4,000 sample prompts (small set generated for demo) and runs initial PQAS tests.
+
+Add admin UI to configure ad slots and load Google Ads script safely. Show sample config in README.
+
+Prepare deployment & one-click instructions for Replit users.
+
+15. Deliver to me in this Replit job:
+
+A working Replit URL (production) with Supabase env configured (or clear step-by-step env setup).
+
+A private demo org with seeded prompts and admin credentials.
+
+Full repo with migrations, tests, storybook, and documentation.
+
+A short demo recording (screen capture) showing core flows.

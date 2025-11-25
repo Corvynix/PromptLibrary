@@ -1,0 +1,19 @@
+Build a production-grade, viral-ready global prompt library and social platform with the following features:
+
+1. User & Authentication: Email/password login, social login (Google, GitHub), role-based access (guest, user, moderator, curator, org_admin, super_admin).
+2. User Profiles: Avatars, bios, portfolio showcase, activity timeline, karma score, contribution history.
+3. Database: PostgreSQL with tables for users, prompts, prompt_versions, workflows, remixes (lineage tracking), comments, badges, usage_logs, follows, social_graph, with proper indexing for performance and scalability.
+4. Prompt Management: Rich metadata including title, description, industry, tags, social hashtags, multi-AI model compatibility (GPT, Gemini, Claude, Midjourney, etc.), versioning with parent-child/fork lineage tracking, example inputs/outputs, visibility controls.
+5. PQAS (Prompt Quality Assessment System): Multi-model scoring using OpenAI GPT, Claude, Gemini, evaluating quality, consistency, cost, latency, safety, with visual score ribbons and thresholds for production promotion.
+6. Visual Remix Editor: Drag-and-drop interface showing prompt lineage graph, step-by-step workflow builder, fork/remix creation, auto PQAS re-evaluation on edits.
+7. Social & Viral Engine: Follow/unfollow, activity feed, nested threaded comments with upvotes/downvotes, dynamic trending/new/personalized/editor’s choice feeds, referral tracking, and challenge-based campaigns.
+8. Karma & Rewards: Reputation engine combining PQAS-weighted contributions, remix success rate, engagement, referrals; badge/achievement system for quality, virality, and milestones.
+9. Search & Discovery: Full-text PostgreSQL search, AI-powered auto-tagging for industry/social hashtags, filters by model/industry/tags, sort by relevance/trending/newest/highest rated.
+10. Enterprise & Workflows: Workflow templates for multi-step prompt sequences, execution tracking, adoption metrics, optional team/enterprise dashboards.
+11. Monetization: Non-intrusive ad slots (sidebar, every 6th feed item, sponsored prompts), async-loaded with placeholders, labeled clearly as 'Sponsored', fully configurable via admin.
+12. Admin Dashboard: Content moderation queue, PQAS thresholds for production, viral metrics monitoring (K-factor, top referrers, growth rate), ad slot management, user management.
+13. PWA & Performance: Mobile-first responsive design, offline support, skeleton loaders, optimized bundle splitting, service worker, manifest.json, install prompts.
+14. Analytics & Reporting: Usage stats for prompts, remix lineage analytics, global leaderboard, performance dashboards for users and admins.
+15. Landing Page: Hero section, platform metrics (total prompts, users, industries), featured prompts carousel, trending tags, clear CTAs for signup and browse.
+
+Build this with Supabase backend, React frontend (Tailwind CSS), and ensure the architecture is scalable for millions of users and prompts. Make it production-ready, fully free for users, and optimized for viral social growth, high-quality PQAS, and non-intrusive monetization. Include placeholders for Google Ads integration without compromising UX/UI.

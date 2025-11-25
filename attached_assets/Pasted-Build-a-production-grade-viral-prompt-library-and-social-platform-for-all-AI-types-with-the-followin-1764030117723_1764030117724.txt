@@ -1,0 +1,20 @@
+Build a production-grade viral prompt library and social platform for all AI types with the following features, using only free or open-source AI models/APIs for scoring and analysis:
+
+1. Authentication & Roles: Email/password login, social login (Google, GitHub), role-based access (guest, user, moderator, curator, org_admin, super_admin).
+2. Profiles: Avatar uploads (Supabase Storage), bio, portfolio, activity timeline, karma score breakdown, contribution history, followers/following counts.
+3. Database: PostgreSQL schema with optimized tables for users, prompts, prompt_versions, workflows, remixes, comments, badges, usage_logs, follows, social_graph, full indexing for performance/scalability.
+4. Prompt Management: Rich metadata (title, description, industry, tags, hashtags, AI model compatibility: GPT, Gemini, Claude, Midjourney, DALL-E, Stable Diffusion, CodeLlama), versioning, parent-child lineage, example inputs/outputs, visibility (public/private/unlisted), optional images.
+5. PQAS Replacement: Implement a multi-model open-source scoring system (e.g., Hugging Face LLMs: LLaMA 2, MPT, Falcon, CodeLlama) to score prompts for: Quality (0-100), Consistency, Cost estimate (tokens), Latency, Safety flags. Aggregate into composite score with visual ribbons (Gold/Silver/Bronze). Store in prompt_versions.pqas_score.
+6. Remix Editor: React Flow drag-and-drop showing prompt connections, step-by-step workflow chaining, auto-PQAS re-evaluation on save, fork creation with summary input, real-time collaboration indicators.
+7. Karma & Rewards: Karma = 0.40×avg PQAS + 0.25×remix success + 0.20×engagement + 0.15×referrals, stored in users.karma_score with breakdown. Badges/achievements auto-awarded for viral, quality, remix, and community milestones.
+8. Feeds & Discovery: Multi-view feed (Trending, New, Editor's Choice, Personalized) with infinite scroll and virtual scrolling optimization. AI-powered auto-tagging using open-source NLP models for industry, social hashtags, difficulty levels. Advanced search with full-text PostgreSQL, filters, PQAS slider, sorting by relevance/trending/newest/highest rated.
+9. Social Features: Follow/unfollow, activity feed of followed users’ content, threaded/nested comments, upvote/downvote, share buttons with referral codes.
+10. Prompt Detail Page: PQAS ribbon, version history with diff viewer, multi-version comparison, one-click copy (clipboard tracking), in-page demo playground, fork/remix button, lineage graph, usage stats, comment section, related prompts sidebar.
+11. Workflows: Multi-step prompt sequences, visual workflow builder, execution engine passing outputs to next step, adoption tracking, sharing with visibility controls, execution logs.
+12. Ads Monetization: Non-intrusive Google AdSense slots, sidebar cards, feed insertion every 6th item, sponsored prompt cards labeled 'SPONSORED', async-loaded with lazy placeholders, admin-toggle configurable.
+13. Admin Dashboard: Moderation queue, PQAS thresholds, viral metrics (K-factor, top referrers), user management, ad slot configuration, platform settings.
+14. PWA & Performance: Mobile-first responsive design, offline support, skeleton loaders, code splitting, lazy-loaded images, install prompt.
+15. Notifications & Analytics: Real-time notifications (follows, remixes, comments, badges), stored in notifications table, usage stats, remix lineage analytics, leaderboards, personal dashboards, DAU/MAU retention cohorts.
+16. Landing Page: Hero with animated tagline, CTAs, platform metrics, featured carousel, trending hashtags cloud, testimonials, how-it-works section, footer links.
+
+Constraints: Use only free/open-source AI models for PQAS and auto-tagging. No paid APIs (OpenAI, Anthropic, Google Gemini, etc.). Fully production-ready, scalable to millions of users, zero fees for users, optimized for viral growth and engagement, with non-intrusive monetization.

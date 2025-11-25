@@ -1,0 +1,70 @@
+Build a production-ready web platform that becomes the largest, free, global prompt library and social media hub for prompts, covering all industries, all types of AI (ChatGPT, Gemini, Claude, image AI, code AI, etc.), and designed for viral growth, engagement, and discoverability. The platform must be fully functional, fast, mobile-first, and future-proof, using Supabase as the backend, with Google AdSense ad slots in a non-intrusive way to generate revenue.
+
+Core Requirements:
+
+User System: Authentication (email/password + social login), roles (guest, user, moderator, curator, admin), user profiles with avatar, bio, portfolio, contributions, and karma score.
+
+Prompt Library:
+
+Prompt creation with rich metadata: industry, tags, social hashtags, compatible AI models, examples, images if needed, description, visibility controls.
+
+Prompt versioning & remix/forking with lineage tracking.
+
+One-click copy functionality for all prompts.
+
+Multi-step workflows for advanced prompt chains (optional for future phase).
+
+Community Features:
+
+Karma/reputation system weighted by quality, engagement, and remix success.
+
+Comments with threading, upvotes/downvotes, notifications.
+
+Follow/unfollow users, activity feeds, trending/new/personalized feeds.
+
+Badge & reward system for contributions, viral prompts, and engagement.
+
+AI-Powered Features:
+
+PQAS (Prompt Quality Assessment System) to evaluate prompts for quality, consistency, cost, latency, and safety. Start with one AI model (OpenAI GPT) for launch; multi-model support can be added later.
+
+Auto-tagging for social/industry tags based on prompt content and engagement patterns.
+
+Search & Discovery:
+
+Full-text search, filtering by industry/tags/models, trending algorithms, editor’s choice.
+
+Graph-based social discovery to show prompts used by similar users or high-karma contributors.
+
+Visual Remix Editor:
+
+Drag-and-drop interface showing prompt lineage graph.
+
+Step-by-step workflow builder for remixing and chaining prompts.
+
+Backend & Infrastructure:
+
+Supabase as the main backend (auth, database, storage).
+
+PostgreSQL schema covering: users, prompts, prompt_versions, workflows, remixes, comments, badges, usage logs, social graph.
+
+Progressive Web App (PWA) with offline support, skeleton loaders, mobile-first responsive design.
+
+Monetization:
+
+Non-intrusive ad slots: sidebar, feed insertion (e.g., every 6th item), sponsored prompts with PQAS badge clearly labeled “Sponsored.”
+
+Configurable via admin dashboard.
+
+Admin Tools:
+
+Moderation dashboard, PQAS threshold gates, viral metrics (K-factor, top referrers), ad slot management.
+
+Future-Proofing:
+
+Design with scalability to handle millions of users and hundreds of thousands of prompts.
+
+Architecture should allow adding multi-model PQAS, enterprise workflows, auto-adapting prompts, and analytics dashboards in Phase 2.
+
+Goal:
+Make this the go-to destination for anyone seeking any AI prompt in any industry, free to use, highly social, discoverable, and trusted. The platform should feel like a Reddit + Notion + GitHub for prompts, with a viral engine that keeps users contributing, remixing, and sharing, while allowing monetization via unobtrusive ads.

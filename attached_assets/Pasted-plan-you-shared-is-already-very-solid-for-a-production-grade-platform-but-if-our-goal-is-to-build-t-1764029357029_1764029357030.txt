@@ -1,0 +1,69 @@
+plan you shared is already very solid for a production-grade platform, but if our goal is to build the biggest, viral, global prompt library with social features, there are a few critical additions and edits I’d recommend before starting:
+
+1. Core Functionality – Additions
+
+Advanced PQAS:
+
+Include multi-model scoring (GPT, Gemini, Claude) for consistency across different LLMs.
+
+Add automatic drift detection for older prompts (AAKE-style updates).
+
+Viral Social Layer:
+
+Karma engine that combines quality + engagement, not just popularity.
+
+Reward system for remixes, shares, referrals, and high-quality UGC.
+
+Prompt Recommendations / Personalization:
+
+Suggest prompts based on user role, interests, and past activity.
+
+Optional “Trending / New / Editor’s Choice” feeds.
+
+Dynamic Tagging / Social Taxonomy:
+
+Auto-generated social/AI tags based on content and engagement.
+
+Hashtags for virality and content discovery (#Viral, #Tutorial, #UGC-Incentive).
+
+Workflow Integration:
+
+Link prompts into workflow chains (step-by-step prompt sequences).
+
+Allow companies or teams to create shared workflow templates.
+
+2. Database / Backend
+
+Supabase is great, but for social graph features and multi-step relationships:
+
+Consider Graph-like tables or Postgres extensions for SGE (Social Graph Engine).
+
+Include lineage table for remix/fork tracking across users and prompts.
+
+Usage logs should track API calls if enterprise clients use prompts.
+
+3. UX / UI
+
+Include visual Remix Editor: drag-and-drop or flowchart style for remixing prompts.
+
+Responsive & mobile-first is good, but make a progressive web app (PWA) to increase engagement.
+
+Implement skeleton loaders + live PQAS score updates to show users prompt quality in real time.
+
+4. Monetization / Ads
+
+Google Ads placeholders are fine, but consider:
+
+Sponsored prompts with PQAS badges (non-intrusive).
+
+Subscription tiers for advanced PQAS scoring or enterprise workflow tools.
+
+Make sure ads don’t disrupt remixing or UGC creation—user-generated content must feel first-class.
+
+5. Admin / Moderation
+
+Include automated moderation for prompt content and comments.
+
+PQAS thresholds for content publishing—admins can set min quality scores.
+
+Ability to monitor viral loops (K-factor, top referrers).
