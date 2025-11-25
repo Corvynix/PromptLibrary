@@ -20,12 +20,25 @@ export function useUser() {
         const checkSession = async () => {
             try {
                 const res = await fetch("/api/user");
+
+                // Check if response is JSON
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    // Not JSON, likely HTML error page - user not authenticated
+                    setUser(null);
+                    setIsLoading(false);
+                    return;
+                }
+
                 if (res.ok) {
                     const userData = await res.json();
                     setUser(userData);
+                } else {
+                    setUser(null);
                 }
             } catch (error) {
-                console.error("Session check failed", error);
+                // Silently fail - user not authenticated
+                setUser(null);
             } finally {
                 setIsLoading(false);
             }

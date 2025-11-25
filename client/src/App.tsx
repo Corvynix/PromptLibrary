@@ -11,6 +11,10 @@ import PromptDetail from "@/pages/PromptDetail";
 import RemixEditor from "@/pages/RemixEditor";
 import Profile from "@/pages/Profile";
 import AdminDashboard from "@/pages/AdminDashboard";
+import About from "@/pages/About";
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
+import Support from "@/pages/Support";
 import NotFound from "@/pages/not-found";
 
 function App() {
@@ -31,6 +35,18 @@ function App() {
 
       {/* Auth Page */}
       <Route path="/auth" component={Auth} />
+
+      {/* About Page */}
+      <Route path="/about" component={About} />
+
+      {/* Terms Page */}
+      <Route path="/terms" component={Terms} />
+
+      {/* Privacy Page */}
+      <Route path="/privacy" component={Privacy} />
+
+      {/* Support Page */}
+      <Route path="/support" component={Support} />
 
       {/* App Routes (Wrapped in AppShell) */}
       <Route path="/explore">

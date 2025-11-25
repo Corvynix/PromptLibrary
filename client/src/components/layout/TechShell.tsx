@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Grid, Menu } from "lucide-react";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -10,9 +11,10 @@ interface TechShellProps {
     loading?: boolean;
     className?: string;
     showNav?: boolean;
+    logoText?: string; // Custom logo text
 }
 
-export function TechShell({ children, loading = false, className, showNav = true }: TechShellProps) {
+export function TechShell({ children, loading = false, className, showNav = true, logoText = "PROMPTLIBRARY" }: TechShellProps) {
     return (
         <motion.div
             className={cn(
@@ -36,7 +38,7 @@ export function TechShell({ children, loading = false, className, showNav = true
                         className="text-2xl md:text-3xl font-black tracking-tighter font-display text-background z-30 pt-1"
                         transition={{ duration: 0.8, ease: "circOut" }}
                     >
-                        PROMPTLIBRARY
+                        {logoText}
                     </motion.div>
                 )}
             </div>
@@ -72,7 +74,8 @@ export function TechShell({ children, loading = false, className, showNav = true
                 </Button>
 
                 {/* Right: Tools */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
+                    <LanguageToggle />
                     <ThemeToggle />
                     <Button variant="ghost" size="icon" className="hover:bg-foreground/10 rounded-full">
                         <Grid className="w-5 h-5" />

@@ -2,20 +2,15 @@ import { useState } from "react";
 import { useParams, Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Copy,
   Share2,
   GitFork,
   Heart,
-  MessageCircle,
   Zap,
   Clock,
   CheckCircle2,
-  Play
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -30,198 +25,165 @@ export default function PromptDetail() {
     toast({
       title: "Copied to clipboard",
       description: "Ready to paste into your favorite model.",
-      variant: "success",
     });
     setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
-      {/* Header Section */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href="/explore" className="hover:text-primary transition-colors">Explore</Link>
-          <span>/</span>
-          <span>Midjourney</span>
-          <span>/</span>
-          <span className="text-foreground">Portraits</span>
-        </div>
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tracking-wider">
+        <Link href="/feed" className="hover:text-cyan-400 transition-colors">EXPLORE</Link>
+        <span>/</span>
+        <span>MIDJOURNEY</span>
+        <span>/</span>
+        <span className="text-white">PORTRAITS</span>
+      </div>
 
+      {/* Header Section */}
+      <div className="border-2 border-white/20 bg-black p-8">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="space-y-4 flex-1">
-            <h1 className="text-4xl font-display font-bold leading-tight">
-              Cinematic Cyberpunk Portrait Generator v4
+            <h1 className="text-4xl font-black tracking-tighter leading-tight uppercase">
+              CINEMATIC CYBERPUNK PORTRAIT GENERATOR V4
             </h1>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <Avatar className="w-8 h-8">
+                <Avatar className="w-8 h-8 border-2 border-white/40">
                   <AvatarImage src="https://github.com/shadcn.png" />
                   <AvatarFallback>PW</AvatarFallback>
                 </Avatar>
-                <div className="text-sm">
-                  <span className="font-medium">prompt_wizard</span>
+                <div className="text-sm font-mono">
+                  <span className="font-bold">@prompt_wizard</span>
                   <span className="text-muted-foreground mx-2">•</span>
-                  <span className="text-muted-foreground">2 hours ago</span>
+                  <span className="text-muted-foreground">2H AGO</span>
                 </div>
               </div>
-              <Badge variant="secondary" className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-0">
-                <CheckCircle2 className="w-3 h-3 mr-1" />
-                Verified
-              </Badge>
+              <div className="px-2 py-1 border border-green-400 bg-green-400/10 text-green-400 text-[10px] font-mono font-bold flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                VERIFIED
+              </div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" className="rounded-full">
-              <Heart className="w-5 h-5" />
+            <Button className="border-2 border-white/20 bg-black hover:border-white hover:bg-white hover:text-black px-4 py-2 font-bold tracking-wider text-xs">
+              <Heart className="w-4 h-4 mr-2" />
+              LIKE
             </Button>
-            <Button variant="outline" size="icon" className="rounded-full">
-              <Share2 className="w-5 h-5" />
+            <Button className="border-2 border-white/20 bg-black hover:border-white hover:bg-white hover:text-black px-4 py-2 font-bold tracking-wider text-xs">
+              <Share2 className="w-4 h-4 mr-2" />
+              SHARE
             </Button>
-            <Link href={`/remix/${id}`}>
-              <Button className="rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 shadow-lg shadow-indigo-500/20">
-                <GitFork className="w-4 h-4 mr-2" />
-                Remix
-              </Button>
-            </Link>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Preview & Prompt */}
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left: Prompt Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Image Carousel */}
-          <div className="aspect-video rounded-xl overflow-hidden bg-muted relative group">
-            <img
-              src="https://picsum.photos/seed/cyberpunk/800/600"
-              alt="Preview"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <Button variant="secondary" className="rounded-full">
-                <Play className="w-4 h-4 mr-2" />
-                View Gallery
-              </Button>
-            </div>
-          </div>
-
-          {/* Prompt Content */}
-          <Card className="border-primary/20 shadow-lg shadow-primary/5">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-lg font-medium">Prompt</CardTitle>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline">GPT-4</Badge>
-                <Badge variant="outline">Midjourney v6</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 bg-muted/30 rounded-lg font-mono text-sm leading-relaxed border border-border/50">
-                /imagine prompt: a cinematic shot of a cyberpunk street samurai, neon rain, volumetric lighting, 8k resolution, unreal engine 5 render --ar 16:9 --v 6.0
-              </div>
+          {/* Prompt Text */}
+          <div className="border-2 border-white/20 bg-black p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-black tracking-widest uppercase">PROMPT</h2>
               <Button
                 onClick={handleCopy}
-                className={cn(
-                  "w-full transition-all duration-300",
-                  isCopied ? "bg-green-500 hover:bg-green-600" : ""
-                )}
+                className="px-4 py-2 border-2 border-white/20 bg-black hover:border-cyan-400 hover:bg-cyan-400/10 text-xs font-bold tracking-wider"
               >
                 {isCopied ? (
                   <>
                     <CheckCircle2 className="w-4 h-4 mr-2" />
-                    Copied!
+                    COPIED
                   </>
                 ) : (
                   <>
                     <Copy className="w-4 h-4 mr-2" />
-                    Copy Prompt
+                    COPY
                   </>
                 )}
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+            <p className="text-sm font-mono leading-relaxed text-muted-foreground">
+              A cinematic portrait of a cyberpunk character, neon-lit streets in the background, dramatic lighting, ultra-detailed, 8k resolution, photorealistic, depth of field, bokeh effect, professional photography --ar 2:3 --style raw --v 6
+            </p>
+          </div>
 
-          {/* Parameters & Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Parameters</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-muted/30 rounded-lg">
-                  <div className="text-xs text-muted-foreground mb-1">Model</div>
-                  <div className="font-medium">Midjourney v6</div>
-                </div>
-                <div className="p-3 bg-muted/30 rounded-lg">
-                  <div className="text-xs text-muted-foreground mb-1">Aspect Ratio</div>
-                  <div className="font-medium">16:9</div>
-                </div>
-                <div className="p-3 bg-muted/30 rounded-lg">
-                  <div className="text-xs text-muted-foreground mb-1">Stylize</div>
-                  <div className="font-medium">250</div>
-                </div>
-                <div className="p-3 bg-muted/30 rounded-lg">
-                  <div className="text-xs text-muted-foreground mb-1">Chaos</div>
-                  <div className="font-medium">10</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Example Output */}
+          <div className="border-2 border-white/20 bg-black p-6">
+            <h2 className="text-sm font-black tracking-widest uppercase mb-4">EXAMPLE OUTPUT</h2>
+            <div className="aspect-[2/3] bg-gradient-to-br from-violet-900 to-indigo-900 border-2 border-white/10 flex items-center justify-center">
+              <span className="text-xs text-muted-foreground font-mono">IMAGE PREVIEW</span>
+            </div>
+          </div>
         </div>
 
-        {/* Right Column: Stats & Lineage */}
+        {/* Right: Metadata */}
         <div className="space-y-6">
-          {/* PQAS Score Widget */}
-          <Card className="bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border-violet-500/20">
-            <CardContent className="p-6 text-center">
-              <div className="text-sm font-medium text-muted-foreground mb-2">PQAS Quality Score</div>
-              <div className="text-5xl font-display font-bold text-primary mb-2">98.5</div>
-              <div className="flex justify-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Top 1% of prompts this week. Highly reliable and consistent results.
-              </p>
-            </CardContent>
-          </Card>
+          {/* Stats */}
+          <div className="border-2 border-white/20 bg-black p-6 space-y-4">
+            <h2 className="text-sm font-black tracking-widest uppercase border-b border-white/10 pb-3">STATS</h2>
 
-          {/* Version History */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Version History</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {[
-                { ver: "v4", date: "2h ago", active: true },
-                { ver: "v3", date: "1d ago", active: false },
-                { ver: "v2", date: "3d ago", active: false },
-              ].map((v) => (
-                <div key={v.ver} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-2 h-2 rounded-full",
-                      v.active ? "bg-green-500" : "bg-muted-foreground/30"
-                    )} />
-                    <span className={cn("font-medium", v.active ? "text-foreground" : "text-muted-foreground")}>
-                      {v.ver}
-                    </span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">{v.date}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground font-mono">PQAS</span>
+              <div className="flex items-center gap-1">
+                <Zap className="w-4 h-4 text-yellow-400" />
+                <span className="font-black text-lg">96</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground font-mono">LIKES</span>
+              <span className="font-bold">1,234</span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground font-mono">FORKS</span>
+              <span className="font-bold">567</span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground font-mono">VIEWS</span>
+              <span className="font-bold">12.4K</span>
+            </div>
+          </div>
+
+          {/* Model Info */}
+          <div className="border-2 border-white/20 bg-black p-6 space-y-4">
+            <h2 className="text-sm font-black tracking-widest uppercase border-b border-white/10 pb-3">MODEL</h2>
+            <div className="space-y-3 text-sm">
+              <div>
+                <span className="text-xs text-muted-foreground font-mono block mb-1">TYPE</span>
+                <span className="font-bold">Midjourney</span>
+              </div>
+              <div>
+                <span className="text-xs text-muted-foreground font-mono block mb-1">VERSION</span>
+                <span className="font-bold">v6.1</span>
+              </div>
+              <div>
+                <span className="text-xs text-muted-foreground font-mono block mb-1">CATEGORY</span>
+                <span className="font-bold">Image Generation</span>
+              </div>
+            </div>
+          </div>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            {["Cyberpunk", "Portrait", "Neon", "Cinematic", "8k", "Unreal Engine"].map((tag) => (
-              <Badge key={tag} variant="secondary" className="cursor-pointer hover:bg-secondary/80">
-                #{tag}
-              </Badge>
-            ))}
+          <div className="border-2 border-white/20 bg-black p-6 space-y-4">
+            <h2 className="text-sm font-black tracking-widest uppercase border-b border-white/10 pb-3">TAGS</h2>
+            <div className="flex flex-wrap gap-2">
+              {["CYBERPUNK", "PORTRAIT", "CINEMATIC", "4K"].map(tag => (
+                <span key={tag} className="px-2 py-1 border border-white/20 text-[10px] font-mono font-bold tracking-wider hover:border-white transition-colors cursor-pointer">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
+
+          {/* Actions */}
+          <Button className="w-full h-12 bg-white text-black hover:bg-white/90 font-bold tracking-widest flex items-center justify-center gap-2">
+            <GitFork className="w-4 h-4" />
+            FORK PROMPT
+          </Button>
         </div>
       </div>
     </div>

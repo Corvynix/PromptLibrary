@@ -1,0 +1,38 @@
+import { motion } from "framer-motion";
+import { Tag } from "lucide-react";
+
+const POPULAR_TAGS = [
+    "Midjourney", "GPT-4", "Claude", "Arabic", "SEO",
+    "Real Estate", "Marketing", "Coding", "Design", "Sales",
+    "Islamic Studies", "Education", "Legal", "Medical", "Video",
+    "3D", "Automation", "Data Science", "Copywriting", "Agents"
+];
+
+export function TagCloud() {
+    return (
+        <div className="py-12 px-6">
+            <div className="max-w-6xl mx-auto">
+                <div className="flex items-center gap-2 mb-6">
+                    <Tag className="w-5 h-5" />
+                    <h2 className="text-xl font-black tracking-widest uppercase">POPULAR TAGS</h2>
+                </div>
+
+                <div className="flex flex-wrap gap-2 justify-center">
+                    {POPULAR_TAGS.map((tag, idx) => (
+                        <motion.a
+                            key={tag}
+                            href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.05 }}
+                            whileHover={{ scale: 1.05 }}
+                            className="px-4 py-2 border-2 border-white/20 bg-black hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-xs font-bold tracking-wider uppercase cursor-pointer"
+                        >
+                            {tag}
+                        </motion.a>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
