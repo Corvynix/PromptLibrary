@@ -8,6 +8,16 @@ import express, {
 } from "express";
 
 import { registerRoutes } from "./routes";
+// import { validateSecurityConfig, securityHeaders, corsMiddleware, sanitizeInput } from "./middleware/security";
+// import { httpLogger, logger } from "./middleware/logger";
+// import { initSentry, sentryErrorHandler, metricsMiddleware, metricsEndpoint, healthCheck } from "./middleware/monitoring";
+// import { initRedis } from "./cache";
+
+// Validate security configuration on startup
+// validateSecurityConfig();
+
+// Initialize Redis (optional)
+// initRedis();
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -22,6 +32,23 @@ export function log(message: string, source = "express") {
 
 export const app = express();
 
+// Initialize Sentry (must be first)
+// initSentry(app);
+
+// Security middleware
+// app.use(securityHeaders);
+// app.use(corsMiddleware);
+
+// Logging middleware
+// app.use(httpLogger);
+
+// Metrics middleware
+// app.use(metricsMiddleware);
+
+// Health and metrics endpoints (before other routes)
+// app.get('/health', healthCheck);
+// app.get('/metrics', metricsEndpoint);
+
 declare module 'http' {
   interface IncomingMessage {
     rawBody: unknown
@@ -33,6 +60,9 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: false }));
+
+// Input sanitization
+// app.use(sanitizeInput);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -69,12 +99,15 @@ export default async function runApp(
 ) {
   const server = await registerRoutes(app);
 
+  // Sentry error handler (must be before other error handlers)
+  // app.use(sentryErrorHandler);
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
+    // logger.error({ err, status }, 'Request error');
     res.status(status).json({ message });
-    throw err;
   });
 
   // importantly run the final setup after setting up all the other routes so
@@ -86,11 +119,7 @@ export default async function runApp(
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
+  server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
 }

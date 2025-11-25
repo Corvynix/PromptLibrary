@@ -1,276 +1,229 @@
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useToast } from '@/hooks/use-toast';
-import { Copy, Star, GitFork, Eye } from 'lucide-react';
-import { Link } from 'wouter';
-import { apiRequest, queryClient } from '@/lib/queryClient';
+import { useState } from "react";
+import { useParams, Link } from "wouter";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Copy,
+  Share2,
+  GitFork,
+  Heart,
+  MessageCircle,
+  Zap,
+  Clock,
+  CheckCircle2,
+  Play
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-interface PromptDetailProps {
-  slug: string;
-}
-
-interface Prompt {
-  id: number;
-  slug: string;
-  title: string;
-  shortDesc: string | null;
-  type: string;
-  industryTags: string[];
-  socialTags: string[];
-  totalUses: number;
-  owner?: {
-    id: number;
-    displayName: string | null;
-    email: string;
-    avatarUrl: string | null;
-  };
-}
-
-interface PromptVersion {
-  id: number;
-  promptId: number;
-  versionNumber: number;
-  content: string | any;
-  modelCompatibility: string[];
-  pqasScore?: {
-    quality?: number;
-    consistency?: number;
-    safety?: number;
-    efficiency?: number;
-    composite?: number;
-  };
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export default function PromptDetail({ slug }: PromptDetailProps) {
+export default function PromptDetail() {
+  const { id } = useParams();
   const { toast } = useToast();
+  const [isCopied, setIsCopied] = useState(false);
 
-  const { data: prompt, isLoading: promptLoading } = useQuery<Prompt>({
-    queryKey: ['/api/prompts/slug', slug],
-  });
-
-  const { data: versions, isLoading: versionsLoading } = useQuery<PromptVersion[]>({
-    queryKey: ['/api/prompts', prompt?.id, 'versions'],
-    enabled: !!prompt?.id,
-  });
-
-  const handleCopyPrompt = async () => {
-    if (!versions || versions.length === 0 || !prompt) return;
-
-    const latestVersion = versions[0];
-    const content = typeof latestVersion.content === 'string'
-      ? latestVersion.content
-      : JSON.stringify(latestVersion.content);
-
-    try {
-      await navigator.clipboard.writeText(content);
-      
-      // Log usage
-      await apiRequest('POST', '/api/usage', {
-        promptId: prompt.id,
-        versionId: latestVersion.id,
-      });
-      
-      queryClient.invalidateQueries({ queryKey: ['/api/prompts/slug', slug] });
-      
-      toast({
-        title: 'Copied to clipboard',
-        description: 'Prompt has been copied and usage logged',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to copy prompt',
-        variant: 'destructive',
-      });
-    }
+  const handleCopy = () => {
+    navigator.clipboard.writeText("Sample prompt text...");
+    setIsCopied(true);
+    toast({
+      title: "Copied to clipboard",
+      description: "Ready to paste into your favorite model.",
+      variant: "success",
+    });
+    setTimeout(() => setIsCopied(false), 2000);
   };
-
-  const getPQASBadgeVariant = (score?: number) => {
-    if (!score) return 'secondary';
-    if (score >= 90) return 'default';
-    if (score >= 75) return 'secondary';
-    return 'outline';
-  };
-
-  if (promptLoading) {
-    return (
-      <div className="container max-w-4xl mx-auto p-6 space-y-6">
-        <Skeleton className="h-12 w-3/4" />
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-96 w-full" />
-      </div>
-    );
-  }
-
-  if (!prompt) {
-    return (
-      <div className="container max-w-4xl mx-auto p-6">
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <p className="text-muted-foreground">Prompt not found</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const latestVersion = versions?.[0];
-  const pqasScore = latestVersion?.pqasScore?.composite;
 
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-3xl font-semibold mb-2">{prompt.title}</h1>
-          <p className="text-muted-foreground">{prompt.shortDesc}</p>
+    <div className="max-w-5xl mx-auto space-y-8 pb-20">
+      {/* Header Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Link href="/explore" className="hover:text-primary transition-colors">Explore</Link>
+          <span>/</span>
+          <span>Midjourney</span>
+          <span>/</span>
+          <span className="text-foreground">Portraits</span>
         </div>
-        {pqasScore && (
-          <Badge variant={getPQASBadgeVariant(pqasScore)} className="text-lg px-4 py-2">
-            <Star className="h-4 w-4 mr-2" />
-            <span data-testid="text-pqas-score">{pqasScore.toFixed(0)}</span>
-          </Badge>
-        )}
-      </div>
 
-      {prompt.owner && (
-        <div className="flex items-center gap-4">
-          <Link href={`/profile/${prompt.owner.id}`}>
-            <div className="flex items-center gap-2 hover-elevate p-2 rounded-md cursor-pointer">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={prompt.owner.avatarUrl || undefined} />
-                <AvatarFallback>
-                  {prompt.owner.displayName?.charAt(0) || prompt.owner.email.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">
-                  {prompt.owner.displayName || 'User'}
-                </p>
-                <p className="text-xs text-muted-foreground">{prompt.owner.email}</p>
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div className="space-y-4 flex-1">
+            <h1 className="text-4xl font-display font-bold leading-tight">
+              Cinematic Cyberpunk Portrait Generator v4
+            </h1>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>PW</AvatarFallback>
+                </Avatar>
+                <div className="text-sm">
+                  <span className="font-medium">prompt_wizard</span>
+                  <span className="text-muted-foreground mx-2">•</span>
+                  <span className="text-muted-foreground">2 hours ago</span>
+                </div>
               </div>
-            </div>
-          </Link>
-
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Eye className="h-4 w-4" />
-              <span>{prompt.totalUses} uses</span>
+              <Badge variant="secondary" className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-0">
+                <CheckCircle2 className="w-3 h-3 mr-1" />
+                Verified
+              </Badge>
             </div>
           </div>
+
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="icon" className="rounded-full">
+              <Heart className="w-5 h-5" />
+            </Button>
+            <Button variant="outline" size="icon" className="rounded-full">
+              <Share2 className="w-5 h-5" />
+            </Button>
+            <Link href={`/remix/${id}`}>
+              <Button className="rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 shadow-lg shadow-indigo-500/20">
+                <GitFork className="w-4 h-4 mr-2" />
+                Remix
+              </Button>
+            </Link>
+          </div>
         </div>
-      )}
-
-      <div className="flex flex-wrap gap-2">
-        {prompt.industryTags?.map((tag: string, idx: number) => (
-          <Badge key={idx} variant="outline">{tag}</Badge>
-        ))}
-        {prompt.socialTags?.map((tag: string, idx: number) => (
-          <Badge key={idx} variant="secondary">#{tag}</Badge>
-        ))}
       </div>
 
-      <div className="flex gap-2">
-        <Button onClick={handleCopyPrompt} data-testid="button-copy-prompt">
-          <Copy className="h-4 w-4 mr-2" />
-          Copy Prompt
-        </Button>
-        <Button variant="outline" data-testid="button-fork">
-          <GitFork className="h-4 w-4 mr-2" />
-          Fork
-        </Button>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Preview & Prompt */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Image Carousel */}
+          <div className="aspect-video rounded-xl overflow-hidden bg-muted relative group">
+            <img
+              src="https://picsum.photos/seed/cyberpunk/800/600"
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <Button variant="secondary" className="rounded-full">
+                <Play className="w-4 h-4 mr-2" />
+                View Gallery
+              </Button>
+            </div>
+          </div>
 
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="versions">Versions</TabsTrigger>
-          <TabsTrigger value="comments">Comments</TabsTrigger>
-        </TabsList>
+          {/* Prompt Content */}
+          <Card className="border-primary/20 shadow-lg shadow-primary/5">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-lg font-medium">Prompt</CardTitle>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline">GPT-4</Badge>
+                <Badge variant="outline">Midjourney v6</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 bg-muted/30 rounded-lg font-mono text-sm leading-relaxed border border-border/50">
+                /imagine prompt: a cinematic shot of a cyberpunk street samurai, neon rain, volumetric lighting, 8k resolution, unreal engine 5 render --ar 16:9 --v 6.0
+              </div>
+              <Button
+                onClick={handleCopy}
+                className={cn(
+                  "w-full transition-all duration-300",
+                  isCopied ? "bg-green-500 hover:bg-green-600" : ""
+                )}
+              >
+                {isCopied ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Prompt
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
 
-        <TabsContent value="overview" className="space-y-4">
+          {/* Parameters & Settings */}
           <Card>
             <CardHeader>
-              <CardTitle>Prompt Content</CardTitle>
+              <CardTitle className="text-lg">Parameters</CardTitle>
             </CardHeader>
             <CardContent>
-              {latestVersion ? (
-                <pre className="whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md">
-                  {typeof latestVersion.content === 'string'
-                    ? latestVersion.content
-                    : JSON.stringify(latestVersion.content, null, 2)}
-                </pre>
-              ) : (
-                <p className="text-muted-foreground">No content available</p>
-              )}
-            </CardContent>
-          </Card>
-
-          {latestVersion?.modelCompatibility && latestVersion.modelCompatibility.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Compatible Models</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {latestVersion.modelCompatibility.map((model: string, idx: number) => (
-                    <Badge key={idx} variant="secondary">{model}</Badge>
-                  ))}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="text-xs text-muted-foreground mb-1">Model</div>
+                  <div className="font-medium">Midjourney v6</div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="versions" className="space-y-4">
-          {versionsLoading ? (
-            <Card>
-              <CardContent className="py-12">
-                <Skeleton className="h-24 w-full" />
-              </CardContent>
-            </Card>
-          ) : versions && versions.length > 0 ? (
-            versions.map((version: any) => (
-              <Card key={version.id}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">
-                      Version {version.versionNumber}
-                    </CardTitle>
-                    <Badge variant={version.status === 'production' ? 'default' : 'secondary'}>
-                      {version.status}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Created {new Date(version.createdAt).toLocaleDateString()}
-                  </p>
-                </CardHeader>
-              </Card>
-            ))
-          ) : (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">No versions available</p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="comments">
-          <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">Comments coming soon</p>
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="text-xs text-muted-foreground mb-1">Aspect Ratio</div>
+                  <div className="font-medium">16:9</div>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="text-xs text-muted-foreground mb-1">Stylize</div>
+                  <div className="font-medium">250</div>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="text-xs text-muted-foreground mb-1">Chaos</div>
+                  <div className="font-medium">10</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+
+        {/* Right Column: Stats & Lineage */}
+        <div className="space-y-6">
+          {/* PQAS Score Widget */}
+          <Card className="bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border-violet-500/20">
+            <CardContent className="p-6 text-center">
+              <div className="text-sm font-medium text-muted-foreground mb-2">PQAS Quality Score</div>
+              <div className="text-5xl font-display font-bold text-primary mb-2">98.5</div>
+              <div className="flex justify-center gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Top 1% of prompts this week. Highly reliable and consistent results.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Version History */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Version History</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { ver: "v4", date: "2h ago", active: true },
+                { ver: "v3", date: "1d ago", active: false },
+                { ver: "v2", date: "3d ago", active: false },
+              ].map((v) => (
+                <div key={v.ver} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <div className={cn(
+                      "w-2 h-2 rounded-full",
+                      v.active ? "bg-green-500" : "bg-muted-foreground/30"
+                    )} />
+                    <span className={cn("font-medium", v.active ? "text-foreground" : "text-muted-foreground")}>
+                      {v.ver}
+                    </span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{v.date}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2">
+            {["Cyberpunk", "Portrait", "Neon", "Cinematic", "8k", "Unreal Engine"].map((tag) => (
+              <Badge key={tag} variant="secondary" className="cursor-pointer hover:bg-secondary/80">
+                #{tag}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

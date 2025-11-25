@@ -1,5 +1,9 @@
-import fs from "node:fs";
-import path from "node:path";
+// Load environment variables FIRST
+import './env-loader.js';
+
+// Now import everything else
+import fs from 'node:fs';
+import path from 'node:path';
 import { type Server } from "node:http";
 
 import { nanoid } from "nanoid";
