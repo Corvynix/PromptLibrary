@@ -11,7 +11,7 @@ export function SocialProof() {
         >
             <div className="flex items-center justify-center gap-8 text-center flex-wrap">
                 <div className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-cyan-400" />
+                    <TrendingUp className="w-5 h-5 text-blue-400" />
                     <span className="text-2xl font-black">1,000,000+</span>
                     <span className="text-sm text-muted-foreground font-mono">PROMPTS</span>
                 </div>

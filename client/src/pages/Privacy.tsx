@@ -59,19 +59,19 @@ export default function Privacy() {
                                     <h3 className="text-xl font-black tracking-tighter uppercase mb-4">INFORMATION WE COLLECT</h3>
                                     <ul className="space-y-2 text-sm text-muted-foreground font-mono">
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>ACCOUNT INFORMATION (EMAIL, USERNAME)</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>PROMPTS AND CONTENT YOU UPLOAD</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>USAGE DATA AND ANALYTICS</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>COOKIES AND TRACKING TECHNOLOGIES</span>
                                         </li>
                                     </ul>
@@ -81,19 +81,19 @@ export default function Privacy() {
                                     <h3 className="text-xl font-black tracking-tighter uppercase mb-4">HOW WE USE YOUR DATA</h3>
                                     <ul className="space-y-2 text-sm text-muted-foreground font-mono">
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>PROVIDE AND IMPROVE OUR SERVICES</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>PERSONALIZE YOUR EXPERIENCE</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>COMMUNICATE UPDATES AND FEATURES</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>ENSURE PLATFORM SECURITY</span>
                                         </li>
                                     </ul>

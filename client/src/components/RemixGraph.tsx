@@ -24,26 +24,6 @@ const PromptNode = ({ data }: { data: any }) => {
             <CardContent className="p-3">
                 <Handle type="target" position={Position.Top} className="w-3 h-3 bg-muted-foreground" />
 
-                <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                        <Avatar className="h-6 w-6">
-                            <AvatarImage src={data.author?.avatarUrl} />
-                            <AvatarFallback>{data.author?.displayName?.charAt(0) || 'U'}</AvatarFallback>
-                        </Avatar>
-                        <span className="text-xs font-medium truncate max-w-[100px]">
-                            {data.author?.displayName || 'Unknown'}
-                        </span>
-                    </div>
-                    <Badge variant={data.pqasScore?.composite >= 90 ? "default" : "secondary"} className="text-[10px] h-5">
-                        PQAS: {data.pqasScore?.composite || 'N/A'}
-                    </Badge>
-                </div>
-
-                <div className="text-sm font-semibold mb-1 truncate">v{data.versionNumber}</div>
-                <div className="text-xs text-muted-foreground line-clamp-2">
-                    {data.summary || 'No summary provided'}
-                </div>
-
                 <div className="mt-2 flex gap-1 flex-wrap">
                     {data.isCurrent && (
                         <Badge variant="outline" className="text-[10px] border-primary text-primary">

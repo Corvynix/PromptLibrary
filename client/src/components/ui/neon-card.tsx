@@ -18,10 +18,10 @@ export function NeonCard({ title, tags, author, likes, className }: NeonCardProp
     return (
         <div className={cn("relative group", className)}>
             {/* Outer Glow/Border Container */}
-            <div className="absolute -inset-0.5 bg-gradient-to-b from-cyan-500 to-blue-600 opacity-50 blur-sm group-hover:opacity-100 transition duration-500" />
+            <div className="absolute -inset-0.5 bg-gradient-to-b from-blue-500 to-blue-600 opacity-50 blur-sm group-hover:opacity-100 transition duration-500 rounded-3xl" />
 
             {/* Main Card Content */}
-            <div className="relative h-full bg-black border-2 border-cyan-500/50 flex flex-col p-6 space-y-6 hover:border-cyan-400 transition-colors">
+            <div className="relative h-full bg-card border-2 border-border/50 flex flex-col p-6 space-y-6 hover:border-blue-400 transition-colors rounded-3xl shadow-2xl">
 
                 {/* Top Section: Title & Tags */}
                 <div className="space-y-4 flex-1">
@@ -48,13 +48,13 @@ export function NeonCard({ title, tags, author, likes, className }: NeonCardProp
                 {/* Bottom Section: User & Stats */}
                 <div className="flex items-center justify-between pt-4 border-t border-white/10">
                     <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10 border-2 border-cyan-500/30">
+                        <Avatar className="w-10 h-10 border-2 border-blue-500/30">
                             <AvatarImage src={author.avatar} />
-                            <AvatarFallback className="bg-cyan-950 text-cyan-400 font-bold">
+                            <AvatarFallback className="bg-blue-950 text-blue-400 font-bold">
                                 {author.username[0].toUpperCase()}
                             </AvatarFallback>
                         </Avatar>
-                        <span className="font-bold tracking-wider text-sm text-cyan-100 uppercase">
+                        <span className="font-bold tracking-wider text-sm text-blue-100 uppercase">
                             {author.username}
                         </span>
                     </div>

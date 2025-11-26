@@ -26,7 +26,7 @@ export function TagCloud() {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: idx * 0.05 }}
                             whileHover={{ scale: 1.05 }}
-                            className="px-4 py-2 border-2 border-white/20 bg-black hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-xs font-bold tracking-wider uppercase cursor-pointer"
+                            className="px-4 py-2 border-2 border-white/20 bg-black hover:border-blue-400 hover:bg-blue-400/10 transition-all text-xs font-bold tracking-wider uppercase cursor-pointer"
                         >
                             {tag}
                         </motion.a>

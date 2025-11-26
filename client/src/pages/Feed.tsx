@@ -79,7 +79,7 @@ export default function Feed() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[50vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+                <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
             </div>
         );
     }
@@ -101,7 +101,7 @@ export default function Feed() {
                             className={cn(
                                 "px-4 py-2 border-2 text-xs font-bold tracking-widest transition-all",
                                 filter === f.toLowerCase().replace(" ", "")
-                                    ? "border-cyan-400 bg-cyan-400/10 text-cyan-400"
+                                    ? "border-blue-400 bg-blue-400/10 text-blue-400"
                                     : "border-white/20 text-muted-foreground hover:border-white hover:text-white"
                             )}
                         >

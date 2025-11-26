@@ -66,7 +66,7 @@ export default function Profile() {
                         <div className="mb-2">
                             <h1 className="text-3xl font-black tracking-tighter uppercase flex items-center gap-2">
                                 {username || "prompt_wizard"}
-                                <Badge variant="secondary" className="bg-cyan-400/10 text-cyan-400 border border-cyan-400/20 rounded-none">
+                                <Badge variant="secondary" className="bg-blue-400/10 text-blue-400 border border-blue-400/20 rounded-none">
                                     PRO
                                 </Badge>
                             </h1>
@@ -98,7 +98,7 @@ export default function Profile() {
                                 "rounded-none min-w-[120px] transition-all font-bold tracking-wider",
                                 isFollowing
                                     ? "bg-white text-black hover:bg-white/90"
-                                    : "bg-cyan-400 text-black hover:bg-cyan-300"
+                                    : "bg-blue-400 text-black hover:bg-blue-300"
                             )}
                         >
                             {isFollowing ? "FOLLOWING" : "FOLLOW"}
@@ -190,19 +190,19 @@ export default function Profile() {
                         <TabsList className="w-full justify-start h-12 bg-transparent border-b-2 border-white/10 rounded-none p-0 mb-6">
                             <TabsTrigger
                                 value="prompts"
-                                className="h-12 rounded-none border-b-2 border-transparent data-[state=active]:border-cyan-400 data-[state=active]:bg-transparent data-[state=active]:text-cyan-400 px-6 font-bold tracking-widest text-xs"
+                                className="h-12 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-400 data-[state=active]:bg-transparent data-[state=active]:text-blue-400 px-6 font-bold tracking-widest text-xs"
                             >
                                 PROMPTS
                             </TabsTrigger>
                             <TabsTrigger
                                 value="collections"
-                                className="h-12 rounded-none border-b-2 border-transparent data-[state=active]:border-cyan-400 data-[state=active]:bg-transparent data-[state=active]:text-cyan-400 px-6 font-bold tracking-widest text-xs"
+                                className="h-12 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-400 data-[state=active]:bg-transparent data-[state=active]:text-blue-400 px-6 font-bold tracking-widest text-xs"
                             >
                                 COLLECTIONS
                             </TabsTrigger>
                             <TabsTrigger
                                 value="remixes"
-                                className="h-12 rounded-none border-b-2 border-transparent data-[state=active]:border-cyan-400 data-[state=active]:bg-transparent data-[state=active]:text-cyan-400 px-6 font-bold tracking-widest text-xs"
+                                className="h-12 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-400 data-[state=active]:bg-transparent data-[state=active]:text-blue-400 px-6 font-bold tracking-widest text-xs"
                             >
                                 REMIXES
                             </TabsTrigger>
@@ -225,14 +225,14 @@ export default function Profile() {
                                             </div>
                                         </div>
                                         <div className="p-4 space-y-3">
-                                            <h3 className="font-bold tracking-tight uppercase truncate group-hover:text-cyan-400 transition-colors">
+                                            <h3 className="font-bold tracking-tight uppercase truncate group-hover:text-blue-400 transition-colors">
                                                 CYBERPUNK CITYSCAPES V{i}
                                             </h3>
                                             <div className="flex items-center justify-between text-[10px] font-mono text-muted-foreground">
                                                 <span className="bg-white/10 px-1.5 py-0.5 text-white">MIDJOURNEY V6</span>
                                                 <div className="flex items-center gap-3">
                                                     <span className="flex items-center gap-1 hover:text-red-400 transition-colors"><Heart className="w-3 h-3" /> 124</span>
-                                                    <span className="flex items-center gap-1 hover:text-cyan-400 transition-colors"><GitFork className="w-3 h-3" /> 42</span>
+                                                    <span className="flex items-center gap-1 hover:text-blue-400 transition-colors"><GitFork className="w-3 h-3" /> 42</span>
                                                 </div>
                                             </div>
                                         </div>

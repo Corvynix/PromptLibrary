@@ -108,7 +108,7 @@ export default function Auth() {
                                 <Input
                                     placeholder="USERNAME"
                                     {...form.register("username")}
-                                    className="h-12 bg-black border-2 border-white/20 focus:border-cyan-400 focus:shadow-[0_0_15px_rgba(34,211,238,0.3)] text-white placeholder:text-muted-foreground font-mono"
+                                    className="h-12 bg-black border-2 border-white/20 focus:border-blue-400 focus:shadow-[0_0_15px_rgba(34,211,238,0.3)] text-white placeholder:text-muted-foreground font-mono"
                                 />
                                 {form.formState.errors.username && (
                                     <p className="text-xs text-red-400 font-mono">{form.formState.errors.username.message}</p>
@@ -121,7 +121,7 @@ export default function Auth() {
                                 placeholder="EMAIL"
                                 type="email"
                                 {...form.register("email")}
-                                className="h-12 bg-black border-2 border-white/20 focus:border-cyan-400 focus:shadow-[0_0_15px_rgba(34,211,238,0.3)] text-white placeholder:text-muted-foreground font-mono"
+                                className="h-12 bg-black border-2 border-white/20 focus:border-blue-400 focus:shadow-[0_0_15px_rgba(34,211,238,0.3)] text-white placeholder:text-muted-foreground font-mono"
                             />
                             {form.formState.errors.email && (
                                 <p className="text-xs text-red-400 font-mono">{form.formState.errors.email.message}</p>
@@ -133,7 +133,7 @@ export default function Auth() {
                                 placeholder="PASSWORD"
                                 type="password"
                                 {...form.register("password")}
-                                className="h-12 bg-black border-2 border-white/20 focus:border-cyan-400 focus:shadow-[0_0_15px_rgba(34,211,238,0.3)] text-white placeholder:text-muted-foreground font-mono"
+                                className="h-12 bg-black border-2 border-white/20 focus:border-blue-400 focus:shadow-[0_0_15px_rgba(34,211,238,0.3)] text-white placeholder:text-muted-foreground font-mono"
                             />
                             {form.formState.errors.password && (
                                 <p className="text-xs text-red-400 font-mono">{form.formState.errors.password.message}</p>
@@ -161,7 +161,7 @@ export default function Auth() {
                             {isLogin ? "DON'T HAVE AN ACCOUNT? " : "ALREADY HAVE AN ACCOUNT? "}
                             <button
                                 onClick={() => setIsLogin(!isLogin)}
-                                className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors"
+                                className="text-blue-400 hover:text-blue-300 font-bold transition-colors"
                             >
                                 {isLogin ? "SIGN UP" : "SIGN IN"}
                             </button>
@@ -177,11 +177,11 @@ export default function Auth() {
                     className="text-center mt-8 text-xs text-muted-foreground font-mono"
                 >
                     BY CONTINUING, YOU AGREE TO OUR{" "}
-                    <a href="/terms" className="text-white hover:text-cyan-400 transition-colors">
+                    <a href="/terms" className="text-white hover:text-blue-400 transition-colors">
                         TERMS
                     </a>
                     {" & "}
-                    <a href="/privacy" className="text-white hover:text-cyan-400 transition-colors">
+                    <a href="/privacy" className="text-white hover:text-blue-400 transition-colors">
                         PRIVACY
                     </a>
                 </motion.div>

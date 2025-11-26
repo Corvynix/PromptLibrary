@@ -33,7 +33,7 @@ export default function PromptDetail() {
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tracking-wider">
-        <Link href="/feed" className="hover:text-cyan-400 transition-colors">EXPLORE</Link>
+        <Link href="/feed" className="hover:text-blue-400 transition-colors">EXPLORE</Link>
         <span>/</span>
         <span>MIDJOURNEY</span>
         <span>/</span>
@@ -89,7 +89,7 @@ export default function PromptDetail() {
               <h2 className="text-sm font-black tracking-widest uppercase">PROMPT</h2>
               <Button
                 onClick={handleCopy}
-                className="px-4 py-2 border-2 border-white/20 bg-black hover:border-cyan-400 hover:bg-cyan-400/10 text-xs font-bold tracking-wider"
+                className="px-4 py-2 border-2 border-white/20 bg-black hover:border-blue-400 hover:bg-blue-400/10 text-xs font-bold tracking-wider"
               >
                 {isCopied ? (
                   <>
@@ -124,13 +124,6 @@ export default function PromptDetail() {
           <div className="border-2 border-white/20 bg-black p-6 space-y-4">
             <h2 className="text-sm font-black tracking-widest uppercase border-b border-white/10 pb-3">STATS</h2>
 
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground font-mono">PQAS</span>
-              <div className="flex items-center gap-1">
-                <Zap className="w-4 h-4 text-yellow-400" />
-                <span className="font-black text-lg">96</span>
-              </div>
-            </div>
 
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground font-mono">LIKES</span>

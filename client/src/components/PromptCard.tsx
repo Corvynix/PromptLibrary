@@ -21,17 +21,9 @@ interface PromptCardProps {
       avatarUrl: string | null;
     };
   };
-  pqasScore?: number;
 }
 
-export function PromptCard({ prompt, pqasScore }: PromptCardProps) {
-  const getPQASBadgeVariant = (score?: number) => {
-    if (!score) return 'secondary';
-    if (score >= 90) return 'default'; // Gold
-    if (score >= 75) return 'secondary'; // Silver
-    return 'outline'; // Bronze
-  };
-
+export function PromptCard({ prompt }: PromptCardProps) {
   return (
     <Link href={`/prompts/${prompt.slug}`}>
       <Card
@@ -43,12 +35,6 @@ export function PromptCard({ prompt, pqasScore }: PromptCardProps) {
             <div className="flex-1 min-w-0">
               <h3 className="text-lg font-semibold line-clamp-2">{prompt.title}</h3>
             </div>
-            {pqasScore && (
-              <Badge variant={getPQASBadgeVariant(pqasScore)} className="shrink-0">
-                {pqasScore >= 90 && <Star className="h-3 w-3 mr-1" />}
-                {pqasScore.toFixed(0)}
-              </Badge>
-            )}
           </div>
 
           {prompt.industryTags.length > 0 && (

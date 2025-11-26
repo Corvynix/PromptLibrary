@@ -69,15 +69,15 @@ export default function Terms() {
                                     </p>
                                     <ul className="space-y-2 text-sm text-muted-foreground font-mono">
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>DISPLAY YOUR CONTENT ON THE PLATFORM</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>ALLOW OTHER USERS TO VIEW AND REMIX YOUR PROMPTS</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <span className="text-cyan-400 font-bold">→</span>
+                                            <span className="text-blue-400 font-bold">→</span>
                                             <span>PROMOTE YOUR WORK WITHIN THE COMMUNITY</span>
                                         </li>
                                     </ul>

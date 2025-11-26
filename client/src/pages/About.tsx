@@ -25,7 +25,7 @@ const ABOUT_ITEMS = [
     {
         id: 4,
         title: "TECHNOLOGY",
-        subtitle: "PQAS quality scoring",
+        subtitle: "Advanced AI integration",
         image: "https://picsum.photos/seed/tech/600/800",
     },
     {
@@ -91,8 +91,8 @@ export default function About() {
                                         key={idx}
                                         onClick={() => setActiveIndex(idx)}
                                         className={`w-2 h-2 border transition-all ${activeIndex === idx
-                                                ? "bg-cyan-400 border-cyan-400 w-8"
-                                                : "bg-transparent border-white/40 hover:border-white"
+                                            ? "bg-blue-400 border-blue-400 w-8"
+                                            : "bg-transparent border-white/40 hover:border-white"
                                             }`}
                                     />
                                 ))}
@@ -115,19 +115,19 @@ export default function About() {
                                 </p>
                                 <ul className="space-y-2 text-sm text-muted-foreground font-mono">
                                     <li className="flex items-start gap-2">
-                                        <span className="text-cyan-400 font-bold">→</span>
+                                        <span className="text-blue-400 font-bold">→</span>
                                         <span>DISCOVER PROMPTS ACROSS ALL AI MODELS AND INDUSTRIES</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-cyan-400 font-bold">→</span>
+                                        <span className="text-blue-400 font-bold">→</span>
                                         <span>SHARE THEIR CREATIONS WITH THE COMMUNITY</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-cyan-400 font-bold">→</span>
+                                        <span className="text-blue-400 font-bold">→</span>
                                         <span>REMIX AND IMPROVE EXISTING PROMPTS</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-cyan-400 font-bold">→</span>
+                                        <span className="text-blue-400 font-bold">→</span>
                                         <span>EARN KARMA AND BUILD REPUTATION</span>
                                     </li>
                                 </ul>
@@ -138,7 +138,7 @@ export default function About() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {[
                                         { title: "OPEN", desc: "Free forever, no paywalls" },
-                                        { title: "QUALITY", desc: "PQAS scoring ensures excellence" },
+                                        { title: "QUALITY", desc: "Community-driven excellence" },
                                         { title: "COMMUNITY", desc: "Built by creators, for creators" },
                                         { title: "INNOVATION", desc: "Pushing the boundaries of AI" },
                                     ].map((value) => (

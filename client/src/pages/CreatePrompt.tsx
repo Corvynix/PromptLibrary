@@ -17,10 +17,10 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useAuth } from '@/lib/auth';
-import { 
-  FileText, 
-  Image as ImageIcon, 
-  Video, 
+import {
+  FileText,
+  Image as ImageIcon,
+  Video,
   Sparkles,
   CheckCircle2,
   Circle,
@@ -37,31 +37,31 @@ const promptSchema = z.object({
     .min(10, 'Description must be at least 10 characters')
     .max(500, 'Description must not exceed 500 characters'),
   type: z.enum(['text', 'image', 'video']),
-  
+
   // Step 2: Content (type-specific)
   // Text prompts
   systemMessage: z.string().optional(),
   userMessage: z.string().optional(),
   instructions: z.string().optional(),
-  
+
   // Image prompts
   mainPrompt: z.string().optional(),
   negativePrompt: z.string().optional(),
   cfgScale: z.coerce.number().min(1).max(20).optional(),
   steps: z.coerce.number().min(1).max(150).optional(),
   seed: z.coerce.number().optional(),
-  
+
   // Video prompts
   storyboardSteps: z.string().optional(),
   cameraMovements: z.string().optional(),
   styleParameters: z.string().optional(),
-  
+
   // Step 3: Metadata & Tags
   industryTags: z.array(z.string()).min(1, 'Select at least one industry tag'),
   modelCompatibility: z.array(z.string()).min(1, 'Select at least one AI model'),
   customTags: z.string(),
   socialTags: z.string(),
-  
+
   // Step 4: Settings
   visibility: z.enum(['public', 'private', 'unlisted', 'domain_restricted']),
   license: z.enum(['MIT', 'CC-BY', 'CC-BY-SA', 'CC-BY-NC', 'Proprietary']),
@@ -128,7 +128,7 @@ export default function CreatePrompt() {
   const createPromptMutation = useMutation({
     mutationFn: async (data: { formData: PromptFormValues; isDraft: boolean }) => {
       const { formData, isDraft } = data;
-      
+
       // Build content object based on type
       let content: any = {};
       if (formData.type === 'text') {
@@ -210,7 +210,7 @@ export default function CreatePrompt() {
 
   const getFieldsForStep = (currentStep: number): string[] => {
     switch (currentStep) {
-      case 1: 
+      case 1:
         return ['title', 'shortDesc', 'type'];
       case 2: {
         const type = form.getValues('type');
@@ -219,25 +219,13 @@ export default function CreatePrompt() {
         if (type === 'video') return ['storyboardSteps'];
         return [];
       }
-      case 3: 
+      case 3:
         return ['industryTags', 'modelCompatibility'];
-      case 4: 
+      case 4:
         return ['visibility', 'license', 'difficulty'];
-      default: 
+      default:
         return [];
     }
-  };
-
-  // Mock PQAS score calculation
-  const calculateMockPQAS = () => {
-    const baseScore = 65;
-    const titleBonus = Math.min(watchedTitle.length / 10, 10);
-    const descBonus = Math.min(watchedShortDesc.length / 25, 10);
-    const tagsBonus = form.watch('industryTags').length * 2;
-    const modelsBonus = form.watch('modelCompatibility').length * 1.5;
-    
-    const total = Math.min(baseScore + titleBonus + descBonus + tagsBonus + modelsBonus, 100);
-    return Math.round(total);
   };
 
   const renderStepContent = () => {
@@ -257,10 +245,10 @@ export default function CreatePrompt() {
                   <FormItem>
                     <FormLabel>Title *</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="E.g., Professional Email Writer" 
-                        data-testid="input-title" 
-                        {...field} 
+                      <Input
+                        placeholder="E.g., Professional Email Writer"
+                        data-testid="input-title"
+                        {...field}
                       />
                     </FormControl>
                     <FormDescription>
@@ -857,7 +845,7 @@ export default function CreatePrompt() {
       case 5:
         const mockPQAS = calculateMockPQAS();
         const pqasTier = mockPQAS >= 85 ? 'gold' : mockPQAS >= 70 ? 'silver' : 'bronze';
-        
+
         return (
           <div className="space-y-6">
             <Card>
@@ -885,17 +873,6 @@ export default function CreatePrompt() {
                         {watchedShortDesc || 'No description provided'}
                       </p>
                     </div>
-                    
-                    {/* PQAS Score Badge */}
-                    <div className={`flex flex-col items-center justify-center p-4 rounded-lg ${
-                      pqasTier === 'gold' ? 'bg-gradient-to-br from-yellow-500/20 to-yellow-600/20' :
-                      pqasTier === 'silver' ? 'bg-gradient-to-br from-gray-400/20 to-gray-500/20' :
-                      'bg-gradient-to-br from-orange-600/20 to-orange-700/20'
-                    }`} data-testid="preview-pqas">
-                      <div className="text-3xl font-bold tabular-nums">{mockPQAS}</div>
-                      <div className="text-xs text-muted-foreground">PQAS Score</div>
-                      <Sparkles className="h-4 w-4 mt-1 text-yellow-500" />
-                    </div>
                   </div>
 
                   {/* Tags */}
@@ -911,90 +888,74 @@ export default function CreatePrompt() {
                       </Badge>
                     )}
                   </div>
-
-                  {/* Model Compatibility */}
-                  <div className="flex flex-wrap gap-2">
-                    {form.watch('modelCompatibility').slice(0, 3).map((model, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {model}
-                      </Badge>
-                    ))}
-                    {form.watch('modelCompatibility').length > 3 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{form.watch('modelCompatibility').length - 3} more
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-semibold">
-                        {currentUser?.displayName?.[0] || currentUser?.email[0].toUpperCase()}
+                  <div className="space-y-6">
+                    {/* Preview Stats */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="border-2 border-white/20 p-4 bg-black/50">
+                        <div className="text-2xl font-bold">{formData.content.length}</div>
+                        <div className="text-xs text-muted-foreground">Characters</div>
                       </div>
-                      <span>{currentUser?.displayName || currentUser?.email}</span>
+                      <div className="border-2 border-white/20 p-4 bg-black/50">
+                        <div className="text-2xl font-bold">{formData.tags.length}</div>
+                        <div className="text-xs text-muted-foreground">Tags</div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Badge variant="outline" className="text-xs">
-                        {form.watch('license')}
-                      </Badge>
+                    {/* Model Compatibility */}
+                    <div className="flex flex-wrap gap-2">
+                      {form.watch('modelCompatibility').slice(0, 3).map((model, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {model}
+                        </Badge>
+                      ))}
+                      {form.watch('modelCompatibility').length > 3 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{form.watch('modelCompatibility').length - 3} more
+                        </Badge>
+                      )}
                     </div>
-                  </div>
-                </div>
 
-                {/* PQAS Breakdown */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-sm">Estimated PQAS Breakdown</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="p-3 border rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-1">Quality</div>
-                      <div className="text-2xl font-bold">{Math.min(mockPQAS + 5, 100)}</div>
-                      <Progress value={Math.min(mockPQAS + 5, 100)} className="h-1 mt-2" />
-                    </div>
-                    <div className="p-3 border rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-1">Consistency</div>
-                      <div className="text-2xl font-bold">{Math.max(mockPQAS - 3, 0)}</div>
-                      <Progress value={Math.max(mockPQAS - 3, 0)} className="h-1 mt-2" />
-                    </div>
-                    <div className="p-3 border rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-1">Safety</div>
-                      <div className="text-2xl font-bold">{Math.min(mockPQAS + 2, 100)}</div>
-                      <Progress value={Math.min(mockPQAS + 2, 100)} className="h-1 mt-2" />
-                    </div>
-                    <div className="p-3 border rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-1">Efficiency</div>
-                      <div className="text-2xl font-bold">{mockPQAS}</div>
-                      <Progress value={mockPQAS} className="h-1 mt-2" />
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-4 border-t">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-semibold">
+                          {currentUser?.displayName?.[0] || currentUser?.email[0].toUpperCase()}
+                        </div>
+                        <span>{currentUser?.displayName || currentUser?.email}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Badge variant="outline" className="text-xs">
+                          {form.watch('license')}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    * PQAS scores are calculated after publication based on usage and community feedback
-                  </p>
-                </div>
 
-                {/* Summary */}
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Type:</span>
-                    <span className="font-medium capitalize">{watchedType}</span>
+                  {/* PQAS Breakdown */}
+
+
+                  {/* Summary */}
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Type:</span>
+                      <span className="font-medium capitalize">{watchedType}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Visibility:</span>
+                      <span className="font-medium capitalize">{form.watch('visibility').replace('_', ' ')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">License:</span>
+                      <span className="font-medium">{form.watch('license')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Industry Tags:</span>
+                      <span className="font-medium">{form.watch('industryTags').length} selected</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Compatible Models:</span>
+                      <span className="font-medium">{form.watch('modelCompatibility').length} selected</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Visibility:</span>
-                    <span className="font-medium capitalize">{form.watch('visibility').replace('_', ' ')}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">License:</span>
-                    <span className="font-medium">{form.watch('license')}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Industry Tags:</span>
-                    <span className="font-medium">{form.watch('industryTags').length} selected</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Compatible Models:</span>
-                    <span className="font-medium">{form.watch('modelCompatibility').length} selected</span>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -1020,13 +981,12 @@ export default function CreatePrompt() {
             <div key={s} className="flex items-center flex-1">
               <div className="flex flex-col items-center">
                 <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
-                    s < step
-                      ? 'bg-primary border-primary text-primary-foreground'
-                      : s === step
+                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${s < step
+                    ? 'bg-primary border-primary text-primary-foreground'
+                    : s === step
                       ? 'border-primary text-primary'
                       : 'border-muted text-muted-foreground'
-                  }`}
+                    }`}
                   data-testid={`step-indicator-${s}`}
                 >
                   {s < step ? <CheckCircle2 className="h-5 w-5" /> : <Circle className="h-5 w-5" />}
@@ -1041,9 +1001,8 @@ export default function CreatePrompt() {
               </div>
               {s < 5 && (
                 <div
-                  className={`flex-1 h-0.5 mx-2 ${
-                    s < step ? 'bg-primary' : 'bg-muted'
-                  }`}
+                  className={`flex-1 h-0.5 mx-2 ${s < step ? 'bg-primary' : 'bg-muted'
+                    }`}
                 />
               )}
             </div>
@@ -1082,7 +1041,7 @@ export default function CreatePrompt() {
                     Save Draft
                   </Button>
                 )}
-                
+
                 {step < 5 ? (
                   <Button
                     type="button"

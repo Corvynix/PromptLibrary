@@ -62,7 +62,7 @@ export function Sidebar({ className }: SidebarProps) {
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 border-2 transition-all duration-200 group relative",
                                     isActive
-                                        ? "border-cyan-400 bg-cyan-400/10 text-cyan-400"
+                                        ? "border-blue-400 bg-blue-400/10 text-blue-400"
                                         : "border-white/20 text-muted-foreground hover:border-white hover:text-white"
                                 )}
                             >
@@ -71,7 +71,7 @@ export function Sidebar({ className }: SidebarProps) {
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeNav"
-                                        className="absolute left-0 w-1 h-8 bg-cyan-400"
+                                        className="absolute left-0 w-1 h-8 bg-blue-400"
                                     />
                                 )}
                             </a>

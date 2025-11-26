@@ -19,7 +19,7 @@ export function SearchHero() {
                     placeholder="Find any prompt on Earth..."
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    className={`w-full h-14 pl-12 pr-4 bg-background text-foreground border-2 transition-all duration-300 focus:outline-none font-medium tracking-wide ${isFocused
+                    className={`w-full h-14 pl-12 pr-4 bg-background text-foreground border-2 rounded-full transition-all duration-300 focus:outline-none font-medium tracking-wide ${isFocused
                         ? 'border-foreground shadow-[0_0_30px_rgba(255,255,255,0.4)] dark:shadow-[0_0_30px_rgba(255,255,255,0.3)]'
                         : 'border-foreground/20 hover:border-foreground/40'
                         }`}

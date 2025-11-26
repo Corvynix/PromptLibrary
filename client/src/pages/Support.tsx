@@ -58,9 +58,9 @@ export default function Support() {
 
                                 {/* Support Options */}
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="border-2 border-white/20 bg-black p-6 hover:border-cyan-400 transition-all group">
+                                    <div className="border-2 border-white/20 bg-black p-6 hover:border-blue-400 transition-all group">
                                         <div className="flex flex-col items-center text-center space-y-4">
-                                            <div className="w-16 h-16 border-2 border-white/40 group-hover:border-cyan-400 flex items-center justify-center transition-colors">
+                                            <div className="w-16 h-16 border-2 border-white/40 group-hover:border-blue-400 flex items-center justify-center transition-colors">
                                                 <Mail className="w-8 h-8" />
                                             </div>
                                             <h3 className="text-lg font-black tracking-tighter uppercase">EMAIL</h3>
@@ -73,9 +73,9 @@ export default function Support() {
                                         </div>
                                     </div>
 
-                                    <div className="border-2 border-white/20 bg-black p-6 hover:border-cyan-400 transition-all group">
+                                    <div className="border-2 border-white/20 bg-black p-6 hover:border-blue-400 transition-all group">
                                         <div className="flex flex-col items-center text-center space-y-4">
-                                            <div className="w-16 h-16 border-2 border-white/40 group-hover:border-cyan-400 flex items-center justify-center transition-colors">
+                                            <div className="w-16 h-16 border-2 border-white/40 group-hover:border-blue-400 flex items-center justify-center transition-colors">
                                                 <MessageCircle className="w-8 h-8" />
                                             </div>
                                             <h3 className="text-lg font-black tracking-tighter uppercase">DISCORD</h3>
@@ -88,9 +88,9 @@ export default function Support() {
                                         </div>
                                     </div>
 
-                                    <div className="border-2 border-white/20 bg-black p-6 hover:border-cyan-400 transition-all group">
+                                    <div className="border-2 border-white/20 bg-black p-6 hover:border-blue-400 transition-all group">
                                         <div className="flex flex-col items-center text-center space-y-4">
-                                            <div className="w-16 h-16 border-2 border-white/40 group-hover:border-cyan-400 flex items-center justify-center transition-colors">
+                                            <div className="w-16 h-16 border-2 border-white/40 group-hover:border-blue-400 flex items-center justify-center transition-colors">
                                                 <FileText className="w-8 h-8" />
                                             </div>
                                             <h3 className="text-lg font-black tracking-tighter uppercase">DOCS</h3>
@@ -114,7 +114,7 @@ export default function Support() {
                                             { q: "CAN I EDIT MY PROMPTS?", a: "YES, GO TO YOUR PROFILE AND CLICK EDIT ON ANY OF YOUR PROMPTS." },
                                             { q: "IS PROMPTLIBRARY FREE?", a: "YES, COMPLETELY FREE FOREVER. NO HIDDEN FEES OR PAYWALLS." },
                                         ].map((faq, idx) => (
-                                            <div key={idx} className="border-l-2 border-cyan-400 pl-4">
+                                            <div key={idx} className="border-l-2 border-blue-400 pl-4">
                                                 <h4 className="text-sm font-bold mb-2">{faq.q}</h4>
                                                 <p className="text-xs text-muted-foreground font-mono">{faq.a}</p>
                                             </div>

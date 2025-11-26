@@ -65,12 +65,12 @@ export default function Landing() {
                 </p>
                 <div className="flex gap-4 justify-center flex-wrap">
                   <Link href="/feed">
-                    <Button size="lg" className="h-12 px-8 bg-white text-black hover:bg-white/90 font-bold tracking-widest">
+                    <Button size="lg" className="h-12 px-8 bg-white text-black border-2 border-black hover:bg-white/90 font-bold tracking-widest rounded-full">
                       START EXPLORING
                     </Button>
                   </Link>
                   <Link href="/create">
-                    <Button size="lg" variant="outline" className="h-12 px-8 border-2 border-white hover:bg-white hover:text-black font-bold tracking-widest">
+                    <Button size="lg" variant="outline" className="h-12 px-8 border-2 border-white hover:bg-white hover:text-black font-bold tracking-widest rounded-full">
                       UPLOAD A PROMPT
                     </Button>
                   </Link>
@@ -85,9 +85,7 @@ export default function Landing() {
             <PromptOfDay />
 
             {/* Industry Categories */}
-            <div className="px-6">
-              <CategorySections />
-            </div>
+            <CategorySections />
 
             {/* Top Creators */}
             <TopCreators />
@@ -116,7 +114,7 @@ export default function Landing() {
                     <a
                       key={link.label}
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-white transition-colors font-mono tracking-wider"
+                      className="text-sm text-muted-foreground hover:text-white transition-colors font-mono tracking-wider border-2 border-white/20 hover:border-white rounded-full px-4 py-2 inline-block text-center"
                     >
                       {link.label}
                     </a>

@@ -76,7 +76,7 @@ export function LanguageToggle() {
                                         key={lang.code}
                                         onClick={() => handleLanguageChange(lang.code)}
                                         className={`w-full flex items-center gap-3 px-3 py-2 border transition-all text-left ${i18n.language === lang.code
-                                            ? "border-cyan-400 bg-cyan-400/10 text-cyan-400"
+                                            ? "border-blue-400 bg-blue-400/10 text-blue-400"
                                             : "border-transparent hover:border-white/20 text-muted-foreground hover:text-white"
                                             }`}
                                     >
