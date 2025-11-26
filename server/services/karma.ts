@@ -1,14 +1,13 @@
 /**
  * Karma Calculation Service
- * Calculates user karma score based on the published algorithm
+ * Calculates user karma score based on engagement and community impact
  */
 
 import { db } from "../db";
-import { users, prompts, promptVersions, remixes, votes, referrals } from "@shared/schema";
+import { users, prompts, remixes, votes, referrals } from "@shared/schema";
 import { sql, eq, and } from "drizzle-orm";
 
 interface KarmaBreakdown {
-  avgPQAS: number;
   remixSuccessRate: number;
   engagementScore: number;
   referralConversions: number;
@@ -17,37 +16,27 @@ interface KarmaBreakdown {
 
 /**
  * Calculate karma score for a user
- * Formula: karma = w1×avg_pqas (0.40) + w2×remix_success (0.25) + w3×engagement (0.20) + w4×referrals (0.15)
+ * Formula: karma = remix_success (0.40) + engagement (0.40) + referrals (0.20)
  */
 export async function calculateKarma(userId: number): Promise<KarmaBreakdown> {
-  // 1. Average PQAS score (0.40 weight)
-  const avgPQASResult = await db
-    .select({
-      avg: sql<number>`COALESCE(AVG((pqas_score->>'composite')::numeric), 0)`
-    })
-    .from(promptVersions)
-    .innerJoin(prompts, eq(promptVersions.promptId, prompts.id))
-    .where(and(
-      eq(prompts.ownerId, userId),
-      sql`pqas_score IS NOT NULL`
-    ));
-  const avgPQAS = Number(avgPQASResult[0]?.avg || 0);
-  
-  // 2. Remix success rate (0.25 weight) - % of remixes scoring >70 PQAS
+  // 1. Remix success rate (0.40 weight) - % of remixes that get upvoted
   const remixStats = await db
     .select({
       total: sql<number>`COUNT(*)`,
-      successful: sql<number>`COUNT(CASE WHEN (pqas_score->>'composite')::numeric > 70 THEN 1 END)`
+      successful: sql<number>`COUNT(CASE WHEN ${votes.voteType} = 'up' THEN 1 END)`
     })
     .from(remixes)
-    .innerJoin(promptVersions, eq(remixes.toVersionId, promptVersions.id))
+    .leftJoin(votes, and(
+      eq(votes.votableType, 'remix'),
+      eq(votes.votableId, remixes.id)
+    ))
     .where(eq(remixes.userId, userId));
-  
+
   const totalRemixes = Number(remixStats[0]?.total || 0);
   const successfulRemixes = Number(remixStats[0]?.successful || 0);
   const remixSuccessRate = totalRemixes > 0 ? (successfulRemixes / totalRemixes) * 100 : 0;
-  
-  // 3. Engagement score (0.20 weight) - normalized upvotes + shares + helpful comments
+
+  // 2. Engagement score (0.40 weight) - normalized upvotes + uses
   const engagementStats = await db
     .select({
       upvotes: sql<number>`COUNT(CASE WHEN vote_type = 'up' THEN 1 END)`,
@@ -59,12 +48,12 @@ export async function calculateKarma(userId: number): Promise<KarmaBreakdown> {
       eq(votes.votableId, prompts.id)
     ))
     .where(eq(prompts.ownerId, userId));
-  
+
   const upvotes = Number(engagementStats[0]?.upvotes || 0);
   const totalUses = Number(engagementStats[0]?.totalUses || 0);
   const engagementScore = Math.min(100, (upvotes * 0.5) + (totalUses * 0.1));
-  
-  // 4. Referral conversions (0.15 weight) - invited users who became active (3+ prompts)
+
+  // 3. Referral conversions (0.20 weight) - invited users who became active (3+ prompts)
   const referralStats = await db
     .select({
       count: sql<number>`COUNT(*)`
@@ -78,18 +67,16 @@ export async function calculateKarma(userId: number): Promise<KarmaBreakdown> {
     ))
     .groupBy(referrals.referredUserId)
     .having(sql`COUNT(${prompts.id}) >= 3`);
-  
+
   const referralConversions = referralStats.length * 10; // 10 points per converted referral
-  
-  // Calculate total karma with weights
-  const totalScore = 
-    (avgPQAS * 0.40) +
-    (remixSuccessRate * 0.25) +
-    (engagementScore * 0.20) +
-    (Math.min(100, referralConversions) * 0.15);
-  
+
+  // Calculate total karma with rebalanced weights
+  const totalScore =
+    (remixSuccessRate * 0.40) +
+    (engagementScore * 0.40) +
+    (Math.min(100, referralConversions) * 0.20);
+
   return {
-    avgPQAS,
     remixSuccessRate,
     engagementScore,
     referralConversions: Math.min(100, referralConversions),
@@ -102,13 +89,12 @@ export async function calculateKarma(userId: number): Promise<KarmaBreakdown> {
  */
 export async function updateUserKarma(userId: number): Promise<void> {
   const breakdown = await calculateKarma(userId);
-  
+
   await db
     .update(users)
     .set({
       karmaScore: breakdown.totalScore,
       metrics: {
-        avgPQAS: breakdown.avgPQAS,
         remixSuccessRate: breakdown.remixSuccessRate,
         engagementScore: breakdown.engagementScore,
         referralConversions: breakdown.referralConversions,
@@ -124,7 +110,7 @@ export async function updateUserKarma(userId: number): Promise<void> {
  */
 export async function recalculateAllKarma(): Promise<void> {
   const allUsers = await db.select({ id: users.id }).from(users);
-  
+
   for (const user of allUsers) {
     try {
       await updateUserKarma(user.id);
@@ -132,6 +118,6 @@ export async function recalculateAllKarma(): Promise<void> {
       console.error(`Error updating karma for user ${user.id}:`, error);
     }
   }
-  
+
   console.log(`Karma recalculated for ${allUsers.length} users`);
 }

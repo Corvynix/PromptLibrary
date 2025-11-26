@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import { NeonCard } from "@/components/ui/neon-card";
 import { useState, useRef } from "react";
 
 interface PromptCard {
@@ -47,25 +48,15 @@ function CategorySection({ title, prompts }: CategorySectionProps) {
                 {prompts.map((prompt) => (
                     <div
                         key={prompt.id}
-                        className="flex-shrink-0 w-52 border-2 border-white/20 bg-black overflow-hidden hover:border-white hover:scale-105 transition-all cursor-pointer group/card"
+                        className="flex-shrink-0 w-52 h-full"
                     >
-                        <div className="relative h-32 overflow-hidden">
-                            <img
-                                src={prompt.image}
-                                alt={prompt.title}
-                                className="w-full h-full object-cover grayscale group-hover/card:grayscale-0 transition-all"
-                            />
-                            <div className="absolute top-2 right-2 px-2 py-0.5 bg-black/90 border border-white/40 text-[9px] font-mono font-bold">
-                                {prompt.model}
-                            </div>
-                        </div>
-                        <div className="p-3">
-                            <h4 className="text-sm font-bold tracking-tight line-clamp-2 mb-2">{prompt.title}</h4>
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
-                                <Zap className="w-3 h-3 text-yellow-400" />
-                                <span>PQAS {prompt.pqas}</span>
-                            </div>
-                        </div>
+                        <NeonCard
+                            title={prompt.title}
+                            tags={[prompt.model]}
+                            author={{ username: "prompt_wizard", avatar: prompt.image }}
+                            likes={prompt.pqas}
+                            className="h-full"
+                        />
                     </div>
                 ))}
             </div>

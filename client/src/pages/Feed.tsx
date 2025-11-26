@@ -1,31 +1,88 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, Share2, Zap } from "lucide-react";
+import { NeonCard } from "@/components/ui/neon-card";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
-// Mock data for now
-const MOCK_PROMPTS = Array.from({ length: 12 }).map((_, i) => ({
-    id: i + 1,
-    title: `Cinematic Portrait Generator v${i + 1}`,
-    description: "Create stunning, hyper-realistic portraits with cinematic lighting and depth of field. Optimized for Midjourney v6.",
-    author: {
-        username: "prompt_wizard",
-        avatar: "https://github.com/shadcn.png"
+// Realistic Mock Data (Fallback since DB is down)
+const MOCK_PROMPTS = [
+    {
+        id: 1,
+        title: "Marketing Copywriting",
+        tags: ["Email", "Marketing", "GPT-4"],
+        author: {
+            username: "DR RAX",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rax"
+        },
+        likes: 563
     },
-    likes: Math.floor(Math.random() * 1000),
-    remixes: Math.floor(Math.random() * 100),
-    tags: ["Midjourney", "Portrait", "Cinematic"],
-    image: `https://picsum.photos/seed/${i + 1}/400/300`,
-    pqas: (Math.random() * 5 + 90).toFixed(1),
-    model: ["Midjourney", "GPT-4", "Claude"][i % 3]
-}));
+    {
+        id: 2,
+        title: "Logo Designer",
+        tags: ["DALL-E", "Design", "Branding"],
+        author: {
+            username: "NYX",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Nyx"
+        },
+        likes: 462
+    },
+    {
+        id: 3,
+        title: "Cinematic Portrait",
+        tags: ["Midjourney", "Photography", "Realism"],
+        author: {
+            username: "LENS_GOD",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lens"
+        },
+        likes: 892
+    },
+    {
+        id: 4,
+        title: "SaaS Landing Page",
+        tags: ["Web", "UX/UI", "Figma"],
+        author: {
+            username: "UI_NINJA",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ninja"
+        },
+        likes: 341
+    },
+    {
+        id: 5,
+        title: "Python Bug Fixer",
+        tags: ["Coding", "Python", "Debug"],
+        author: {
+            username: "DEV_BOT",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dev"
+        },
+        likes: 720
+    },
+    {
+        id: 6,
+        title: "Cyberpunk City",
+        tags: ["Art", "Sci-Fi", "Concept"],
+        author: {
+            username: "NEON_ART",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Neon"
+        },
+        likes: 654
+    }
+];
 
 export default function Feed() {
     const [filter, setFilter] = useState("trending");
+    const [loading, setLoading] = useState(false);
+
+    // Simulating API load
+    // const { data: prompts, isLoading, error } = useQuery... 
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[50vh]">
+                <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8">
@@ -64,69 +121,14 @@ export default function Feed() {
                         transition={{ delay: index * 0.05 }}
                     >
                         <Link href={`/prompt/${prompt.id}`}>
-                            <div className="group cursor-pointer border-2 border-white/20 bg-black overflow-hidden hover:border-white hover:scale-[1.02] transition-all">
-                                {/* Image */}
-                                <div className="relative aspect-[4/3] overflow-hidden bg-black">
-                                    <img
-                                        src={prompt.image}
-                                        alt={prompt.title}
-                                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                                    />
-                                    {/* PQAS Badge */}
-                                    <div className="absolute top-3 right-3 px-2 py-1 bg-black/90 border-2 border-white/40 flex items-center gap-1">
-                                        <Zap className="w-3 h-3 text-yellow-400" />
-                                        <span className="text-[10px] font-mono font-black">{prompt.pqas}</span>
-                                    </div>
-                                    {/* Model Badge */}
-                                    <div className="absolute top-3 left-3 px-2 py-1 bg-black/90 border border-white/40 text-[9px] font-mono font-bold">
-                                        {prompt.model}
-                                    </div>
-                                </div>
-
-                                {/* Content */}
-                                <div className="p-4 space-y-3">
-                                    <h3 className="font-bold tracking-tight leading-tight group-hover:text-cyan-400 transition-colors line-clamp-2">
-                                        {prompt.title}
-                                    </h3>
-
-                                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                                        {prompt.description}
-                                    </p>
-
-                                    {/* Tags */}
-                                    <div className="flex flex-wrap gap-2">
-                                        {prompt.tags.map(tag => (
-                                            <span
-                                                key={tag}
-                                                className="px-2 py-1 border border-white/20 text-[10px] font-mono font-bold tracking-wider uppercase hover:border-white transition-colors"
-                                            >
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Footer */}
-                                <div className="p-4 pt-0 flex items-center justify-between border-t border-white/10">
-                                    <div className="flex items-center gap-2">
-                                        <Avatar className="w-6 h-6 border-2 border-white/40">
-                                            <AvatarImage src={prompt.author.avatar} />
-                                            <AvatarFallback>{prompt.author.username[0]}</AvatarFallback>
-                                        </Avatar>
-                                        <span className="text-xs font-mono font-bold">@{prompt.author.username}</span>
-                                    </div>
-
-                                    <div className="flex items-center gap-3 text-xs font-mono">
-                                        <div className="flex items-center gap-1 hover:text-red-400 transition-colors cursor-pointer">
-                                            <Heart className="w-3.5 h-3.5" />
-                                            {prompt.likes}
-                                        </div>
-                                        <div className="flex items-center gap-1 hover:text-cyan-400 transition-colors cursor-pointer">
-                                            <Share2 className="w-3.5 h-3.5" />
-                                            {prompt.remixes}
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="cursor-pointer">
+                                <NeonCard
+                                    title={prompt.title}
+                                    tags={prompt.tags}
+                                    author={prompt.author}
+                                    likes={prompt.likes}
+                                    className="h-full"
+                                />
                             </div>
                         </Link>
                     </motion.div>

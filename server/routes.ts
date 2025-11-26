@@ -8,7 +8,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { insertUserSchema, insertPromptSchema, insertPromptVersionSchema, insertCommentSchema, insertWorkflowSchema, insertNotificationSchema } from "@shared/schema";
-import { calculatePQAS } from "./services/pqas";
 import { updateUserKarma, recalculateAllKarma } from "./services/karma";
 import { checkAndAwardBadges, seedBadges } from "./services/badges";
 // import { authRateLimiter, apiRateLimiter } from "./middleware/security";
@@ -205,14 +204,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get prompts (with filters)
   app.get("/api/prompts", async (req: Request, res: Response) => {
     try {
-      const filters = {
-        ownerId: req.query.ownerId ? parseInt(req.query.ownerId as string) : undefined,
-        limit: req.query.limit ? parseInt(req.query.limit as string) : 20,
-        offset: req.query.offset ? parseInt(req.query.offset as string) : 0,
-      };
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+      const ownerId = req.query.ownerId ? parseInt(req.query.ownerId as string) : undefined;
 
-      const prompts = await storage.getPrompts(filters);
-      res.json(prompts);
+      if (ownerId) {
+        const prompts = await storage.getPrompts({ ownerId, limit, offset });
+        res.json(prompts);
+      } else {
+        const promptsWithAuthors = await storage.getPromptsWithAuthors({ limit, offset });
+        res.json(promptsWithAuthors);
+      }
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -300,27 +302,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const version = await storage.createPromptVersion(data);
-
-      // Auto-trigger PQAS scoring in background
-      if (version.content) {
-        setTimeout(async () => {
-          try {
-            const pqasScore = calculatePQAS(version.content);
-            await storage.updatePromptVersion(version.id, { pqasScore });
-
-            // Send notification when PQAS is complete
-            await storage.createNotification({
-              userId: req.user!.id,
-              type: 'pqas_completed',
-              title: 'PQAS scoring completed',
-              message: `Your prompt version scored ${pqasScore.composite}/100`,
-              link: `/prompts/${promptId}`,
-            });
-          } catch (err) {
-            console.error('PQAS scoring error:', err);
-          }
-        }, 0);
-      }
 
       res.json(version);
     } catch (error: any) {
@@ -562,40 +543,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { userId, promptVersionId, action, metadata } = req.body;
       await storage.logUsage(userId, promptVersionId, action, metadata);
       res.json({ success: true });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  // ============ PQAS ROUTES ============
-
-  // Trigger PQAS scoring for a version
-  app.post("/api/prompt-versions/:id/pqas", authenticate, async (req: AuthRequest, res: Response) => {
-    try {
-      const versionId = parseInt(req.params.id);
-      const version = await storage.getPromptVersion(versionId);
-
-      if (!version) {
-        return res.status(404).json({ error: "Version not found" });
-      }
-
-      const pqasScore = calculatePQAS(version.content);
-      await storage.updatePromptVersion(versionId, { pqasScore });
-
-      res.json({ pqasScore });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  // Get PQAS score for a version
-  app.get("/api/prompt-versions/:id/pqas", async (req: Request, res: Response) => {
-    try {
-      const version = await storage.getPromptVersion(parseInt(req.params.id));
-      if (!version) {
-        return res.status(404).json({ error: "Version not found" });
-      }
-      res.json({ pqasScore: version.pqasScore });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

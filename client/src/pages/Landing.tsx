@@ -128,9 +128,6 @@ export default function Landing() {
               </div>
             </footer>
           </div>
-
-          {/* Sticky Upload CTA */}
-          <UploadCTA />
         </TechShell>
       </div>
     </LayoutGroup>

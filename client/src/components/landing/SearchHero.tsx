@@ -13,15 +13,15 @@ export function SearchHero() {
             className="w-full max-w-3xl mx-auto px-4 py-8"
         >
             <div className="relative">
-                <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${isFocused ? 'text-cyan-400' : 'text-muted-foreground'}`} />
+                <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${isFocused ? 'text-foreground' : 'text-muted-foreground'}`} />
                 <input
                     type="text"
                     placeholder="Find any prompt on Earth..."
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    className={`w-full h-14 pl-12 pr-4 bg-black text-white border-2 transition-all duration-300 focus:outline-none font-medium tracking-wide ${isFocused
-                            ? 'border-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.3)]'
-                            : 'border-white/20 hover:border-white/40'
+                    className={`w-full h-14 pl-12 pr-4 bg-background text-foreground border-2 transition-all duration-300 focus:outline-none font-medium tracking-wide ${isFocused
+                        ? 'border-foreground shadow-[0_0_30px_rgba(255,255,255,0.4)] dark:shadow-[0_0_30px_rgba(255,255,255,0.3)]'
+                        : 'border-foreground/20 hover:border-foreground/40'
                         }`}
                 />
             </div>

@@ -1,6 +1,6 @@
 // Database storage layer - from javascript_database blueprint
-import { 
-  users, 
+import {
+  users,
   prompts,
   promptVersions,
   comments,
@@ -15,7 +15,7 @@ import {
   remixes,
   executionLogs,
   adminSettings,
-  type User, 
+  type User,
   type InsertUser,
   type Prompt,
   type InsertPrompt,
@@ -43,72 +43,73 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, updates: Partial<User>): Promise<User | undefined>;
-  
+
   // Prompt operations
   getPrompt(id: number): Promise<Prompt | undefined>;
   getPromptBySlug(slug: string): Promise<Prompt | undefined>;
   createPrompt(prompt: InsertPrompt): Promise<Prompt>;
   updatePrompt(id: number, updates: Partial<Prompt>): Promise<Prompt | undefined>;
   getPrompts(filters?: { ownerId?: number; limit?: number; offset?: number }): Promise<Prompt[]>;
+  getPromptsWithAuthors(filters?: { limit?: number; offset?: number }): Promise<any[]>;
   searchPrompts(query: string, filters?: any): Promise<Prompt[]>;
-  
+
   // Prompt Version operations
   getPromptVersion(id: number): Promise<PromptVersion | undefined>;
   createPromptVersion(version: InsertPromptVersion): Promise<PromptVersion>;
   getPromptVersions(promptId: number): Promise<PromptVersion[]>;
   updatePromptVersion(id: number, updates: Partial<PromptVersion>): Promise<PromptVersion | undefined>;
-  
+
   // Comment operations
   getComment(id: number): Promise<Comment | undefined>;
   createComment(comment: InsertComment): Promise<Comment>;
   getComments(promptId: number): Promise<any[]>; // Returns comments with user data
   getCommentsWithUsers(promptId: number): Promise<any[]>;
   updateCommentVotes(id: number, upvotes: number, downvotes: number): Promise<void>;
-  
+
   // Workflow operations
   createWorkflow(workflow: InsertWorkflow): Promise<Workflow>;
   getWorkflow(id: number): Promise<Workflow | undefined>;
   getWorkflows(userId?: number): Promise<Workflow[]>;
-  
+
   // Social operations
   followUser(followerId: number, followingId: number): Promise<void>;
   unfollowUser(followerId: number, followingId: number): Promise<void>;
   isFollowing(followerId: number, followingId: number): Promise<boolean>;
   getFollowers(userId: number): Promise<number>;
   getFollowing(userId: number): Promise<number>;
-  
+
   // Vote operations
   vote(userId: number, votableType: string, votableId: number, voteType: 'up' | 'down'): Promise<void>;
   unvote(userId: number, votableType: string, votableId: number): Promise<void>;
   getVote(userId: number, votableType: string, votableId: number): Promise<Vote | undefined>;
-  
+
   // Notification operations
   createNotification(notification: InsertNotification): Promise<Notification>;
   getNotifications(userId: number, unreadOnly?: boolean): Promise<Notification[]>;
   markNotificationRead(id: number): Promise<void>;
   markAllNotificationsRead(userId: number): Promise<void>;
-  
+
   // Usage log operations
   logUsage(userId: number | undefined, promptVersionId: number | undefined, action: string, metadata?: any): Promise<void>;
-  
+
   // Badge operations
   getBadges(): Promise<Badge[]>;
   getUserBadges(userId: number): Promise<Badge[]>;
   awardBadge(userId: number, badgeId: number): Promise<void>;
-  
+
   // Referral operations
   generateReferralCode(userId: number): Promise<string>;
   getReferralByCode(code: string): Promise<Referral | undefined>;
   trackReferralConversion(code: string, referredUserId: number): Promise<void>;
-  
+
   // Activity operations
   getFollowingActivity(userId: number, limit?: number): Promise<any[]>;
-  
+
   // Execution logs
   createExecutionLog(workflowId: number, userId: number | undefined): Promise<any>;
   updateExecutionLog(id: number, status: string, results?: any): Promise<void>;
   getExecutionLogs(workflowId: number): Promise<any[]>;
-  
+
   // Statistics for karma/badges
   getUserPromptStats(userId: number): Promise<any>;
 }
@@ -172,21 +173,40 @@ export class DatabaseStorage implements IStorage {
 
   async getPrompts(filters?: { ownerId?: number; limit?: number; offset?: number }): Promise<Prompt[]> {
     let query = db.select().from(prompts);
-    
+
     if (filters?.ownerId) {
       query = query.where(eq(prompts.ownerId, filters.ownerId)) as any;
     }
-    
+
     query = query.orderBy(desc(prompts.createdAt)) as any;
-    
+
     if (filters?.limit) {
       query = query.limit(filters.limit) as any;
     }
-    
+
     if (filters?.offset) {
       query = query.offset(filters.offset) as any;
     }
-    
+
+    return await query;
+  }
+
+  async getPromptsWithAuthors(filters?: { limit?: number; offset?: number }): Promise<any[]> {
+    const query = db
+      .select({
+        prompt: prompts,
+        author: {
+          id: users.id,
+          username: users.displayName,
+          avatar: users.avatarUrl,
+        }
+      })
+      .from(prompts)
+      .innerJoin(users, eq(prompts.ownerId, users.id))
+      .orderBy(desc(prompts.createdAt))
+      .limit(filters?.limit || 20)
+      .offset(filters?.offset || 0);
+
     return await query;
   }
 
@@ -381,11 +401,11 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(notifications)
       .where(eq(notifications.userId, userId));
-    
+
     if (unreadOnly) {
       query = query.where(eq(notifications.read, false)) as any;
     }
-    
+
     return await query.orderBy(desc(notifications.createdAt)).limit(50);
   }
 
@@ -428,7 +448,7 @@ export class DatabaseStorage implements IStorage {
       .from(userBadges)
       .innerJoin(badges, eq(userBadges.badgeId, badges.id))
       .where(eq(userBadges.userId, userId));
-    
+
     return userBadgesList.map(ub => ub.badge);
   }
 
@@ -477,7 +497,7 @@ export class DatabaseStorage implements IStorage {
       .select({ followingId: follows.followingId })
       .from(follows)
       .where(eq(follows.followerId, userId));
-    
+
     const followingIds = followingList.map(f => f.followingId);
     if (followingIds.length === 0) return [];
 

@@ -5,6 +5,7 @@ import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Grid, Menu } from "lucide-react";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface TechShellProps {
     children: ReactNode;
@@ -15,6 +16,8 @@ interface TechShellProps {
 }
 
 export function TechShell({ children, loading = false, className, showNav = true, logoText = "PROMPTLIBRARY" }: TechShellProps) {
+    const { t } = useTranslation();
+
     return (
         <motion.div
             className={cn(
@@ -54,9 +57,10 @@ export function TechShell({ children, loading = false, className, showNav = true
                 {/* Left: Pill Nav */}
                 <nav className="hidden md:flex items-center gap-1 px-2 py-1.5 border-2 border-foreground rounded-full bg-background">
                     {[
-                        { label: "DISCOVER", href: "/feed" },
-                        { label: "CREATE", href: "/create" },
-                        { label: "TAGS", href: "/tags" }
+                        { label: t('nav.home'), href: "/" },
+                        { label: t('nav.discover'), href: "/feed" },
+                        { label: t('nav.create'), href: "/create" },
+                        { label: t('nav.tags'), href: "/tags" }
                     ].map((item) => (
                         <a
                             key={item.label}

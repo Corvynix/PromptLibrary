@@ -33,8 +33,9 @@ export function RecentRemixes() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.1 }}
-                            className="border border-white/10 bg-black/50 p-4 hover:border-cyan-400 transition-all cursor-pointer group"
+                            className="border-l-2 border-white/10 bg-black/50 p-4 hover:border-l-cyan-400 hover:bg-cyan-950/10 transition-all cursor-pointer group relative overflow-hidden"
                         >
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 to-cyan-400/0 group-hover:from-cyan-400/5 group-hover:to-transparent transition-all duration-500" />
                             <div className="flex items-center justify-between">
                                 <div className="flex-1">
                                     <p className="text-sm">

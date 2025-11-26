@@ -1,6 +1,7 @@
 import { Globe } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const LANGUAGES = [
     { code: "en", name: "English", flag: "🇺🇸" },
@@ -26,28 +27,25 @@ const LANGUAGES = [
 ];
 
 export function LanguageToggle() {
+    const { i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedLang, setSelectedLang] = useState("en");
 
     const handleLanguageChange = (code: string) => {
-        setSelectedLang(code);
+        i18n.changeLanguage(code);
+        localStorage.setItem('language', code);
         setIsOpen(false);
-        // TODO: Integrate with i18n library (react-i18next)
-        console.log("Language changed to:", code);
     };
 
-    const currentLanguage = LANGUAGES.find(lang => lang.code === selectedLang) || LANGUAGES[0];
+    const currentLanguage = LANGUAGES.find(lang => lang.code === i18n.language) || LANGUAGES[0];
 
     return (
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 px-3 py-2 border-2 border-white/20 bg-black hover:border-cyan-400 transition-all"
+                className="rounded-full w-10 h-10 border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center"
             >
-                <Globe className="w-4 h-4" />
-                <span className="text-xs font-mono font-bold tracking-wider hidden md:inline">
-                    {currentLanguage.flag} {currentLanguage.code.toUpperCase()}
-                </span>
+                <Globe className="w-[1.2rem] h-[1.2rem]" />
+                <span className="sr-only">Change language</span>
             </button>
 
             <AnimatePresence>
@@ -77,14 +75,14 @@ export function LanguageToggle() {
                                     <button
                                         key={lang.code}
                                         onClick={() => handleLanguageChange(lang.code)}
-                                        className={`w-full flex items-center gap-3 px-3 py-2 border transition-all text-left ${selectedLang === lang.code
-                                                ? "border-cyan-400 bg-cyan-400/10 text-cyan-400"
-                                                : "border-transparent hover:border-white/20 text-muted-foreground hover:text-white"
+                                        className={`w-full flex items-center gap-3 px-3 py-2 border transition-all text-left ${i18n.language === lang.code
+                                            ? "border-cyan-400 bg-cyan-400/10 text-cyan-400"
+                                            : "border-transparent hover:border-white/20 text-muted-foreground hover:text-white"
                                             }`}
                                     >
                                         <span className="text-lg">{lang.flag}</span>
                                         <span className="text-sm font-medium">{lang.name}</span>
-                                        {selectedLang === lang.code && (
+                                        {i18n.language === lang.code && (
                                             <span className="ml-auto text-[10px] font-mono font-bold">✓</span>
                                         )}
                                     </button>
