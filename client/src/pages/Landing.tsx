@@ -102,12 +102,11 @@ export default function Landing() {
             {/* Footer */}
             <footer className="py-12 px-6 border-t border-white/10">
               <div className="max-w-6xl mx-auto">
-                <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-8">
+                <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-8">
                   {[
                     { label: "About", href: "/about" },
                     { label: "Terms", href: "/terms" },
                     { label: "Privacy", href: "/privacy" },
-                    { label: "Upload", href: "/create" },
                     { label: "Browse", href: "/feed" },
                     { label: "Support", href: "/support" },
                   ].map((link) => (

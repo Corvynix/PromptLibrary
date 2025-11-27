@@ -28,6 +28,13 @@ export function TechShell({ children, loading = false, className, showNav = true
             animate={{ opacity: loading ? 0 : 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
         >
+            {/* Skip to content link for accessibility */}
+            <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-500 focus:text-white focus:rounded-full focus:font-bold"
+            >
+                Skip to main content
+            </a>
 
             {/* Top Tech Notch */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-14 bg-foreground rounded-b-3xl z-20 flex items-center justify-center shadow-lg">
@@ -55,17 +62,17 @@ export function TechShell({ children, loading = false, className, showNav = true
             {/* Header */}
             <header className="relative z-30 flex items-center justify-between px-6 md:px-10 py-8">
                 {/* Left: Pill Nav */}
-                <nav className="hidden md:flex items-center gap-1 px-2 py-1.5 border-2 border-foreground rounded-full bg-background">
+                <nav className="hidden md:flex items-center gap-1 px-2 py-1.5 border-2 border-foreground rounded-full bg-background" aria-label="Main navigation">
                     {[
                         { label: t('nav.home'), href: "/" },
                         { label: t('nav.discover'), href: "/feed" },
-                        { label: t('nav.create'), href: "/create" },
                         { label: t('nav.tags'), href: "/tags" }
                     ].map((item) => (
                         <a
                             key={item.label}
                             href={item.href}
                             className="px-4 py-1 text-xs font-bold tracking-widest hover:bg-foreground hover:text-background rounded-full transition-colors"
+                            aria-label={`Navigate to ${item.label}`}
                         >
                             {item.label}
                         </a>
@@ -73,22 +80,22 @@ export function TechShell({ children, loading = false, className, showNav = true
                 </nav>
 
                 {/* Mobile Menu Icon */}
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open mobile menu">
                     <Menu className="w-6 h-6" />
                 </Button>
 
                 {/* Right: Tools */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3" role="toolbar" aria-label="Theme and settings">
                     <LanguageToggle />
                     <ThemeToggle />
-                    <Button variant="ghost" size="icon" className="hover:bg-foreground/10 rounded-full">
+                    <Button variant="ghost" size="icon" className="hover:bg-foreground/10 rounded-full" aria-label="View grid layout">
                         <Grid className="w-5 h-5" />
                     </Button>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 relative z-10 flex flex-col">
+            <main id="main-content" className="flex-1 relative z-10 flex flex-col">
                 {children}
             </main>
         </motion.div>

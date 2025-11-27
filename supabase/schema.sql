@@ -26,7 +26,7 @@ CREATE TYPE notification_type AS ENUM (
   'follower_new', 'prompt_remixed', 'prompt_forked', 'comment_reply', 
   'comment_on_prompt', 'mention_in_comment', 'upvote_milestone', 
   'badge_unlocked', 'featured_by_curator', 'trending_prompt', 
-  'pqas_completed', 'workflow_executed', 'admin_message'
+  'workflow_executed', 'admin_message'
 );
 CREATE TYPE execution_status AS ENUM ('pending', 'running', 'completed', 'failed');
 
@@ -90,7 +90,6 @@ CREATE TABLE IF NOT EXISTS prompt_versions (
   version_number INTEGER NOT NULL,
   content JSONB NOT NULL,
   model_compatibility TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
-  pqas_score JSONB,
   status status NOT NULL DEFAULT 'draft',
   parent_version_id INTEGER REFERENCES prompt_versions(id),
   created_by INTEGER NOT NULL REFERENCES users(id),
@@ -101,7 +100,6 @@ CREATE TABLE IF NOT EXISTS prompt_versions (
 
 COMMENT ON TABLE prompt_versions IS 'Version history and lineage for prompts';
 COMMENT ON COLUMN prompt_versions.content IS 'Prompt content (structure varies by type: {system, user, instructions, examples})';
-COMMENT ON COLUMN prompt_versions.pqas_score IS 'Quality assessment scores {clarity, specificity, effectiveness, consistency, safety, efficiency, composite}';
 COMMENT ON COLUMN prompt_versions.parent_version_id IS 'ID of parent version for fork/remix tracking';
 
 -- Workflows table

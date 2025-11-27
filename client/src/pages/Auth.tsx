@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from "@/hooks/use-user";
+import { useAuth } from "@/lib/auth";
 import { Loader2, ArrowRight } from "lucide-react";
 
 const authSchema = z.object({
@@ -23,7 +23,7 @@ export default function Auth() {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
     const [, setLocation] = useLocation();
-    const { setUser } = useUser();
+    const { login, register } = useAuth();
 
     const form = useForm<AuthFormData>({
         resolver: zodResolver(authSchema),
@@ -37,20 +37,12 @@ export default function Auth() {
     const onSubmit = async (data: AuthFormData) => {
         setIsLoading(true);
         try {
-            const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
-            const res = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-
-            const result = await res.json();
-
-            if (!res.ok) {
-                throw new Error(result.error || "Authentication failed");
+            if (isLogin) {
+                await login(data.email, data.password);
+            } else {
+                await register(data.email, data.password, data.username || "");
             }
 
-            setUser(result.user);
             toast({
                 title: isLogin ? "Welcome back!" : "Account created!",
                 description: isLogin ? "It's great to see you again." : "Welcome to the future of prompting.",
@@ -59,7 +51,7 @@ export default function Auth() {
         } catch (error: any) {
             toast({
                 title: "Error",
-                description: error.message,
+                description: error.message || "Authentication failed",
                 variant: "destructive",
             });
         } finally {

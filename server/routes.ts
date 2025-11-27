@@ -715,6 +715,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all users (admin only)
+  app.get("/api/admin/users", authenticate, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get global stats (admin only)
+  app.get("/api/admin/stats", authenticate, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+    try {
+      const stats = await storage.getGlobalStats();
+      res.json(stats);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Approve/reject flagged content
   app.post("/api/admin/moderate/:type/:id", authenticate, requireRole('moderator', 'curator', 'super_admin'), async (req: AuthRequest, res: Response) => {
     try {

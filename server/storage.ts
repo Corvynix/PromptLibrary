@@ -43,6 +43,8 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, updates: Partial<User>): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
+  getGlobalStats(): Promise<any>;
 
   // Prompt operations
   getPrompt(id: number): Promise<Prompt | undefined>;
@@ -141,6 +143,22 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return user || undefined;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getGlobalStats(): Promise<any> {
+    const [userCount] = await db.select({ count: sql<number>`count(*)` }).from(users);
+    const [promptCount] = await db.select({ count: sql<number>`count(*)` }).from(prompts);
+    const [totalUses] = await db.select({ sum: sql<number>`sum(total_uses)` }).from(prompts);
+
+    return {
+      totalUsers: Number(userCount?.count || 0),
+      totalPrompts: Number(promptCount?.count || 0),
+      totalUses: Number(totalUses?.sum || 0),
+    };
   }
 
   // Prompt operations

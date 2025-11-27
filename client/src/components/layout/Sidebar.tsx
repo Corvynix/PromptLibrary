@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,7 @@ import {
     Zap,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useUser } from "@/hooks/use-user";
+import { useAuth } from "@/lib/auth";
 
 interface SidebarProps {
     className?: string;
@@ -20,7 +19,7 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
     const [location] = useLocation();
-    const { user, logout } = useUser();
+    const { currentUser: user, logout } = useAuth();
 
     const navItems = [
         { icon: Home, label: "HOME", href: "/" },
@@ -28,7 +27,7 @@ export function Sidebar({ className }: SidebarProps) {
         { icon: Zap, label: "TRENDING", href: "/trending" },
         { icon: PlusSquare, label: "CREATE", href: "/create" },
         { icon: Heart, label: "SAVED", href: "/saved" },
-        { icon: User, label: "PROFILE", href: `/profile/${user?.username}` },
+        { icon: User, label: "PROFILE", href: `/profile/${user?.displayName || "me"}` },
     ];
 
     return (
@@ -87,11 +86,11 @@ export function Sidebar({ className }: SidebarProps) {
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 border-2 border-white/40 bg-black flex items-center justify-center">
                                 <span className="font-black text-xs">
-                                    {user.username.substring(0, 2).toUpperCase()}
+                                    {(user.displayName || user.email || "U").substring(0, 2).toUpperCase()}
                                 </span>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold truncate">@{user.username}</p>
+                                <p className="text-sm font-bold truncate">@{user.displayName || "user"}</p>
                                 <p className="text-xs text-muted-foreground font-mono">PRO</p>
                             </div>
                         </div>
