@@ -2,21 +2,37 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Loader2, Heart, User } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { Prompt, User } from "@shared/schema";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
+import { PromptCard } from "@/components/PromptCard";
+
+// Define the shape of the API response
+type PromptWithAuthor = Prompt & {
+    author: User;
+    totalLikes?: number;
+};
+
+const FILTERS = {
+    TRENDING: "trending",
+    NEWEST: "newest",
+    TOP_RATED: "top rated"
+} as const;
+
+type FilterType = typeof FILTERS[keyof typeof FILTERS];
 
 export default function Feed() {
-    const [filter, setFilter] = useState("trending");
+    const [filter, setFilter] = useState<string>(FILTERS.TRENDING);
 
     // Fetch prompts from API
-    const { data: prompts, isLoading, error } = useQuery({
+    const { data: prompts, isLoading, error, refetch } = useQuery<PromptWithAuthor[]>({
         queryKey: ["/api/prompts", filter],
         queryFn: async () => {
-            const endpoint = filter === "trending"
+            const endpoint = filter === FILTERS.TRENDING
                 ? "/api/feed/trending"
-                : filter === "newest"
+                : filter === FILTERS.NEWEST
                     ? "/api/feed/new"
                     : "/api/prompts";
 
@@ -36,127 +52,88 @@ export default function Feed() {
 
     if (error) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-                <p className="text-red-500 font-mono">Failed to load prompts</p>
-                <p className="text-sm text-muted-foreground">Please try again later</p>
-            </div>
+            <ErrorState
+                title="Failed to load feed"
+                description="We couldn't load the latest prompts. Please check your connection and try again."
+                onRetry={() => refetch()}
+            />
         );
     }
 
     return (
-        <div className="space-y-8">
-            {/* Header & Filters */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-black tracking-tighter uppercase">DISCOVER</h1>
-                    <p className="text-sm text-muted-foreground font-mono tracking-wider">EXPLORE THE BEST PROMPTS</p>
-                </div>
+        <div className="space-y-8 pb-12">
+            {/* Premium Header */}
+            <div className="relative rounded-3xl bg-gradient-to-br from-blue-900/20 via-black to-purple-900/20 border border-white/10 p-8 overflow-hidden">
+                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+                    <div>
+                        <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+                            DISCOVER
+                        </h1>
+                        <p className="text-lg text-muted-foreground font-mono tracking-wider">
+                            EXPLORE THE WORLD'S BEST PROMPTS
+                        </p>
+                    </div>
 
-                <div className="flex items-center gap-2" role="group" aria-label="Filter prompts">
-                    {["TRENDING", "NEWEST", "TOP RATED"].map((f) => (
-                        <button
-                            key={f}
-                            onClick={() => setFilter(f.toLowerCase().replace(" ", ""))}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                    e.preventDefault();
-                                    setFilter(f.toLowerCase().replace(" ", ""));
-                                }
-                            }}
-                            className={cn(
-                                "px-4 py-2 border-2 text-xs font-bold tracking-widest transition-all rounded-full",
-                                filter === f.toLowerCase().replace(" ", "")
-                                    ? "border-blue-400 bg-blue-400/10 text-blue-400"
-                                    : "border-white/20 text-muted-foreground hover:border-white hover:text-white"
-                            )}
-                            aria-label={`Filter by ${f.toLowerCase()}`}
-                            aria-pressed={filter === f.toLowerCase().replace(" ", "")}
-                        >
-                            {f}
-                        </button>
-                    ))}
+                    {/* Glass Filters */}
+                    <div className="flex items-center gap-2 p-1 bg-black/40 backdrop-blur-md border border-white/10 rounded-full" role="group" aria-label="Filter prompts">
+                        {Object.values(FILTERS).map((f) => (
+                            <button
+                                key={f}
+                                onClick={() => setFilter(f)}
+                                className={cn(
+                                    "px-6 py-2 text-xs font-bold tracking-widest transition-all rounded-full uppercase",
+                                    filter === f
+                                        ? "bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+                                        : "text-muted-foreground hover:text-white hover:bg-white/5"
+                                )}
+                                aria-label={`Filter by ${f}`}
+                                aria-pressed={filter === f}
+                            >
+                                {f}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {prompts?.map((item: any, index: number) => {
-                    const prompt = item.prompt || item;
-                    const author = item.author || { username: "Unknown", avatar: null };
+            {prompts && prompts.length > 0 ? (
+                <motion.div
+                    layout
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                    {prompts.map((item, index) => {
+                        // Handle potential API variations where item might be nested
+                        const promptData = (item as any).prompt || item;
+                        const authorData = (item as any).author || item.author;
 
-                    return (
-                        <motion.div
-                            key={prompt.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                        >
-                            <Link href={`/prompt/${prompt.id}`}>
-                                <div className="cursor-pointer group">
-                                    <div className="border-2 border-white/10 bg-black/50 backdrop-blur-sm rounded-3xl p-6 hover:border-blue-400 hover:bg-blue-400/5 transition-all h-full flex flex-col">
-                                        {/* Title */}
-                                        <h3 className="text-xl font-black tracking-tight mb-3 group-hover:text-blue-400 transition-colors">
-                                            {prompt.title}
-                                        </h3>
+                        // Construct the prompt object for the card
+                        const cardProps = {
+                            ...promptData,
+                            owner: authorData,
+                            totalLikes: item.totalLikes || 0
+                        };
 
-                                        {/* Description */}
-                                        {prompt.shortDesc && (
-                                            <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                                                {prompt.shortDesc}
-                                            </p>
-                                        )}
-
-                                        {/* Tags */}
-                                        <div className="flex flex-wrap gap-2 mb-4">
-                                            {prompt.industryTags?.slice(0, 3).map((tag: string) => (
-                                                <Badge
-                                                    key={tag}
-                                                    variant="outline"
-                                                    className="text-[10px] px-2 py-0.5 rounded-full border-white/20"
-                                                >
-                                                    {tag}
-                                                </Badge>
-                                            ))}
-                                        </div>
-
-                                        {/* Footer */}
-                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                                            <div className="flex items-center gap-2">
-                                                <Avatar className="h-6 w-6 border border-white/20">
-                                                    <AvatarImage src={author.avatar} />
-                                                    <AvatarFallback className="text-[10px]">
-                                                        {author.username?.substring(0, 2).toUpperCase() || "U"}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <span className="text-xs font-mono text-muted-foreground">
-                                                    {author.username || "Unknown"}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-1 text-muted-foreground">
-                                                <Heart className="w-4 h-4" />
-                                                <span className="text-xs font-mono">
-                                                    {prompt.totalLikes || 0}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        </motion.div>
-                    );
-                })}
-            </div>
-
-            {/* Empty State */}
-            {prompts?.length === 0 && (
-                <div className="flex flex-col items-center justify-center min-h-[30vh] gap-4">
-                    <p className="text-muted-foreground font-mono">No prompts found</p>
-                    <Link href="/create">
-                        <button className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition-colors">
-                            CREATE FIRST PROMPT
-                        </button>
-                    </Link>
-                </div>
+                        return (
+                            <motion.div
+                                key={promptData.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                            >
+                                <PromptCard prompt={cardProps} />
+                            </motion.div>
+                        );
+                    })}
+                </motion.div>
+            ) : (
+                <EmptyState
+                    title="No prompts found"
+                    description="Be the first to create a prompt in this category!"
+                    actionLabel="CREATE PROMPT"
+                    onAction={() => window.location.href = "/create"}
+                />
             )}
         </div>
     );

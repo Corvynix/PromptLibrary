@@ -24,6 +24,39 @@ const Terms = lazy(() => import("@/pages/Terms"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const Support = lazy(() => import("@/pages/Support"));
 
+// New Pages - System
+const ServerError = lazy(() => import("@/pages/system/ServerError"));
+const Maintenance = lazy(() => import("@/pages/system/Maintenance"));
+const Changelog = lazy(() => import("@/pages/system/Changelog"));
+const ApiDocs = lazy(() => import("@/pages/system/ApiDocs"));
+
+// New Pages - Legal & Monetization
+const Cookies = lazy(() => import("@/pages/legal/Cookies"));
+const AdsDisclosure = lazy(() => import("@/pages/legal/AdsDisclosure"));
+const Sponsored = lazy(() => import("@/pages/monetization/Sponsored"));
+
+// New Pages - Discovery
+const Leaderboard = lazy(() => import("@/pages/discovery/Leaderboard"));
+const TagDetail = lazy(() => import("@/pages/discovery/TagDetail"));
+const Search = lazy(() => import("@/pages/discovery/Search"));
+const Categories = lazy(() => import("@/pages/discovery/Categories"));
+
+// New Pages - Auth & User
+const ForgotPassword = lazy(() => import("@/pages/auth/ForgotPassword"));
+const VerifyEmail = lazy(() => import("@/pages/auth/VerifyEmail"));
+const Onboarding = lazy(() => import("@/pages/auth/Onboarding"));
+const Settings = lazy(() => import("@/pages/user/Settings"));
+const Notifications = lazy(() => import("@/pages/user/Notifications"));
+const ActivityFeed = lazy(() => import("@/pages/user/ActivityFeed"));
+const Connections = lazy(() => import("@/pages/user/Connections"));
+
+// New Pages - Content & Community
+const VersionHistory = lazy(() => import("@/pages/content/VersionHistory"));
+const WorkflowBuilder = lazy(() => import("@/pages/content/WorkflowBuilder"));
+const Community = lazy(() => import("@/pages/community/Community"));
+const CommentThread = lazy(() => import("@/pages/community/CommentThread"));
+const Hashtags = lazy(() => import("@/pages/community/Hashtags"));
+
 function App() {
   const { currentUser: user, isLoading } = useAuth();
 
@@ -53,35 +86,85 @@ function App() {
             <Route path="/auth" component={Auth} />
             <Route path="/login" component={Auth} />
             <Route path="/register" component={Auth} />
+            <Route path="/forgot-password" component={ForgotPassword} />
+            <Route path="/verify-email" component={VerifyEmail} />
+            <Route path="/onboarding" component={Onboarding} />
 
-            {/* About Page */}
+            {/* System Pages */}
+            <Route path="/500" component={ServerError} />
+            <Route path="/maintenance" component={Maintenance} />
+            <Route path="/changelog" component={Changelog} />
+            <Route path="/api-docs" component={ApiDocs} />
+
+            {/* Legal Pages */}
             <Route path="/about" component={About} />
-
-            {/* Terms Page */}
             <Route path="/terms" component={Terms} />
-
-            {/* Privacy Page */}
             <Route path="/privacy" component={Privacy} />
-
-            {/* Support Page */}
+            <Route path="/cookies" component={Cookies} />
+            <Route path="/ads-disclosure" component={AdsDisclosure} />
             <Route path="/support" component={Support} />
 
-            {/* App Routes (Wrapped in AppShell) */}
+            {/* Monetization */}
+            <Route path="/sponsored" component={Sponsored} />
+
+            {/* Discovery Routes (Wrapped in AppShell) */}
             <Route path="/explore">
               <AppShell><Feed /></AppShell>
             </Route>
+            <Route path="/feed">
+              <AppShell><Feed /></AppShell>
+            </Route>
+            <Route path="/search">
+              <AppShell><Search /></AppShell>
+            </Route>
+            <Route path="/categories">
+              <AppShell><Categories /></AppShell>
+            </Route>
+            <Route path="/leaderboard">
+              <AppShell><Leaderboard /></AppShell>
+            </Route>
+            <Route path="/tags/:tag">
+              <AppShell><TagDetail /></AppShell>
+            </Route>
+            <Route path="/hashtags">
+              <AppShell><Hashtags /></AppShell>
+            </Route>
+            <Route path="/community">
+              <AppShell><Community /></AppShell>
+            </Route>
 
+            {/* Content Routes */}
             <Route path="/prompt/:id">
               <AppShell><PromptDetail /></AppShell>
             </Route>
-
+            <Route path="/prompt/:id/history">
+              <AppShell><VersionHistory /></AppShell>
+            </Route>
+            <Route path="/prompt/:id/comments">
+              <AppShell><CommentThread /></AppShell>
+            </Route>
             <Route path="/remix/:id">
               <AppShell><RemixEditor /></AppShell>
             </Route>
-
             <Route path="/create" component={CreatePrompt} />
+            <Route path="/workflow-builder">
+              <AppShell><WorkflowBuilder /></AppShell>
+            </Route>
 
+            {/* User Routes */}
             <Route path="/profile/:username" component={Profile} />
+            <Route path="/settings">
+              <AppShell><Settings /></AppShell>
+            </Route>
+            <Route path="/notifications">
+              <AppShell><Notifications /></AppShell>
+            </Route>
+            <Route path="/activity">
+              <AppShell><ActivityFeed /></AppShell>
+            </Route>
+            <Route path="/connections">
+              <AppShell><Connections /></AppShell>
+            </Route>
 
             <Route path="/admin" component={AdminDashboard} />
 

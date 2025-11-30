@@ -9,6 +9,9 @@ import {
     User,
     LogOut,
     Zap,
+    Trophy,
+    MessageSquare,
+    GitFork,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
@@ -25,6 +28,9 @@ export function Sidebar({ className }: SidebarProps) {
         { icon: Home, label: "HOME", href: "/" },
         { icon: Search, label: "EXPLORE", href: "/feed" },
         { icon: Zap, label: "TRENDING", href: "/trending" },
+        { icon: Trophy, label: "LEADERBOARD", href: "/leaderboard" },
+        { icon: MessageSquare, label: "COMMUNITY", href: "/community" },
+        { icon: GitFork, label: "WORKFLOWS", href: "/workflow-builder" },
         { icon: PlusSquare, label: "CREATE", href: "/create" },
         { icon: Heart, label: "SAVED", href: "/saved" },
         { icon: User, label: "PROFILE", href: `/profile/${user?.displayName || "me"}` },

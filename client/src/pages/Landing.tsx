@@ -107,7 +107,9 @@ export default function Landing() {
                     { label: "About", href: "/about" },
                     { label: "Terms", href: "/terms" },
                     { label: "Privacy", href: "/privacy" },
-                    { label: "Browse", href: "/feed" },
+                    { label: "Cookies", href: "/cookies" },
+                    { label: "Changelog", href: "/changelog" },
+                    { label: "API", href: "/api-docs" },
                     { label: "Support", href: "/support" },
                   ].map((link) => (
                     <a

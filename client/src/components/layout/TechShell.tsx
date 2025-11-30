@@ -5,6 +5,8 @@ import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Grid, Menu } from "lucide-react";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { Link } from "wouter";
+import { useAuth } from "@/lib/auth";
 import { useTranslation } from "react-i18next";
 
 interface TechShellProps {
@@ -17,6 +19,7 @@ interface TechShellProps {
 
 export function TechShell({ children, loading = false, className, showNav = true, logoText = "PROMPTLIBRARY" }: TechShellProps) {
     const { t } = useTranslation();
+    const { currentUser } = useAuth();
 
     return (
         <motion.div
@@ -66,6 +69,8 @@ export function TechShell({ children, loading = false, className, showNav = true
                     {[
                         { label: t('nav.home'), href: "/" },
                         { label: t('nav.discover'), href: "/feed" },
+                        { label: "COMMUNITY", href: "/community" },
+                        { label: "LEADERBOARD", href: "/leaderboard" },
                         { label: t('nav.tags'), href: "/tags" }
                     ].map((item) => (
                         <a
@@ -88,9 +93,22 @@ export function TechShell({ children, loading = false, className, showNav = true
                 <div className="flex items-center gap-3" role="toolbar" aria-label="Theme and settings">
                     <LanguageToggle />
                     <ThemeToggle />
-                    <Button variant="ghost" size="icon" className="hover:bg-foreground/10 rounded-full" aria-label="View grid layout">
-                        <Grid className="w-5 h-5" />
-                    </Button>
+
+                    <div className="h-6 w-px bg-foreground/20 mx-1" />
+
+                    {currentUser ? (
+                        <Link href="/feed">
+                            <Button size="sm" className="rounded-full font-bold tracking-wider px-6">
+                                DASHBOARD
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Link href="/login">
+                            <Button size="sm" className="rounded-full font-bold tracking-wider px-6">
+                                LOGIN
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </header>
 
