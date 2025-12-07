@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "wouter";
+import { PromptCard } from "@/components/PromptCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -246,33 +247,39 @@ export default function Profile() {
                                         </TabsList>
 
                                         <TabsContent value="prompts" className="mt-0">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                                                    <div key={i} className="group cursor-pointer border-2 border-foreground/10 rounded-3xl bg-card overflow-hidden hover:border-foreground/30 transition-all">
-                                                        <div className="aspect-[3/2] bg-muted relative overflow-hidden border-b-2 border-foreground/10">
-                                                            <img
-                                                                src={`https://picsum.photos/seed/${i + 100}/400/300`}
-                                                                alt="Prompt"
-                                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                                                            />
-                                                            <div className="absolute top-2 right-2">
-                                                                <div className="bg-background/80 backdrop-blur-md border border-foreground/10 px-2 py-0.5 text-[10px] font-mono font-bold text-foreground rounded-full">
-                                                                    v{i}.0
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="p-4 space-y-3">
-                                                            <h3 className="font-bold tracking-tight uppercase truncate group-hover:text-blue-500 transition-colors">
-                                                                CYBERPUNK CITYSCAPES V{i}
-                                                            </h3>
-                                                            <div className="flex items-center justify-between text-[10px] font-mono text-muted-foreground">
-                                                                <span className="bg-foreground/5 px-2 py-1 rounded-full text-foreground">MIDJOURNEY V6</span>
-                                                                <div className="flex items-center gap-3">
-                                                                    <span className="flex items-center gap-1 hover:text-red-500 transition-colors"><Heart className="w-3 h-3" /> 124</span>
-                                                                    <span className="flex items-center gap-1 hover:text-blue-500 transition-colors"><GitFork className="w-3 h-3" /> 42</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div key={i} className="h-[420px]">
+                                                        <PromptCard
+                                                            prompt={{
+                                                                id: i,
+                                                                slug: `prompt-${i}`,
+                                                                title: `Cyberpunk Cityscapes V${i}`,
+                                                                shortDesc: "Generate stunning futuristic cityscapes with neon lights and flying cars.",
+                                                                type: "Image",
+                                                                industryTags: ["Art", "Sci-Fi"],
+                                                                socialTags: ["#midjourney", "#cyberpunk"],
+                                                                totalUses: 1200 + (i * 100),
+                                                                totalLikes: 124 + (i * 10),
+                                                                owner: {
+                                                                    id: 1,
+                                                                    displayName: displayUsername,
+                                                                    email: "user@example.com",
+                                                                    avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${displayUsername}`,
+                                                                    verified: true
+                                                                },
+                                                                thumbnail: `https://picsum.photos/seed/${i + 100}/400/300`,
+                                                                modelCompatibility: ["Midjourney V6"],
+                                                                difficulty: "Intermediate",
+                                                                popularityScore: 85 + i,
+                                                                version: `v${i}.0`,
+                                                                commentCount: 12 + i,
+                                                                license: "CC-BY",
+                                                                tokenCount: 350,
+                                                                lastUpdated: `${i} days ago`
+                                                            }}
+                                                            className="h-full"
+                                                        />
                                                     </div>
                                                 ))}
                                             </div>

@@ -3,11 +3,18 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Grid, Menu } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "react-i18next";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface TechShellProps {
     children: ReactNode;
@@ -20,6 +27,16 @@ interface TechShellProps {
 export function TechShell({ children, loading = false, className, showNav = true, logoText = "PROMPTLIBRARY" }: TechShellProps) {
     const { t } = useTranslation();
     const { currentUser } = useAuth();
+    const [location] = useLocation();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const NAV_ITEMS = [
+        { label: t('nav.home'), href: "/" },
+        { label: t('nav.discover'), href: "/feed" },
+        { label: "COMMUNITY", href: "/community" },
+        { label: "LEADERBOARD", href: "/leaderboard" },
+        { label: t('nav.tags'), href: "/tags" }
+    ];
 
     return (
         <motion.div
@@ -64,30 +81,59 @@ export function TechShell({ children, loading = false, className, showNav = true
 
             {/* Header */}
             <header className="relative z-30 flex items-center justify-between px-6 md:px-10 py-8">
-                {/* Left: Pill Nav */}
+                {/* Left: Pill Nav (Desktop) */}
                 <nav className="hidden md:flex items-center gap-1 px-2 py-1.5 border-2 border-foreground rounded-full bg-background" aria-label="Main navigation">
-                    {[
-                        { label: t('nav.home'), href: "/" },
-                        { label: t('nav.discover'), href: "/feed" },
-                        { label: "COMMUNITY", href: "/community" },
-                        { label: "LEADERBOARD", href: "/leaderboard" },
-                        { label: t('nav.tags'), href: "/tags" }
-                    ].map((item) => (
-                        <a
-                            key={item.label}
-                            href={item.href}
-                            className="px-4 py-1 text-xs font-bold tracking-widest hover:bg-foreground hover:text-background rounded-full transition-colors"
-                            aria-label={`Navigate to ${item.label}`}
-                        >
-                            {item.label}
-                        </a>
-                    ))}
+                    {NAV_ITEMS.map((item) => {
+                        const isActive = location === item.href;
+                        return (
+                            <Link key={item.label} href={item.href}>
+                                <a
+                                    className={cn(
+                                        "px-4 py-1 text-xs font-bold tracking-widest rounded-full transition-colors",
+                                        isActive
+                                            ? "bg-foreground text-background"
+                                            : "hover:bg-foreground hover:text-background"
+                                    )}
+                                    aria-current={isActive ? "page" : undefined}
+                                >
+                                    {item.label}
+                                </a>
+                            </Link>
+                        );
+                    })}
                 </nav>
 
-                {/* Mobile Menu Icon */}
-                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open mobile menu">
-                    <Menu className="w-6 h-6" />
-                </Button>
+                {/* Mobile Menu */}
+                <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open mobile menu">
+                            <Menu className="w-6 h-6" />
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                        <SheetHeader>
+                            <SheetTitle className="text-left font-black text-2xl tracking-tighter">MENU</SheetTitle>
+                        </SheetHeader>
+                        <div className="flex flex-col gap-4 mt-8">
+                            {NAV_ITEMS.map((item) => {
+                                const isActive = location === item.href;
+                                return (
+                                    <Link key={item.label} href={item.href}>
+                                        <a
+                                            onClick={() => setIsOpen(false)}
+                                            className={cn(
+                                                "text-lg font-bold tracking-wider py-2 border-b border-border transition-colors",
+                                                isActive ? "text-blue-500 border-blue-500" : "text-muted-foreground hover:text-foreground"
+                                            )}
+                                        >
+                                            {item.label}
+                                        </a>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </SheetContent>
+                </Sheet>
 
                 {/* Right: Tools */}
                 <div className="flex items-center gap-3" role="toolbar" aria-label="Theme and settings">

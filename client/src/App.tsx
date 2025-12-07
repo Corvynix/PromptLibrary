@@ -107,64 +107,30 @@ function App() {
             {/* Monetization */}
             <Route path="/sponsored" component={Sponsored} />
 
-            {/* Discovery Routes (Wrapped in AppShell) */}
-            <Route path="/explore">
-              <AppShell><Feed /></AppShell>
-            </Route>
-            <Route path="/feed">
-              <AppShell><Feed /></AppShell>
-            </Route>
-            <Route path="/search">
-              <AppShell><Search /></AppShell>
-            </Route>
-            <Route path="/categories">
-              <AppShell><Categories /></AppShell>
-            </Route>
-            <Route path="/leaderboard">
-              <AppShell><Leaderboard /></AppShell>
-            </Route>
-            <Route path="/tags/:tag">
-              <AppShell><TagDetail /></AppShell>
-            </Route>
-            <Route path="/hashtags">
-              <AppShell><Hashtags /></AppShell>
-            </Route>
-            <Route path="/community">
-              <AppShell><Community /></AppShell>
-            </Route>
+            {/* Discovery Routes */}
+            <Route path="/explore" component={Feed} />
+            <Route path="/feed" component={Feed} />
+            <Route path="/search" component={Search} />
+            <Route path="/categories" component={Categories} />
+            <Route path="/leaderboard" component={Leaderboard} />
+            <Route path="/tags/:tag" component={TagDetail} />
+            <Route path="/hashtags" component={Hashtags} />
+            <Route path="/community" component={Community} />
 
             {/* Content Routes */}
-            <Route path="/prompt/:id">
-              <AppShell><PromptDetail /></AppShell>
-            </Route>
-            <Route path="/prompt/:id/history">
-              <AppShell><VersionHistory /></AppShell>
-            </Route>
-            <Route path="/prompt/:id/comments">
-              <AppShell><CommentThread /></AppShell>
-            </Route>
-            <Route path="/remix/:id">
-              <AppShell><RemixEditor /></AppShell>
-            </Route>
+            <Route path="/prompt/:id" component={PromptDetail} />
+            <Route path="/prompt/:id/history" component={VersionHistory} />
+            <Route path="/prompt/:id/comments" component={CommentThread} />
+            <Route path="/remix/:id" component={RemixEditor} />
             <Route path="/create" component={CreatePrompt} />
-            <Route path="/workflow-builder">
-              <AppShell><WorkflowBuilder /></AppShell>
-            </Route>
+            <Route path="/workflow-builder" component={WorkflowBuilder} />
 
             {/* User Routes */}
             <Route path="/profile/:username" component={Profile} />
-            <Route path="/settings">
-              <AppShell><Settings /></AppShell>
-            </Route>
-            <Route path="/notifications">
-              <AppShell><Notifications /></AppShell>
-            </Route>
-            <Route path="/activity">
-              <AppShell><ActivityFeed /></AppShell>
-            </Route>
-            <Route path="/connections">
-              <AppShell><Connections /></AppShell>
-            </Route>
+            <Route path="/settings" component={Settings} />
+            <Route path="/notifications" component={Notifications} />
+            <Route path="/activity" component={ActivityFeed} />
+            <Route path="/connections" component={Connections} />
 
             <Route path="/admin" component={AdminDashboard} />
 

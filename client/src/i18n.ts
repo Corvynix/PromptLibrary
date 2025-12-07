@@ -6,45 +6,98 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
     en: {
         translation: {
-            // Navigation
             nav: {
                 home: "HOME",
                 discover: "DISCOVER",
                 create: "CREATE",
                 tags: "TAGS"
             },
-            // Landing Page
-            landing: {
-                hero: {
-                    title: "THE WORLD'S\nPROMPT LIBRARY",
-                    subtitle: "Every Prompt. Any Model. Free Forever.",
-                    explore: "START EXPLORING",
-                    upload: "UPLOAD A PROMPT"
-                },
-                trending: "TRENDING NOW",
-                promptOfDay: "PROMPT OF THE DAY",
-                featured: "FEATURED PROMPT",
-                recentRemixes: "RECENT REMIXES",
-                viewPrompt: "VIEW PROMPT",
-                viewAll: "VIEW ALL ACTIVITY"
-            },
-            // Feed Page
             feed: {
-                title: "DISCOVER",
-                subtitle: "EXPLORE THE BEST PROMPTS",
+                hero: {
+                    title: "DISCOVER THE\nFUTURE OF PROMPTING",
+                    subtitle: "Explore the world's largest library of high-performance prompts, workflows, and AI assets. Curated by experts, ranked by the community.",
+                    searchPlaceholder: "Search for {{tab}}..."
+                },
+                generate: "GENERATE",
+                tabs: {
+                    prompts: "Prompts",
+                    workflows: "Workflows",
+                    systems: "Systems",
+                    templates: "Templates",
+                    aiUsecases: "AI Usecases"
+                },
                 filters: {
-                    trending: "TRENDING",
-                    newest: "NEWEST",
-                    topRated: "TOP RATED"
+                    all: "All",
+                    trending: "Trending",
+                    new: "New",
+                    topRated: "Top Rated",
+                    editorsChoice: "Editors Choice"
                 }
             },
-            // Common
+            search: {
+                hero: {
+                    title: "FIND YOUR\nNEXT SUPERPOWER",
+                    subtitle: "Search through 10,000+ premium prompts, workflows, and AI assets.",
+                    placeholder: "What do you want to create today?"
+                },
+                sections: {
+                    recent: "Recent Searches",
+                    trending: "Trending Now"
+                },
+                filters: {
+                    model: "Model",
+                    difficulty: "Difficulty",
+                    length: "Length",
+                    sortBy: "Sort By"
+                }
+            },
+            categories: {
+                all: "All",
+                realEstate: "Real Estate",
+                islamicContent: "Islamic Content",
+                business: "Business",
+                marketing: "Marketing",
+                copywriting: "Copywriting",
+                lifeOS: "Life OS",
+                uxui: "UX/UI",
+                storytelling: "Storytelling",
+                personalBrand: "Personal Brand",
+                moneySales: "Money & Sales",
+                youtube: "YouTube",
+                psychology: "Psychology",
+                courses: "Courses",
+                appsAutomations: "Apps & Automations"
+            },
+            promptCard: {
+                preview: "Preview",
+                hideOutput: "Hide Output",
+                viewOutput: "View Output Example",
+                popupTitle: "EXAMPLE OUTPUT",
+                copy: "Copy Prompt",
+                copied: "Copied!",
+                remix: "Remix / Fork",
+                save: "Save for Later",
+                popularity: "Popularity Score",
+                advanced: {
+                    title: "Advanced Data",
+                    license: "License",
+                    tokens: "Tokens",
+                    updated: "Updated",
+                    uses: "Uses",
+                    related: "Related"
+                },
+                creator: "Creator",
+                unknown: "Unknown",
+                noDesc: "No description available for this prompt."
+            },
             common: {
                 likes: "likes",
                 forks: "forks",
                 remixed: "remixed",
                 by: "By",
-                ago: "ago"
+                ago: "ago",
+                version: "v",
+                viewAll: "View All"
             }
         }
     },
@@ -56,115 +109,92 @@ const resources = {
                 create: "إنشاء",
                 tags: "الوسوم"
             },
-            landing: {
-                hero: {
-                    title: "أكبر مكتبة\nللمطالبات في العالم",
-                    subtitle: "كل المطالبات. أي نموذج. مجاناً للأبد.",
-                    explore: "ابدأ الاستكشاف",
-                    upload: "رفع مطالبة"
-                },
-                trending: "الأكثر رواجاً",
-                promptOfDay: "مطالبة اليوم",
-                featured: "مطالبة مميزة",
-                recentRemixes: "الإصدارات الأخيرة",
-                viewPrompt: "عرض المطالبة",
-                viewAll: "عرض كل النشاطات"
-            },
             feed: {
-                title: "استكشف",
-                subtitle: "استكشف أفضل المطالبات",
+                hero: {
+                    title: "اكتشف مستقبل\nهندسة الأوامر",
+                    subtitle: "استكشف أكبر مكتبة في العالم للأوامر عالية الأداء، سير العمل، وأصول الذكاء الاصطناعي. منسقة بواسطة خبراء، ومصنفة من قبل المجتمع.",
+                    searchPlaceholder: "ابحث عن {{tab}}..."
+                },
+                generate: "توليد",
+                tabs: {
+                    prompts: "أوامر (Prompts)",
+                    workflows: "سير عمل",
+                    systems: "أنظمة",
+                    templates: "قوالب",
+                    aiUsecases: "استخدامات AI"
+                },
                 filters: {
-                    trending: "الأكثر رواجاً",
-                    newest: "الأحدث",
-                    topRated: "الأعلى تقييماً"
+                    all: "الكل",
+                    trending: "الرائج",
+                    new: "الجديد",
+                    topRated: "الأعلى تقييماً",
+                    editorsChoice: "اختيارات المحررين"
                 }
+            },
+            search: {
+                hero: {
+                    title: "اكتشف قوتك\nالخارقة التالية",
+                    subtitle: "ابحث في أكثر من 10,000 أمر متميز، سير عمل، وأصول ذكاء اصطناعي.",
+                    placeholder: "ماذا تريد أن تبني اليوم؟"
+                },
+                sections: {
+                    recent: "عمليات البحث الأخيرة",
+                    trending: "رائج الآن"
+                },
+                filters: {
+                    model: "النموذج",
+                    difficulty: "الصعوبة",
+                    length: "الطول",
+                    sortBy: "ترتيب حسب"
+                }
+            },
+            categories: {
+                all: "الكل",
+                realEstate: "عقارات",
+                islamicContent: "المحتوى الإسلامي",
+                business: "أعمال",
+                marketing: "تسويق",
+                copywriting: "كتابة إعلانية",
+                lifeOS: "نظام الحياة",
+                uxui: "تجربة المستخدم",
+                storytelling: "قصص وسرد",
+                personalBrand: "علامة شخصية",
+                moneySales: "مال ومبيعات",
+                youtube: "يوتيوب",
+                psychology: "علم نفس",
+                courses: "كورسات",
+                appsAutomations: "تطبيقات وأتمتة"
+            },
+            promptCard: {
+                preview: "معاينة",
+                hideOutput: "إخفاء المخرجات",
+                viewOutput: "عرض مثال للمخرجات",
+                popupTitle: "مثال للمخرجات",
+                copy: "نسخ الأمر",
+                copied: "تم النسخ!",
+                remix: "تعديل / نسخ فرعي",
+                save: "حفظ لوقت لاحق",
+                popularity: "نقاط الشعبية",
+                advanced: {
+                    title: "بيانات متقدمة",
+                    license: "الرخصة",
+                    tokens: "الرموز (Tokens)",
+                    updated: "محدث",
+                    uses: "الاستخدامات",
+                    related: "ذات صلة"
+                },
+                creator: "المنشئ",
+                unknown: "مجهول",
+                noDesc: "لا يوجد وصف متاح لهذا الأمر."
             },
             common: {
                 likes: "إعجابات",
                 forks: "نسخ",
                 remixed: "تم التعديل",
                 by: "بواسطة",
-                ago: "منذ"
-            }
-        }
-    },
-    es: {
-        translation: {
-            nav: {
-                home: "INICIO",
-                discover: "DESCUBRIR",
-                create: "CREAR",
-                tags: "ETIQUETAS"
-            },
-            landing: {
-                hero: {
-                    title: "LA BIBLIOTECA DE\nPROMPTS DEL MUNDO",
-                    subtitle: "Todos los Prompts. Cualquier Modelo. Gratis Para Siempre.",
-                    explore: "COMENZAR A EXPLORAR",
-                    upload: "SUBIR UN PROMPT"
-                },
-                trending: "TENDENCIAS",
-                promptOfDay: "PROMPT DEL DÍA",
-                featured: "PROMPT DESTACADO",
-                recentRemixes: "REMIXES RECIENTES",
-                viewPrompt: "VER PROMPT",
-                viewAll: "VER TODA LA ACTIVIDAD"
-            },
-            feed: {
-                title: "DESCUBRIR",
-                subtitle: "EXPLORA LOS MEJORES PROMPTS",
-                filters: {
-                    trending: "TENDENCIAS",
-                    newest: "MÁS NUEVOS",
-                    topRated: "MEJOR VALORADOS"
-                }
-            },
-            common: {
-                likes: "me gusta",
-                forks: "copias",
-                remixed: "remezclado",
-                by: "Por",
-                ago: "hace"
-            }
-        }
-    },
-    fr: {
-        translation: {
-            nav: {
-                home: "ACCUEIL",
-                discover: "DÉCOUVRIR",
-                create: "CRÉER",
-                tags: "TAGS"
-            },
-            landing: {
-                hero: {
-                    title: "LA BIBLIOTHÈQUE DE\nPROMPTS DU MONDE",
-                    subtitle: "Tous les Prompts. N'importe quel Modèle. Gratuit Pour Toujours.",
-                    explore: "COMMENCER À EXPLORER",
-                    upload: "TÉLÉCHARGER UN PROMPT"
-                },
-                trending: "TENDANCES",
-                promptOfDay: "PROMPT DU JOUR",
-                featured: "PROMPT EN VEDETTE",
-                recentRemixes: "REMIXES RÉCENTS",
-                viewPrompt: "VOIR LE PROMPT",
-                viewAll: "VOIR TOUTE L'ACTIVITÉ"
-            },
-            feed: {
-                title: "DÉCOUVRIR",
-                subtitle: "EXPLOREZ LES MEILLEURS PROMPTS",
-                filters: {
-                    trending: "TENDANCES",
-                    newest: "PLUS RÉCENTS",
-                    topRated: "MIEUX NOTÉS"
-                }
-            },
-            common: {
-                likes: "j'aime",
-                forks: "copies",
-                remixed: "remixé",
-                by: "Par",
-                ago: "il y a"
+                ago: "منذ",
+                version: "نسخة",
+                viewAll: "عرض الكل"
             }
         }
     }
@@ -176,13 +206,16 @@ i18n
     .init({
         resources,
         fallbackLng: 'en',
-        lng: localStorage.getItem('language') || 'en',
+        lng: localStorage.getItem('language') || 'ar', // Default to Arabic for this platform
         interpolation: {
             escapeValue: false
         },
         detection: {
             order: ['localStorage', 'navigator'],
             caches: ['localStorage']
+        },
+        react: {
+            useSuspense: false
         }
     });
 
