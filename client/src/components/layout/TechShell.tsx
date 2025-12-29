@@ -24,7 +24,7 @@ interface TechShellProps {
     logoText?: string; // Custom logo text
 }
 
-export function TechShell({ children, loading = false, className, showNav = true, logoText = "PROMPTLIBRARY" }: TechShellProps) {
+export function TechShell({ children, loading = false, className, showNav = true, logoText = "PROMPTSLOOP" }: TechShellProps) {
     const { t } = useTranslation();
     const { currentUser } = useAuth();
     const [location] = useLocation();

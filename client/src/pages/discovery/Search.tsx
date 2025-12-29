@@ -1,6 +1,7 @@
 import { TechShell } from "@/components/layout/TechShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { AdUnit } from "@/components/ads/AdUnit";
 import { Search as SearchIcon, Sparkles, TrendingUp, Command } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -86,6 +87,16 @@ export default function Search() {
                             </Button>
                         ))}
                     </div>
+
+                    {/* Sponsored Ad Banner */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.25 }}
+                        className="max-w-4xl mx-auto mb-20"
+                    >
+                        <AdUnit size="banner" />
+                    </motion.div>
 
                     {/* Recent & Trending */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">

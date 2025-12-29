@@ -199,7 +199,7 @@ export function TrendingStrip() {
                 {/* Left Arrow */}
                 <button
                     onClick={handlePrevious}
-                    className="absolute left-0 top-0 bottom-0 z-20 w-20 flex items-center justify-center bg-foreground text-background hover:opacity-80 transition-all"
+                    className="absolute left-0 top-0 bottom-0 z-20 w-12 md:w-20 flex items-center justify-center bg-foreground text-background hover:opacity-80 transition-all"
                     style={{ clipPath: "polygon(0 0, 100% 25%, 100% 75%, 0 100%)" }}
                     aria-label="Previous"
                 >
@@ -238,7 +238,7 @@ export function TrendingStrip() {
                 {/* Right Arrow */}
                 <button
                     onClick={handleNext}
-                    className="absolute right-0 top-0 bottom-0 z-20 w-20 flex items-center justify-center bg-foreground text-background hover:opacity-80 transition-all"
+                    className="absolute right-0 top-0 bottom-0 z-20 w-12 md:w-20 flex items-center justify-center bg-foreground text-background hover:opacity-80 transition-all"
                     style={{ clipPath: "polygon(0 25%, 100% 0, 100% 100%, 0 75%)" }}
                     aria-label="Next"
                 >

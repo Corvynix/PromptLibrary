@@ -38,7 +38,7 @@ export default function Landing() {
               layoutId="logo"
               className="text-4xl md:text-6xl font-black tracking-tighter font-display text-white"
             >
-              PROMPTLIBRARY
+              PROMPTSLOOP
             </motion.div>
           </motion.div>
         )}
@@ -58,7 +58,7 @@ export default function Landing() {
               >
                 <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight mb-4">
                   THE WORLD'S<br />
-                  PROMPT LIBRARY
+                  PROMPTSLOOP
                 </h1>
                 <p className="text-lg text-muted-foreground font-medium mb-8">
                   Every Prompt. Any Model. Free Forever.
@@ -122,7 +122,7 @@ export default function Landing() {
                   ))}
                 </div>
                 <div className="text-center text-xs text-muted-foreground font-mono">
-                  © 2025 PROMPTLIBRARY. ALL RIGHTS RESERVED.
+                  © 2025 PROMPTSLOOP. ALL RIGHTS RESERVED.
                 </div>
               </div>
             </footer>

@@ -1,10 +1,11 @@
 import { TechShell } from "@/components/layout/TechShell";
 import { PromptCard, Prompt } from "@/components/PromptCard";
+import { AdUnit } from "@/components/ads/AdUnit";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search, Filter, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -232,16 +233,27 @@ export default function Feed() {
                     >
                         <AnimatePresence mode="popLayout">
                             {filteredPrompts.map((prompt, index) => (
-                                <motion.div
-                                    key={prompt.id}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                                >
-                                    <PromptCard prompt={prompt} className="h-full" />
-                                </motion.div>
+                                <Fragment key={prompt.id}>
+                                    <motion.div
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                                    >
+                                        <PromptCard prompt={prompt} className="h-full" />
+                                    </motion.div>
+                                    {/* Ad Injection: Every 6 items */}
+                                    {(index + 1) % 6 === 0 && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ duration: 0.3, delay: (index + 0.5) * 0.05 }}
+                                        >
+                                            <AdUnit size="card" />
+                                        </motion.div>
+                                    )}
+                                </Fragment>
                             ))}
                         </AnimatePresence>
                     </motion.div>
