@@ -11,29 +11,13 @@ import { lazy, Suspense } from "react";
 import Landing from "@/pages/Landing";
 import Auth from "@/pages/Auth";
 import About from "@/pages/About";
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
+import Support from "@/pages/Support";
 import NotFound from "@/pages/not-found";
 
 // Lazy load heavy/less critical pages
 const Apply = lazy(() => import("@/pages/Apply"));
-
-// New Pages - System
-const ServerError = lazy(() => import("@/pages/system/ServerError"));
-const Maintenance = lazy(() => import("@/pages/system/Maintenance"));
-const Changelog = lazy(() => import("@/pages/system/Changelog"));
-const ApiDocs = lazy(() => import("@/pages/system/ApiDocs"));
-
-// New Pages - Legal & Monetization
-const Cookies = lazy(() => import("@/pages/legal/Cookies"));
-const AdsDisclosure = lazy(() => import("@/pages/legal/AdsDisclosure"));
-const Sponsored = lazy(() => import("@/pages/monetization/Sponsored"));
-
-// New Pages - Discovery
-const Leaderboard = lazy(() => import("@/pages/discovery/Leaderboard"));
-const TagDetail = lazy(() => import("@/pages/discovery/TagDetail"));
-const Search = lazy(() => import("@/pages/discovery/Search"));
-const Categories = lazy(() => import("@/pages/discovery/Categories"));
-
-// New Pages - Auth & User
 const ForgotPassword = lazy(() => import("@/pages/auth/ForgotPassword"));
 const VerifyEmail = lazy(() => import("@/pages/auth/VerifyEmail"));
 const Onboarding = lazy(() => import("@/pages/auth/Onboarding"));
@@ -41,13 +25,12 @@ const Settings = lazy(() => import("@/pages/user/Settings"));
 const Notifications = lazy(() => import("@/pages/user/Notifications"));
 const ActivityFeed = lazy(() => import("@/pages/user/ActivityFeed"));
 const Connections = lazy(() => import("@/pages/user/Connections"));
-
-// New Pages - Content & Community
-const VersionHistory = lazy(() => import("@/pages/content/VersionHistory"));
-const WorkflowBuilder = lazy(() => import("@/pages/content/WorkflowBuilder"));
-const Community = lazy(() => import("@/pages/community/Community"));
-const CommentThread = lazy(() => import("@/pages/community/CommentThread"));
-const Hashtags = lazy(() => import("@/pages/community/Hashtags"));
+const Cookies = lazy(() => import("@/pages/legal/Cookies"));
+const AdsDisclosure = lazy(() => import("@/pages/legal/AdsDisclosure"));
+const ServerError = lazy(() => import("@/pages/system/ServerError"));
+const Maintenance = lazy(() => import("@/pages/system/Maintenance"));
+const Changelog = lazy(() => import("@/pages/system/Changelog"));
+const ApiDocs = lazy(() => import("@/pages/system/ApiDocs"));
 
 function App() {
   const { currentUser: user, isLoading } = useAuth();
@@ -91,6 +74,17 @@ function App() {
 
             {/* Legal Pages */}
             <Route path="/about" component={About} />
+            <Route path="/terms" component={Terms} />
+            <Route path="/privacy" component={Privacy} />
+            <Route path="/support" component={Support} />
+            <Route path="/cookies" component={Cookies} />
+            <Route path="/ads-disclosure" component={AdsDisclosure} />
+
+            {/* User Routes */}
+            <Route path="/settings" component={Settings} />
+            <Route path="/notifications" component={Notifications} />
+            <Route path="/activity" component={ActivityFeed} />
+            <Route path="/connections" component={Connections} />
 
             {/* Fallback */}
             <Route component={NotFound} />
