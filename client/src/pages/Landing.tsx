@@ -1,129 +1,59 @@
-import { motion, LayoutGroup } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
-import { useState, useEffect } from "react";
+import { LayoutGroup } from "framer-motion";
 import { TechShell } from "@/components/layout/TechShell";
 import { SearchHero } from "@/components/landing/SearchHero";
-import { TrendingStrip } from "@/components/landing/TrendingStrip";
-import { CategorySections } from "@/components/landing/CategorySections";
-import { PromptOfDay } from "@/components/landing/PromptOfDay";
-import { UploadCTA } from "@/components/landing/UploadCTA";
-import { TopCreators } from "@/components/landing/TopCreators";
-import { RecentRemixes } from "@/components/landing/RecentRemixes";
-import { TagCloud } from "@/components/landing/TagCloud";
-import { SocialProof } from "@/components/landing/SocialProof";
+import { useState, useEffect } from "react";
+import { Hero, StatsStrip, ProgramOverview, Outcomes, Curriculum, Faculty, Testimonials, FAQ, ApplyCTA } from "@/components/landing/sections";
 
 export default function Landing() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    const timer = setTimeout(() => setLoading(false), 20_000);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <LayoutGroup>
       <div className="min-h-screen bg-background text-foreground overflow-hidden relative flex flex-col p-4 md:p-6">
-
-        {/* Splash Screen State */}
         {loading && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              layoutId="logo"
-              className="text-4xl md:text-6xl font-black tracking-tighter font-display text-white"
-            >
-              PROMPTSLOOP
-            </motion.div>
-          </motion.div>
-        )}
-
-        <TechShell loading={loading}>
-          {/* Main Content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
-            {/* Instant Search Bar */}
-            <SearchHero />
-
-            {/* Hero Section */}
-            <div className="text-center py-12 px-6 max-w-4xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight mb-4">
-                  THE WORLD'S<br />
-                  PROMPTSLOOP
-                </h1>
-                <p className="text-lg text-muted-foreground font-medium mb-8">
-                  Every Prompt. Any Model. Free Forever.
-                </p>
-                <div className="flex gap-4 justify-center flex-wrap">
-                  <Link href="/feed">
-                    <Button size="lg" className="h-12 px-8 bg-white text-black border-2 border-black hover:bg-white/90 font-bold tracking-widest rounded-full">
-                      START EXPLORING
-                    </Button>
-                  </Link>
-                  <Link href="/create">
-                    <Button size="lg" variant="outline" className="h-12 px-8 border-2 border-white hover:bg-white hover:text-black font-bold tracking-widest rounded-full">
-                      UPLOAD A PROMPT
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
+            <div className="text-4xl md:text-6xl font-black tracking-tighter font-display text-white">
+              KORIQ
             </div>
-
-            {/* Live Trending Strip */}
-            <TrendingStrip />
-
-            {/* Prompt of the Day */}
-            <PromptOfDay />
-
-            {/* Industry Categories */}
-            <CategorySections />
-
-            {/* Top Creators */}
-            <TopCreators />
-
-            {/* Recent Remixes */}
-            <RecentRemixes />
-
-            {/* Tag Cloud */}
-            <TagCloud />
-
-            {/* Social Proof */}
-            <SocialProof />
-
-            {/* Footer */}
-            <footer className="py-12 px-6 border-t border-white/10">
-              <div className="max-w-6xl mx-auto">
-                <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-8">
+          </div>
+        )}
+        <TechShell loading={loading} logoText="KORIQ">
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <SearchHero />
+            <Hero />
+            <StatsStrip />
+            <ProgramOverview />
+            <Outcomes />
+            <Curriculum />
+            <Faculty />
+            <Testimonials />
+            <FAQ />
+            <ApplyCTA />
+            <footer className="py-12 px-6 border-t border-foreground/20">
+              <div className="max-w-6xl mx-auto text-center">
+                <div className="text-2xl font-black tracking-tighter mb-6">KORIQ</div>
+                <div className="flex flex-wrap justify-center gap-4 mb-6">
                   {[
                     { label: "About", href: "/about" },
                     { label: "Terms", href: "/terms" },
                     { label: "Privacy", href: "/privacy" },
-                    { label: "Cookies", href: "/cookies" },
-                    { label: "Changelog", href: "/changelog" },
-                    { label: "API", href: "/api-docs" },
                     { label: "Support", href: "/support" },
                   ].map((link) => (
                     <a
                       key={link.label}
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-white transition-colors font-mono tracking-wider border-2 border-white/20 hover:border-white rounded-full px-4 py-2 inline-block text-center"
+                      className="text-sm text-muted-foreground hover:text-foreground font-mono tracking-wider border border-foreground/20 hover:border-foreground rounded-full px-4 py-1.5 transition-colors"
                     >
                       {link.label}
                     </a>
                   ))}
                 </div>
-                <div className="text-center text-xs text-muted-foreground font-mono">
-                  © 2025 PROMPTSLOOP. ALL RIGHTS RESERVED.
-                </div>
+                <div className="text-xs text-muted-foreground font-mono">© 2026 Koriq. All rights reserved.</div>
               </div>
             </footer>
           </div>
