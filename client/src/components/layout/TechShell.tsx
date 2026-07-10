@@ -24,18 +24,18 @@ interface TechShellProps {
     logoText?: string; // Custom logo text
 }
 
-export function TechShell({ children, loading = false, className, showNav = true, logoText = "PROMPTSLOOP" }: TechShellProps) {
+export function TechShell({ children, loading = false, className, showNav = true, logoText = "KORIQ" }: TechShellProps) {
     const { t } = useTranslation();
     const { currentUser } = useAuth();
     const [location] = useLocation();
     const [isOpen, setIsOpen] = useState(false);
 
     const NAV_ITEMS = [
-        { label: t('nav.home'), href: "/" },
-        { label: t('nav.discover'), href: "/feed" },
-        { label: "COMMUNITY", href: "/community" },
-        { label: "LEADERBOARD", href: "/leaderboard" },
-        { label: t('nav.tags'), href: "/tags" }
+        { label: "HOME", href: "/" },
+        { label: "PROGRAM", href: "/#program" },
+        { label: "OUTCOMES", href: "/#outcomes" },
+        { label: "CURRICULUM", href: "/#curriculum" },
+        { label: "FAQ", href: "/#faq" },
     ];
 
     return (
@@ -142,19 +142,11 @@ export function TechShell({ children, loading = false, className, showNav = true
 
                     <div className="h-6 w-px bg-foreground/20 mx-1" />
 
-                    {currentUser ? (
-                        <Link href="/feed">
-                            <Button size="sm" className="rounded-full font-bold tracking-wider px-6">
-                                DASHBOARD
-                            </Button>
-                        </Link>
-                    ) : (
-                        <Link href="/login">
-                            <Button size="sm" className="rounded-full font-bold tracking-wider px-6">
-                                LOGIN
-                            </Button>
-                        </Link>
-                    )}
+                    <Link href="/login">
+                        <Button size="sm" className="rounded-full font-bold tracking-wider px-6">
+                            LOGIN
+                        </Button>
+                    </Link>
                 </div>
             </header>
 

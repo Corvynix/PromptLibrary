@@ -195,4 +195,10 @@
   .pause {
     animation-play-state: paused;
   }
+
+  .koriq-wordmark {
+    font-family: var(--font-mono);
+    letter-spacing: -0.05em;
+    font-weight: 800;
+  }
 }

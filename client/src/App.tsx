@@ -14,15 +14,7 @@ import About from "@/pages/About";
 import NotFound from "@/pages/not-found";
 
 // Lazy load heavy/less critical pages
-const Feed = lazy(() => import("@/pages/Feed"));
-const PromptDetail = lazy(() => import("@/pages/PromptDetail"));
-const CreatePrompt = lazy(() => import("@/pages/CreatePrompt"));
-const RemixEditor = lazy(() => import("@/pages/RemixEditor"));
-const Profile = lazy(() => import("@/pages/Profile"));
-const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
-const Terms = lazy(() => import("@/pages/Terms"));
-const Privacy = lazy(() => import("@/pages/Privacy"));
-const Support = lazy(() => import("@/pages/Support"));
+const Apply = lazy(() => import("@/pages/Apply"));
 
 // New Pages - System
 const ServerError = lazy(() => import("@/pages/system/ServerError"));
@@ -81,6 +73,7 @@ function App() {
           <Switch>
             {/* Public Landing Page */}
             <Route path="/" component={Landing} />
+            <Route path="/apply" component={Apply} />
 
             {/* Auth Pages */}
             <Route path="/auth" component={Auth} />
@@ -98,41 +91,6 @@ function App() {
 
             {/* Legal Pages */}
             <Route path="/about" component={About} />
-            <Route path="/terms" component={Terms} />
-            <Route path="/privacy" component={Privacy} />
-            <Route path="/cookies" component={Cookies} />
-            <Route path="/ads-disclosure" component={AdsDisclosure} />
-            <Route path="/support" component={Support} />
-
-            {/* Monetization */}
-            <Route path="/sponsored" component={Sponsored} />
-
-            {/* Discovery Routes */}
-            <Route path="/explore" component={Feed} />
-            <Route path="/feed" component={Feed} />
-            <Route path="/search" component={Search} />
-            <Route path="/categories" component={Categories} />
-            <Route path="/leaderboard" component={Leaderboard} />
-            <Route path="/tags/:tag" component={TagDetail} />
-            <Route path="/hashtags" component={Hashtags} />
-            <Route path="/community" component={Community} />
-
-            {/* Content Routes */}
-            <Route path="/prompt/:id" component={PromptDetail} />
-            <Route path="/prompt/:id/history" component={VersionHistory} />
-            <Route path="/prompt/:id/comments" component={CommentThread} />
-            <Route path="/remix/:id" component={RemixEditor} />
-            <Route path="/create" component={CreatePrompt} />
-            <Route path="/workflow-builder" component={WorkflowBuilder} />
-
-            {/* User Routes */}
-            <Route path="/profile/:username" component={Profile} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/notifications" component={Notifications} />
-            <Route path="/activity" component={ActivityFeed} />
-            <Route path="/connections" component={Connections} />
-
-            <Route path="/admin" component={AdminDashboard} />
 
             {/* Fallback */}
             <Route component={NotFound} />
