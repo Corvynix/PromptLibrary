@@ -150,9 +150,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const updates = req.body;
-      delete updates.password; // Don't allow password updates here
-      delete updates.roles; // Don't allow role updates
-      delete updates.karmaScore;
+      delete updates.password;
+      delete updates.roles;
 
       const user = await storage.updateUser(userId, updates);
       res.json({ ...user, password: undefined });
