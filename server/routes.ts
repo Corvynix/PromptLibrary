@@ -2,17 +2,13 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { db } from "./db";
-import { prompts, promptVersions, usageLogs } from "@shared/schema";
+import { users } from "@shared/schema";
 import { sql, eq, and, desc } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
-import { insertUserSchema, insertPromptSchema, insertPromptVersionSchema, insertCommentSchema, insertWorkflowSchema, insertNotificationSchema } from "@shared/schema";
-import { updateUserKarma, recalculateAllKarma } from "./services/karma";
-import { checkAndAwardBadges, seedBadges } from "./services/badges";
-// import { authRateLimiter, apiRateLimiter } from "./middleware/security";
-// import { getCache, setCache, deleteCache, deleteCachePattern } from "./cache";
-// import { logger } from "./middleware/logger";
+import { insertUserSchema } from "@shared/schema";
+import applyRouter from "./routes/apply";
 
 const JWT_SECRET = process.env.SESSION_SECRET || 'fallback-secret-for-dev';
 
