@@ -1,16 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Wrench } from "lucide-react";
-
 export default function Maintenance() {
-    return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white p-4 text-center">
-            <div className="w-24 h-24 bg-yellow-500/10 rounded-full flex items-center justify-center mb-6">
-                <Wrench className="w-12 h-12 text-yellow-500" />
-            </div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4">UNDER MAINTENANCE</h1>
-            <p className="text-xl text-muted-foreground font-mono mb-8 max-w-md">
-                WE ARE CURRENTLY UPGRADING OUR SYSTEMS. PLEASE CHECK BACK LATER.
-            </p>
-        </div>
-    );
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <div className="text-center max-w-md">
+        <div className="text-4xl font-black tracking-tighter mb-4">KORIQ</div>
+        <h1 className="text-2xl font-bold mb-4">Coming soon.</h1>
+        <p className="text-muted-foreground mb-6">This section is available to enrolled students. Applications for Cohort 7 are open at <a href="/apply" className="underline">/apply</a>.</p>
+        <a href="/" className="text-sm font-mono text-muted-foreground hover:text-foreground">← Back to home</a>
+      </div>
+    </div>
+  );
 }

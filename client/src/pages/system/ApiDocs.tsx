@@ -53,7 +53,7 @@ export default function ApiDocs() {
                                         API DOCS
                                     </h1>
                                     <p className="text-xl text-muted-foreground font-mono tracking-wider">
-                                        BUILD THE FUTURE WITH PROMPTLIBRARY
+                                        BUILD THE FUTURE WITH KORIQ
                                     </p>
                                 </div>
                                 <Button className="h-12 px-8 rounded-full font-bold tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 hover:scale-105 transition-all">
@@ -80,12 +80,12 @@ export default function ApiDocs() {
                                             </CardHeader>
                                             <CardContent className="p-8 space-y-6">
                                                 <p className="text-lg text-muted-foreground leading-relaxed">
-                                                    The PromptLibrary API provides programmatic access to the world's largest collection of AI prompts.
+                                                    The Koriq API provides programmatic access to the world's largest collection of AI prompts.
                                                     Build tools, integrations, and workflows powered by our community-curated content.
                                                 </p>
                                                 <div className="bg-muted border border-border p-6 rounded-xl font-mono text-sm text-primary flex items-center gap-4">
                                                     <span className="text-muted-foreground select-none">$</span>
-                                                    https://api.promptlibrary.com/v1
+                                                    https://api.koriq.com/v1
                                                 </div>
                                             </CardContent>
                                         </Card>

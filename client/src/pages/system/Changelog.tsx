@@ -7,7 +7,7 @@ const UPDATES = [
         date: "2025-11-28",
         title: "Initial Launch",
         changes: [
-            "Launched PromptLibrary platform",
+            "Launched Koriq platform",
             "Added support for Midjourney and GPT-4 prompts",
             "Implemented user profiles and remixing",
             "Added dark mode support"

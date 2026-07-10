@@ -130,7 +130,7 @@ export default function Privacy() {
 
                                 <div className="text-center py-8">
                                     <p className="text-xs text-muted-foreground font-mono tracking-wider">
-                                        PRIVACY QUESTIONS? EMAIL PRIVACY@PROMPTLIBRARY.COM
+                                        PRIVACY QUESTIONS? EMAIL PRIVACY@KORIQ.COM
                                     </p>
                                 </div>
                             </div>

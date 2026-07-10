@@ -65,7 +65,7 @@ export default function Support() {
                                             </div>
                                             <h3 className="text-lg font-black tracking-tighter uppercase">EMAIL</h3>
                                             <p className="text-xs text-muted-foreground font-mono">
-                                                SUPPORT@PROMPTLIBRARY.COM
+                                                SUPPORT@KORIQ.COM
                                             </p>
                                             <p className="text-xs text-muted-foreground font-mono">
                                                 RESPONSE IN 24H
@@ -112,7 +112,7 @@ export default function Support() {
                                             { q: "HOW DO I UPLOAD A PROMPT?", a: "CLICK THE 'CREATE' BUTTON IN THE NAVIGATION BAR AND FILL OUT THE FORM." },
                                             { q: "WHAT IS PQAS?", a: "PROMPT QUALITY ASSESSMENT SYSTEM - OUR ALGORITHM THAT SCORES PROMPT EFFECTIVENESS." },
                                             { q: "CAN I EDIT MY PROMPTS?", a: "YES, GO TO YOUR PROFILE AND CLICK EDIT ON ANY OF YOUR PROMPTS." },
-                                            { q: "IS PROMPTLIBRARY FREE?", a: "YES, COMPLETELY FREE FOREVER. NO HIDDEN FEES OR PAYWALLS." },
+                                            { q: "IS KORIQ FREE?", a: "YES, COMPLETELY FREE FOREVER. NO HIDDEN FEES OR PAYWALLS." },
                                         ].map((faq, idx) => (
                                             <div key={idx} className="border-l-2 border-blue-400 pl-4">
                                                 <h4 className="text-sm font-bold mb-2">{faq.q}</h4>

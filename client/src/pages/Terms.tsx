@@ -51,21 +51,21 @@ export default function Terms() {
                                     <h2 className="text-2xl font-black tracking-tighter uppercase mb-4">TERMS OF SERVICE</h2>
                                     <p className="text-xs text-muted-foreground font-mono mb-4">LAST UPDATED: JANUARY 2025</p>
                                     <p className="text-sm text-muted-foreground leading-relaxed font-mono">
-                                        BY ACCESSING OR USING PROMPTLIBRARY, YOU AGREE TO BE BOUND BY THESE TERMS OF SERVICE AND ALL APPLICABLE LAWS AND REGULATIONS.
+                                        BY ACCESSING OR USING KORIQ, YOU AGREE TO BE BOUND BY THESE TERMS OF SERVICE AND ALL APPLICABLE LAWS AND REGULATIONS.
                                     </p>
                                 </div>
 
                                 <div className="border-2 border-white/20 bg-black p-8">
                                     <h3 className="text-xl font-black tracking-tighter uppercase mb-4">1. ACCEPTANCE OF TERMS</h3>
                                     <p className="text-sm text-muted-foreground leading-relaxed font-mono">
-                                        THESE TERMS GOVERN YOUR USE OF PROMPTLIBRARY AND ALL RELATED SERVICES. IF YOU DO NOT AGREE TO THESE TERMS, DO NOT USE OUR PLATFORM.
+                                        THESE TERMS GOVERN YOUR USE OF KORIQ AND ALL RELATED SERVICES. IF YOU DO NOT AGREE TO THESE TERMS, DO NOT USE OUR PLATFORM.
                                     </p>
                                 </div>
 
                                 <div className="border-2 border-white/20 bg-black p-8">
                                     <h3 className="text-xl font-black tracking-tighter uppercase mb-4">2. USER CONTENT</h3>
                                     <p className="text-sm text-muted-foreground leading-relaxed font-mono mb-4">
-                                        YOU RETAIN ALL RIGHTS TO THE PROMPTS YOU UPLOAD. BY SHARING ON PROMPTLIBRARY, YOU GRANT US A LICENSE TO:
+                                        YOU RETAIN ALL RIGHTS TO THE PROMPTS YOU UPLOAD. BY SHARING ON KORIQ, YOU GRANT US A LICENSE TO:
                                     </p>
                                     <ul className="space-y-2 text-sm text-muted-foreground font-mono">
                                         <li className="flex items-start gap-2">
@@ -107,13 +107,13 @@ export default function Terms() {
                                 <div className="border-2 border-white/20 bg-black p-8">
                                     <h3 className="text-xl font-black tracking-tighter uppercase mb-4">4. DISCLAIMER</h3>
                                     <p className="text-sm text-muted-foreground leading-relaxed font-mono">
-                                        PROMPTLIBRARY IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. WE DO NOT GUARANTEE THE ACCURACY OR EFFECTIVENESS OF ANY PROMPTS SHARED ON THE PLATFORM.
+                                        KORIQ IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. WE DO NOT GUARANTEE THE ACCURACY OR EFFECTIVENESS OF ANY PROMPTS SHARED ON THE PLATFORM.
                                     </p>
                                 </div>
 
                                 <div className="text-center py-8">
                                     <p className="text-xs text-muted-foreground font-mono tracking-wider">
-                                        QUESTIONS? CONTACT US AT LEGAL@PROMPTLIBRARY.COM
+                                        QUESTIONS? CONTACT US AT LEGAL@KORIQ.COM
                                     </p>
                                 </div>
                             </div>
