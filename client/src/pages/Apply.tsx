@@ -46,6 +46,7 @@ export default function Apply() {
         <div className="text-center">
           <div className="text-2xl font-black tracking-tighter mb-2">KORIQ</div>
           <h1 className="text-3xl font-black tracking-tight">Apply to Cohort 7</h1>
+          </h1>
           <p className="text-muted-foreground mt-2">Applications reviewed on a rolling basis.</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">

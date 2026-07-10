@@ -24,47 +24,32 @@ export interface IStorage {
   createApplication(app: InsertApplication): Promise<Application>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MemStorage implements IStorage {
   private applications: Application[] = [];
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    return undefined;
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user || undefined;
+    return undefined;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
-    return user;
+  async createUser(user: InsertUser): Promise<User> {
+    throw new Error("Not implemented");
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    return user || undefined;
+    throw new Error("Not implemented");
   }
 
   async getAllUsers(): Promise<User[]> {
-    return await db.select().from(users).orderBy(desc(users.createdAt));
+    return [];
   }
 
   async getGlobalStats(): Promise<any> {
-    const [userCount] = await db.select({ count: sql<number>`count(*)` }).from(users);
-
-    return {
-      totalUsers: Number(userCount?.count || 0),
-    };
+    return { totalUsers: 0 };
   }
 
   async createApplication(app: InsertApplication): Promise<Application> {
@@ -74,4 +59,4 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
