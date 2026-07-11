@@ -56,9 +56,6 @@ export function TechShell({ children, loading = false, className, showNav = true
 
             {/* Top Tech Notch */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-14 bg-foreground rounded-b-3xl z-20 flex items-center justify-center shadow-lg">
-                {/* Decorative line */}
-                <div className="absolute top-2 w-20 h-1 bg-background rounded-full opacity-20" />
-
                 {/* Center: Logo (Moved inside Notch) */}
                 {!loading && (
                     <motion.div
