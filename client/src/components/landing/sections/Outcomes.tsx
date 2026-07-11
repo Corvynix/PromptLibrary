@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { landingData } from "@/data/landing";
 
 export default function Outcomes() {
+  const { t } = useTranslation();
   return (
     <section id="outcomes" className="py-20 px-6 bg-foreground/5">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl font-black tracking-tighter mb-10 text-center">OUTCOMES THAT SPEAK FOR THEMSELVES</h2>
+        <h2 className="text-3xl font-black tracking-tighter mb-10 text-center">{t("outcomes.title")}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {landingData.outcomes.map((o, i) => (
             <motion.div

@@ -2,13 +2,15 @@ import { LayoutGroup } from "framer-motion";
 import { TechShell } from "@/components/layout/TechShell";
 import { SearchHero } from "@/components/landing/SearchHero";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Hero, StatsStrip, ProgramOverview, Outcomes, Curriculum, Faculty, Testimonials, FAQ, ApplyCTA } from "@/components/landing/sections";
 
 export default function Landing() {
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 20_000);
+    const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -53,7 +55,7 @@ export default function Landing() {
                     </a>
                   ))}
                 </div>
-                <div className="text-xs text-muted-foreground font-mono">© 2026 Koriq. All rights reserved.</div>
+                <div className="text-xs text-muted-foreground font-mono">{t("footer.copyright")}</div>
               </div>
             </footer>
           </div>

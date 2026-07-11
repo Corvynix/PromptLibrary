@@ -6,7 +6,6 @@ import { Grid, Menu } from "lucide-react";
 import { ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "wouter";
-import { useAuth } from "@/lib/auth";
 import { useTranslation } from "react-i18next";
 import {
     Sheet,
@@ -26,16 +25,15 @@ interface TechShellProps {
 
 export function TechShell({ children, loading = false, className, showNav = true, logoText = "KORIQ" }: TechShellProps) {
     const { t } = useTranslation();
-    const { currentUser } = useAuth();
     const [location] = useLocation();
     const [isOpen, setIsOpen] = useState(false);
 
     const NAV_ITEMS = [
-        { label: "HOME", href: "/" },
-        { label: "PROGRAM", href: "/#program" },
-        { label: "OUTCOMES", href: "/#outcomes" },
-        { label: "CURRICULUM", href: "/#curriculum" },
-        { label: "FAQ", href: "/#faq" },
+        { label: t("nav.home"), href: "/" },
+        { label: t("nav.program"), href: "/#program" },
+        { label: t("nav.outcomes"), href: "/#outcomes" },
+        { label: t("nav.curriculum"), href: "/#curriculum" },
+        { label: t("nav.faq"), href: "/#faq" },
     ];
 
     return (
@@ -139,14 +137,6 @@ export function TechShell({ children, loading = false, className, showNav = true
                 <div className="flex items-center gap-3" role="toolbar" aria-label="Theme and settings">
                     <LanguageToggle />
                     <ThemeToggle />
-
-                    <div className="h-6 w-px bg-foreground/20 mx-1" />
-
-                    <Link href="/login">
-                        <Button size="sm" className="rounded-full font-bold tracking-wider px-6">
-                            LOGIN
-                        </Button>
-                    </Link>
                 </div>
             </header>
 

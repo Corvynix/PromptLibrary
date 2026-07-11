@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { landingData } from "@/data/landing";
 
 export default function Curriculum() {
+  const { t } = useTranslation();
   return (
     <section id="curriculum" className="py-20 px-6 max-w-3xl mx-auto">
-      <h2 className="text-3xl font-black tracking-tighter mb-10 text-center">THE CURRICULUM</h2>
+      <h2 className="text-3xl font-black tracking-tighter mb-10 text-center">{t("curriculum.title")}</h2>
       <div className="flex flex-col gap-6">
         {landingData.curriculum.map((q, i) => (
           <motion.div

@@ -2,200 +2,203 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Translation resources
 const resources = {
     en: {
         translation: {
             nav: {
                 home: "HOME",
-                discover: "DISCOVER",
-                create: "CREATE",
-                tags: "TAGS"
+                program: "PROGRAM",
+                outcomes: "OUTCOMES",
+                curriculum: "CURRICULUM",
+                faq: "FAQ",
             },
-            feed: {
-                hero: {
-                    title: "DISCOVER THE\nFUTURE OF PROMPTING",
-                    subtitle: "Explore the world's largest library of high-performance prompts, workflows, and AI assets. Curated by experts, ranked by the community.",
-                    searchPlaceholder: "Search for {{tab}}..."
-                },
-                generate: "GENERATE",
-                tabs: {
-                    prompts: "Prompts",
-                    workflows: "Workflows",
-                    systems: "Systems",
-                    templates: "Templates",
-                    aiUsecases: "AI Usecases"
-                },
-                filters: {
-                    all: "All",
-                    trending: "Trending",
-                    new: "New",
-                    topRated: "Top Rated",
-                    editorsChoice: "Editors Choice"
-                }
+            hero: {
+                title: "THE MBA,\nREDESIGNED FOR BUILDERS.",
+                subtitle: "Twelve months. Small cohorts. Cases shipped in public.",
+                cta: "APPLY NOW",
+                secondary: "VIEW CURRICULUM",
+            },
+            stats: {
+                salaryLift: "Avg Salary Lift",
+                salaryNote: "within 12 months",
+                cohortSize: "Cohort Size",
+                cohortNote: "builders per cohort",
+                duration: "Duration",
+                durationNote: "months to completion",
+                partners: "Hiring Partners",
+                partnersNote: "VCs & startups",
+            },
+            program: {
+                title: "FOUR MODULES. ZERO FLUFF.",
+                outcomes: "Outcomes",
+            },
+            outcomes: {
+                title: "OUTCOMES THAT SPEAK FOR THEMSELVES",
+            },
+            curriculum: {
+                title: "THE CURRICULUM",
+            },
+            faculty: {
+                title: "YOUR FACULTY",
+            },
+            testimonials: {
+                title: "FROM THE COHORTS",
+            },
+            faq: {
+                title: "FAQ",
+            },
+            apply: {
+                title: "COHORT 7 OPENS SEPTEMBER 2026.",
+                subtitle: "24 seats. Applications reviewed on a rolling basis.",
+                cta: "APPLY NOW",
+                talkToAdmissions: "TALK TO ADMISSIONS",
+            },
+            footer: {
+                copyright: "© 2026 Koriq. All rights reserved.",
             },
             search: {
-                hero: {
-                    title: "FIND YOUR\nNEXT SUPERPOWER",
-                    subtitle: "Search through 10,000+ premium prompts, workflows, and AI assets.",
-                    placeholder: "What do you want to create today?"
-                },
-                sections: {
-                    recent: "Recent Searches",
-                    trending: "Trending Now"
-                },
-                filters: {
-                    model: "Model",
-                    difficulty: "Difficulty",
-                    length: "Length",
-                    sortBy: "Sort By"
-                }
+                placeholder: "What kind of builder are you?",
+                subline: "SEARCH ACROSS 12 MODULES, 200+ CASES",
             },
-            categories: {
-                all: "All",
-                realEstate: "Real Estate",
-                islamicContent: "Islamic Content",
-                business: "Business",
-                marketing: "Marketing",
-                copywriting: "Copywriting",
-                lifeOS: "Life OS",
-                uxui: "UX/UI",
-                storytelling: "Storytelling",
-                personalBrand: "Personal Brand",
-                moneySales: "Money & Sales",
-                youtube: "YouTube",
-                psychology: "Psychology",
-                courses: "Courses",
-                appsAutomations: "Apps & Automations"
-            },
-            promptCard: {
-                preview: "Preview",
-                hideOutput: "Hide Output",
-                viewOutput: "View Output Example",
-                popupTitle: "EXAMPLE OUTPUT",
-                copy: "Copy Prompt",
-                copied: "Copied!",
-                remix: "Remix / Fork",
-                save: "Save for Later",
-                popularity: "Popularity Score",
-                advanced: {
-                    title: "Advanced Data",
-                    license: "License",
-                    tokens: "Tokens",
-                    updated: "Updated",
-                    uses: "Uses",
-                    related: "Related"
+            applyPage: {
+                title: "Apply to Cohort 7",
+                subtitle: "Applications reviewed on a rolling basis.",
+                name: "Full name",
+                namePlaceholder: "Your full name",
+                email: "Work email",
+                emailPlaceholder: "you@company.com",
+                background: "Background",
+                message: "Why Koriq? (max 800 characters)",
+                messagePlaceholder: "Tell us about your background and what you're hoping to get out of Koriq.",
+                submit: "SUBMIT APPLICATION",
+                submitting: "Submitting...",
+                success: "Application received.",
+                successDetail: "We'll review your application and be in touch within 5 business days.",
+                backToHome: "BACK TO HOME",
+                backgroundOptions: {
+                    engineer: "Software Engineer",
+                    designer: "Designer",
+                    founder: "Founder / Co-founder",
+                    analyst: "Analyst / Consultant",
+                    other: "Other",
                 },
-                creator: "Creator",
-                unknown: "Unknown",
-                noDesc: "No description available for this prompt."
             },
-            common: {
-                likes: "likes",
-                forks: "forks",
-                remixed: "remixed",
-                by: "By",
-                ago: "ago",
-                version: "v",
-                viewAll: "View All"
-            }
+            about: {
+                mission: "Our Mission",
+                missionText: "Koriq exists because the traditional MBA was built for a different era. We built it for the age of software, leverage, and builder-driven careers. Our program puts case clinics and founder-ready frameworks at the center — not theory.",
+                difference: "The Koriq Difference",
+                diffItems: [
+                    "Small cohorts of 24, not lecture halls of 500",
+                    "Cases you ship in public, not Harvard HBS downloads",
+                    "A builder alumni network that actually helps",
+                    "10× lower tuition than a top-10 MBA",
+                ],
+            },
+            stub: {
+                title: "Coming soon.",
+                detail: "This section is available to enrolled students. Applications for Cohort 7 are open at",
+                link: "/apply",
+                back: "← Back to home",
+            },
         }
     },
     ar: {
         translation: {
             nav: {
                 home: "الرئيسية",
-                discover: "استكشف",
-                create: "إنشاء",
-                tags: "الوسوم"
+                program: "البرنامج",
+                outcomes: "النتائج",
+                curriculum: "المنهج",
+                faq: "الأسئلة الشائعة",
             },
-            feed: {
-                hero: {
-                    title: "اكتشف مستقبل\nهندسة الأوامر",
-                    subtitle: "استكشف أكبر مكتبة في العالم للأوامر عالية الأداء، سير العمل، وأصول الذكاء الاصطناعي. منسقة بواسطة خبراء، ومصنفة من قبل المجتمع.",
-                    searchPlaceholder: "ابحث عن {{tab}}..."
-                },
-                generate: "توليد",
-                tabs: {
-                    prompts: "أوامر (Prompts)",
-                    workflows: "سير عمل",
-                    systems: "أنظمة",
-                    templates: "قوالب",
-                    aiUsecases: "استخدامات AI"
-                },
-                filters: {
-                    all: "الكل",
-                    trending: "الرائج",
-                    new: "الجديد",
-                    topRated: "الأعلى تقييماً",
-                    editorsChoice: "اختيارات المحررين"
-                }
+            hero: {
+                title: "ماجستير إدارة الأعمال،\nمُعاد تصميمه للبناة.",
+                subtitle: "اثنا عشر شهراً. مجموعات صغيرة. حالات حقيقية تُنشر علناً.",
+                cta: "قدّم الآن",
+                secondary: "عرض المنهج",
+            },
+            stats: {
+                salaryLift: "متوسط زيادة الراتب",
+                salaryNote: "خلال 12 شهراً",
+                cohortSize: "حجم المجموعة",
+                cohortNote: "بناة في كل مجموعة",
+                duration: "المدة",
+                durationNote: "شهراً للإتمام",
+                partners: "شركاء التوظيف",
+                partnersNote: "رؤوس أموال وشركات ناشئة",
+            },
+            program: {
+                title: "أربعة وحدات. بدون حشو.",
+                outcomes: "النتائج",
+            },
+            outcomes: {
+                title: "نتائج تتحدث عن نفسها",
+            },
+            curriculum: {
+                title: "المنهج",
+            },
+            faculty: {
+                title: "هيئة التدريس",
+            },
+            testimonials: {
+                title: "من المجموعات السابقة",
+            },
+            faq: {
+                title: "الأسئلة الشائعة",
+            },
+            apply: {
+                title: "المجموعة السابعة تبدأ في سبتمبر 2026.",
+                subtitle: "24 مقعداً. يتم مراجعة الطلبات على دوام مستمر.",
+                cta: "قدّم الآن",
+                talkToAdmissions: "تحدث مع القبول",
+            },
+            footer: {
+                copyright: "© 2026 كوريق. جميع الحقوق محفوظة.",
             },
             search: {
-                hero: {
-                    title: "اكتشف قوتك\nالخارقة التالية",
-                    subtitle: "ابحث في أكثر من 10,000 أمر متميز، سير عمل، وأصول ذكاء اصطناعي.",
-                    placeholder: "ماذا تريد أن تبني اليوم؟"
-                },
-                sections: {
-                    recent: "عمليات البحث الأخيرة",
-                    trending: "رائج الآن"
-                },
-                filters: {
-                    model: "النموذج",
-                    difficulty: "الصعوبة",
-                    length: "الطول",
-                    sortBy: "ترتيب حسب"
-                }
+                placeholder: "ما نوع الباني الذي أنت؟",
+                subline: "ابحث في 12 وحدة و200+ حالة",
             },
-            categories: {
-                all: "الكل",
-                realEstate: "عقارات",
-                islamicContent: "المحتوى الإسلامي",
-                business: "أعمال",
-                marketing: "تسويق",
-                copywriting: "كتابة إعلانية",
-                lifeOS: "نظام الحياة",
-                uxui: "تجربة المستخدم",
-                storytelling: "قصص وسرد",
-                personalBrand: "علامة شخصية",
-                moneySales: "مال ومبيعات",
-                youtube: "يوتيوب",
-                psychology: "علم نفس",
-                courses: "كورسات",
-                appsAutomations: "تطبيقات وأتمتة"
-            },
-            promptCard: {
-                preview: "معاينة",
-                hideOutput: "إخفاء المخرجات",
-                viewOutput: "عرض مثال للمخرجات",
-                popupTitle: "مثال للمخرجات",
-                copy: "نسخ الأمر",
-                copied: "تم النسخ!",
-                remix: "تعديل / نسخ فرعي",
-                save: "حفظ لوقت لاحق",
-                popularity: "نقاط الشعبية",
-                advanced: {
-                    title: "بيانات متقدمة",
-                    license: "الرخصة",
-                    tokens: "الرموز (Tokens)",
-                    updated: "محدث",
-                    uses: "الاستخدامات",
-                    related: "ذات صلة"
+            applyPage: {
+                title: "قدّم للمجموعة السابعة",
+                subtitle: " يتم مراجعة الطلبات على دوام مستمر.",
+                name: "الاسم الكامل",
+                namePlaceholder: "اسمك الكامل",
+                email: "البريد الإلكتروني",
+                emailPlaceholder: "you@company.com",
+                background: "الخلفية",
+                message: "لماذا كوريق؟ (حد أقصى 800 حرف)",
+                messagePlaceholder: "أخبرنا عن خلفيتك وما تتمنى الحصول عليه من كوريق.",
+                submit: "إرسال الطلب",
+                submitting: "جارٍ الإرسال...",
+                success: "تم استلام طلبك.",
+                successDetail: "سنراجع طلبك ونتواصل معك خلال 5 أيام عمل.",
+                backToHome: "العودة للرئيسية",
+                backgroundOptions: {
+                    engineer: "مهندس برمجيات",
+                    designer: "مصمم",
+                    founder: "مؤسس / شريك مؤسس",
+                    analyst: "محلل / مستشار",
+                    other: "أخرى",
                 },
-                creator: "المنشئ",
-                unknown: "مجهول",
-                noDesc: "لا يوجد وصف متاح لهذا الأمر."
             },
-            common: {
-                likes: "إعجابات",
-                forks: "نسخ",
-                remixed: "تم التعديل",
-                by: "بواسطة",
-                ago: "منذ",
-                version: "نسخة",
-                viewAll: "عرض الكل"
-            }
+            about: {
+                mission: "مهمتنا",
+                missionText: "كوريق موجود لأن ماجستير إدارة الأعمال التقليدي صُمم لعصر مختلف. بنيناه لعصر البرمجيات والرافعة المالية والمهام المبنية على البناء. برنامجنا يضع عيادات الحالات وأطر المؤسسين الجاهزة في المركز — وليس النظرية.",
+                difference: "الفرق في كوريق",
+                diffItems: [
+                    "مجموعات صغيرة من 24، لا قاعات محاضرات من 500",
+                    "حالات تنشر علناً، لا téléchargements من هارفارد",
+                    "شبكة خريجين بناة تساعد فعلاً",
+                    " tuition أقل بـ 10× من أفضل 10 ماجستير",
+                ],
+            },
+            stub: {
+                title: "قريباً.",
+                detail: "هذا القسم متاح للطلاب المسجلين. طلبات المجموعة السابعة مفتوحة في",
+                link: "/apply",
+                back: "← العودة للرئيسية",
+            },
         }
     }
 };
@@ -206,7 +209,7 @@ i18n
     .init({
         resources,
         fallbackLng: 'en',
-        lng: localStorage.getItem('language') || 'ar', // Default to Arabic for this platform
+        lng: localStorage.getItem('language') || 'en',
         interpolation: {
             escapeValue: false
         },
@@ -218,5 +221,10 @@ i18n
             useSuspense: false
         }
     });
+
+// Set initial dir/lang
+const initialLang = i18n.language;
+document.documentElement.dir = initialLang === 'ar' ? 'rtl' : 'ltr';
+document.documentElement.lang = initialLang;
 
 export default i18n;
