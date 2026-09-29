@@ -727,6 +727,30 @@ export const diagnosisResults = pgTable(
   })
 );
 
+export const salesExperiments = pgTable(
+  "sales_experiments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    diagnosisId: uuid("diagnosis_id").references(() => diagnosisResults.id, { onDelete: "set null" }),
+    hypothesis: text("hypothesis").notNull(),
+    audience: text("audience").notNull(),
+    channel: text("channel").notNull(),
+    message: text("message").notNull(),
+    sampleSize: integer("sample_size").notNull(),
+    startDate: timestamp("start_date"),
+    endDate: timestamp("end_date"),
+    metric: text("metric").notNull(),
+    actualResult: text("actual_result"),
+    interpretation: text("interpretation"),
+    nextDecision: text("next_decision"),
+    status: text("status").default("planned").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({ userCreatedIdx: index("sales_experiments_user_created_idx").on(table.userId, table.createdAt) })
+);
+
 // ─── Zod Schemas & Types ──────────────────────────────────────────────────────
 
 export const insertUserSchema = createInsertSchema(users);

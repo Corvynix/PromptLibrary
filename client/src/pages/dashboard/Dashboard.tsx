@@ -31,6 +31,6 @@ export default function Dashboard() {
       <div className="border-b border-border pb-5"><h2 className="font-semibold">مشروعك</h2>{project ? <><p className="mt-2">{project.name}</p><p className="mt-1 text-sm text-muted-foreground">{project.targetAudience || "حدد المشتري المستهدف"}</p><Link href="/projects" className="mt-3 inline-block text-sm underline">عدّل تفاصيل المشروع</Link></> : <Link href="/projects" className="mt-3 inline-block text-sm underline">أضف مشروعك</Link>}</div>
       <div className="border-b border-border pb-5"><h2 className="font-semibold">سجل الأدلة</h2><p className="mt-2 text-sm text-muted-foreground">سجل الردود والتجارب والمبيعات من داخل أيام التحدي.</p><Link href="/sprint/crm" className="mt-3 inline-block text-sm underline">افتح سجل العملاء المحتملين</Link></div>
     </div>
-    <nav className="flex flex-wrap gap-5 text-sm"><Link href="/community" className="underline">المجتمع</Link><Link href="/radar" className="underline">رادار AI</Link><Link href="/vault" className="underline">المكتبة</Link></nav>
+    <nav className="flex flex-wrap gap-5 text-sm"><Link href="/experiments" className="underline">تجارب البيع</Link><Link href="/community" className="underline">المجتمع</Link><Link href="/radar" className="underline">رادار AI</Link><Link href="/vault" className="underline">المكتبة</Link></nav>
   </section>;
 }

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useId, useState, type FormEvent } from "react";
 import { useLocation, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -14,20 +14,38 @@ const questions = [
   "إيه اللي بنيته؟",
   "مين المفروض يشتريه؟",
   "هل المنتج متاح للتجربة دلوقتي؟",
-  "هل اتكلمت مع ناس فعلية عنه؟",
+  "كام شخص حددت كعميل محتمل؟",
+  "كام شخص تواصلت معاه فعلًا؟",
   "كام شخص رد عليك؟",
-  "كام شخص طلب يجربه أو يشوف demo؟",
+  "كام شخص أبدى اهتمام واضح؟",
+  "كام شخص طلب demo؟",
+  "كام شخص بدأ تجربة؟",
+  "كام شخص وصل لعرض أو مقترح؟",
   "كام شخص دفع؟",
-  "إيه أكتر حاجة عملتها عشان تبيعه؟",
-  "هل دفعت فلوس قبل كده عشان توصل لعملاء؟",
-  "إيه أكبر حاجة موقفاك؟",
+  "كام شخص استخدم المنتج ووصل لأول نتيجة؟",
+  "كام شخص استمر في الاستخدام؟",
+  "إيه اللي قالوه أو عملوه فعلًا؟ (من غير بيانات شخصية)",
+  "إيه اللي جربته لحد دلوقتي وإيه اللي حصل؟",
+  "إنت شايف إيه السبب؟ (ده افتراضك مش دليل)؟",
 ];
-const progressWidths = ["w-[10%]", "w-[20%]", "w-[30%]", "w-[40%]", "w-1/2", "w-[60%]", "w-[70%]", "w-[80%]", "w-[90%]", "w-full"] as const;
+const progressWidths = ["w-[6%]", "w-[12%]", "w-[18%]", "w-[24%]", "w-[30%]", "w-[36%]", "w-[42%]", "w-[48%]", "w-[54%]", "w-[60%]", "w-[66%]", "w-[72%]", "w-[78%]", "w-[84%]", "w-[90%]", "w-full"] as const;
 
 const initial: DiagnosisInput = {
   whatBuilt: "", targetBuyer: "", isLive: false, talkedToRealPeople: false,
   repliesCount: 0, trialRequests: 0, paidCount: 0, topAction: "", spentMoney: false, whereStuck: "",
+  prospects: 0, contacted: 0, interested: 0, demos: 0, trials: 0, proposals: 0, activated: 0, retained: 0,
+  customerEvidence: "", founderHypothesis: "",
 };
+
+function getDiagnosisSessionId() {
+  const key = "diagnosis_session_id";
+  let id = sessionStorage.getItem(key);
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem(key, id);
+  }
+  return id;
+}
 
 export default function Diagnosis() {
   const [resultRoute, params] = useRoute("/diagnose/:id");
@@ -35,7 +53,7 @@ export default function Diagnosis() {
 }
 
 function DiagnosisForm() {
-  const [answers, setAnswers] = useState(initial);
+  const [answers, setAnswers] = useState(() => ({ ...initial, sessionId: getDiagnosisSessionId() }));
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -72,13 +90,19 @@ function DiagnosisForm() {
             {step === 0 && <Input autoFocus value={answers.whatBuilt} onChange={(e) => update("whatBuilt", e.target.value)} required maxLength={300} placeholder="مثال: أداة لتنظيم طلبات المتاجر" className="rounded-none" />}
             {step === 1 && <Input autoFocus value={answers.targetBuyer} onChange={(e) => update("targetBuyer", e.target.value)} required maxLength={300} placeholder="مثال: أصحاب المتاجر الصغيرة" className="rounded-none" />}
             {step === 2 && <BooleanChoice value={answers.isLive} onChange={(value) => update("isLive", value)} yes="آه، متاح" no="لسه" />}
-            {step === 3 && <BooleanChoice value={answers.talkedToRealPeople} onChange={(value) => update("talkedToRealPeople", value)} yes="آه" no="لأ" />}
-            {step === 4 && <NumberAnswer label="عدد الردود" value={answers.repliesCount} onChange={(value) => update("repliesCount", value)} />}
-            {step === 5 && <NumberAnswer label="طلبات التجربة أو الـ demo" value={answers.trialRequests} onChange={(value) => update("trialRequests", value)} />}
-            {step === 6 && <NumberAnswer label="المبيعات" value={answers.paidCount} onChange={(value) => update("paidCount", value)} />}
-            {step === 7 && <Textarea autoFocus value={answers.topAction} onChange={(e) => update("topAction", e.target.value)} required maxLength={500} className="min-h-28 rounded-none" />}
-            {step === 8 && <BooleanChoice value={answers.spentMoney} onChange={(value) => update("spentMoney", value)} yes="آه" no="لأ" />}
-            {step === 9 && <Textarea autoFocus value={answers.whereStuck} onChange={(e) => update("whereStuck", e.target.value)} required maxLength={500} className="min-h-28 rounded-none" />}
+            {step === 3 && <NumberAnswer label="إجمالي العملاء المحتملين اللي حددتهم" value={answers.prospects} onChange={(value) => update("prospects", value)} />}
+            {step === 4 && <NumberAnswer label="محاولات التواصل" value={answers.contacted} onChange={(value) => { update("contacted", value); update("talkedToRealPeople", value > 0); }} />}
+            {step === 5 && <NumberAnswer label="الردود" value={answers.repliesCount} onChange={(value) => update("repliesCount", value)} />}
+            {step === 6 && <NumberAnswer label="المهتمون" value={answers.interested} onChange={(value) => update("interested", value)} />}
+            {step === 7 && <NumberAnswer label="طلبات الـ demo" value={answers.demos} onChange={(value) => update("demos", value)} />}
+            {step === 8 && <NumberAnswer label="التجارب" value={answers.trials} onChange={(value) => { update("trials", value); update("trialRequests", value); }} />}
+            {step === 9 && <NumberAnswer label="العروض أو المقترحات" value={answers.proposals} onChange={(value) => update("proposals", value)} />}
+            {step === 10 && <NumberAnswer label="المبيعات" value={answers.paidCount} onChange={(value) => update("paidCount", value)} />}
+            {step === 11 && <NumberAnswer label="التفعيل لأول نتيجة" value={answers.activated} onChange={(value) => update("activated", value)} />}
+            {step === 12 && <NumberAnswer label="الاستمرار في الاستخدام" value={answers.retained} onChange={(value) => update("retained", value)} />}
+            {step === 13 && <Textarea autoFocus value={answers.customerEvidence} onChange={(e) => update("customerEvidence", e.target.value)} maxLength={4000} placeholder="احذف الأسماء وأي بيانات شخصية قبل اللصق" className="min-h-28 rounded-none" />}
+            {step === 14 && <Textarea autoFocus value={answers.topAction} onChange={(e) => { update("topAction", e.target.value); update("whereStuck", e.target.value || "Not specified"); }} required maxLength={500} className="min-h-28 rounded-none" />}
+            {step === 15 && <Textarea autoFocus value={answers.founderHypothesis} onChange={(e) => update("founderHypothesis", e.target.value)} maxLength={1000} className="min-h-28 rounded-none" />}
           </div>
           {error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}
           <div className="mt-8 flex justify-between gap-3">
@@ -96,7 +120,6 @@ function DiagnosisForm() {
 function canAdvance(step: number, answers: DiagnosisInput) {
   if (step === 0) return answers.whatBuilt.trim().length > 0;
   if (step === 1) return answers.targetBuyer.trim().length > 0;
-  if (step === 7) return answers.topAction.trim().length > 0;
   return true;
 }
 
@@ -106,7 +129,8 @@ function BooleanChoice({ value, onChange, yes, no }: { value: boolean; onChange:
 }
 
 function NumberAnswer({ label, value, onChange }: { label: string; value: number; onChange: (value: number) => void }) {
-  return <div className="max-w-xs space-y-2"><Label htmlFor="count">{label}</Label><Input id="count" type="number" min={0} max={10000} step={1} value={value} onChange={(e) => onChange(Math.max(0, Number(e.target.value)))} className="rounded-none" /></div>;
+  const id = useId();
+  return <div className="max-w-xs space-y-2"><Label htmlFor={id}>{label}</Label><Input id={id} type="number" min={0} max={10000} step={1} value={value} onChange={(e) => onChange(Math.max(0, Number(e.target.value)))} className="rounded-none" /></div>;
 }
 
 function DiagnosisResult({ id }: { id?: string }) {
@@ -115,16 +139,33 @@ function DiagnosisResult({ id }: { id?: string }) {
     queryKey: ["diagnosis", id],
     enabled: Boolean(id),
     queryFn: async () => {
-      const response = await fetch(`/api/diagnose/${id}`);
+      const response = await fetch(`/api/diagnose/${id}`, { headers: {
+        ...(localStorage.getItem("auth_token") ? { Authorization: `Bearer ${localStorage.getItem("auth_token")}` } : {}),
+        "x-diagnosis-session": getDiagnosisSessionId(),
+      } });
       if (!response.ok) throw new Error("نتيجة التشخيص مش متاحة دلوقتي.");
       return response.json() as Promise<{ id: string; result: DiagnosisResult }>;
     },
   });
   if (isLoading) return <main dir="rtl" className="flex-1 p-8">بنحمّل النتيجة...</main>;
   if (error || !data) return <main dir="rtl" className="flex-1 p-8" role="alert">{error?.message || "النتيجة مش موجودة."}</main>;
+  const report = data.result;
   return <main dir="rtl" className="flex-1 px-4 py-12 text-foreground"><div className="mx-auto max-w-2xl">
+    <p className="text-sm text-muted-foreground">Sales Bug Report · التحليل الحتمي المحلي للخادم</p>
     <p className="text-sm text-muted-foreground">نتيجة أولية</p><h1 className="mt-3 text-3xl font-bold">{data.result.bottleneckAr}</h1>
     <p className="mt-4 leading-8">{data.result.bottleneckDescAr}</p><p className="mt-4 border-r-2 border-primary pr-4 text-sm text-muted-foreground">{data.result.disclaimer}</p>
     <Button className="mt-8 rounded-none" onClick={() => navigate(`/purchase?diagnosisId=${data.id}`)}>اعرف خطوات التحدي</Button>
+    <ReportList title="الدليل المسجل" items={report.evidence.map((item) => `${item.statement} (${item.source}، ${item.strength})`)} />
+    <ReportList title="اللي نعرفه" items={report.knownFacts} />
+    <ReportList title="فرضيات صاحب المنتج" items={report.hypotheses} empty="مافيش فرضية مضافة." />
+    <ReportList title="الدليل الناقص" items={report.missingEvidence} />
+    <ReportList title="ما تغيّرش ده دلوقتي" items={report.doNotChangeYet} />
+    <section className="mt-8 border-t border-foreground/20 pt-5"><h2 className="text-lg font-bold">أصلح ده الأول</h2><p className="mt-2">{report.fix.objective}</p><ul className="mt-3 list-inside list-disc space-y-2">{report.fix.actions.map((action) => <li key={action}>{action}</li>)}</ul></section>
+    <section className="mt-8 border-t border-foreground/20 pt-5"><h2 className="text-lg font-bold">التجربة الجاية · عينة إرشادية {report.experiment.sampleSize}</h2><p className="mt-2">{report.experiment.hypothesis}</p><p className="mt-2">الفئة: {report.experiment.target}</p><p className="mt-2">التنفيذ: {report.experiment.action}</p><p className="mt-2">القياس: {report.experiment.metric}</p><p className="mt-2">إشارة نجاح: {report.experiment.successCondition}</p><p className="mt-2">إشارة عدم نجاح: {report.experiment.failureCondition}</p></section>
+    <section className="mt-8 border-t border-foreground/20 pt-5"><h2 className="text-lg font-bold">معدلات القمع المحسوبة</h2><dl className="mt-3 grid grid-cols-2 gap-3">{Object.entries(report.funnel).map(([label, value]) => <div key={label} className="border border-foreground/20 p-3"><dt className="text-sm text-muted-foreground">{label}</dt><dd className="mt-1 font-mono">{value === null ? "غير متاح" : `${value}%`}</dd></div>)}</dl></section>
   </div></main>;
+}
+
+function ReportList({ title, items, empty = "مفيش بيانات مسجلة." }: { title: string; items: string[]; empty?: string }) {
+  return <section className="mt-6 border-t border-foreground/20 pt-4"><h2 className="font-bold">{title}</h2>{items.length ? <ul className="mt-2 list-inside list-disc space-y-2 text-sm leading-7">{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p className="mt-2 text-sm text-muted-foreground">{empty}</p>}</section>;
 }

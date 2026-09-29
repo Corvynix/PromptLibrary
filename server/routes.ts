@@ -11,6 +11,7 @@ import vaultRoutes from "./routes/vault";
 import paymentsRoutes from "./routes/payments";
 import diagnoseRoutes from "./routes/diagnose";
 import adminRoutes from "./routes/admin";
+import experimentsRoutes from "./routes/experiments";
 import { requireFeatureFlag } from "./middleware/featureFlag";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -24,6 +25,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/vault", requireFeatureFlag("VAULT"), vaultRoutes);
   app.use("/api/payments", paymentsRoutes);
   app.use("/api/diagnose", diagnoseRoutes);
+  app.use("/api/experiments", experimentsRoutes);
   app.use("/api/admin", adminRoutes);
 
   // Return http server

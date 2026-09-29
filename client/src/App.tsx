@@ -22,6 +22,7 @@ const Radar = lazy(() => import("@/pages/radar/Radar"));
 const Vault = lazy(() => import("@/pages/vault/Vault"));
 const Admin = lazy(() => import("@/pages/admin/Admin"));
 const LegalPage = lazy(() => import("@/pages/Legal"));
+const Experiments = lazy(() => import("@/pages/Experiments"));
 
 function ProtectedRoute({ component: Page, requireAdmin = false }: { component: ComponentType; requireAdmin?: boolean }) {
   const { user, isLoading } = useAuth();
@@ -49,6 +50,7 @@ function AppRoutes() {
         <Route path="/projects"><ProtectedRoute component={Projects} /></Route>
         <Route path="/sprint"><ProtectedRoute component={Sprint} /></Route>
         <Route path="/sprint/day/:dayNumber"><ProtectedRoute component={Sprint} /></Route>
+        <Route path="/experiments"><ProtectedRoute component={Experiments} /></Route>
         <Route path="/sprint/crm"><ProtectedRoute component={Sprint} /></Route>
         <Route path="/payment/status"><ProtectedRoute component={Sprint} /></Route>
         <Route path="/community"><ProtectedRoute component={Community} /></Route>
