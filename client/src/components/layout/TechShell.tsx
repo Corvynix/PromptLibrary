@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { Grid, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "wouter";
@@ -29,11 +29,11 @@ export function TechShell({ children, loading = false, className, showNav = true
     const [isOpen, setIsOpen] = useState(false);
 
     const NAV_ITEMS = [
-        { label: t("nav.home"), href: "/" },
-        { label: t("nav.program"), href: "/#program" },
-        { label: t("nav.outcomes"), href: "/#outcomes" },
-        { label: t("nav.curriculum"), href: "/#curriculum" },
-        { label: t("nav.faq"), href: "/#faq" },
+        { label: t("home.nav.home"), href: "/" },
+        { label: t("home.nav.program"), href: "/#program" },
+        { label: t("home.nav.diagnosis"), href: "/diagnose" },
+        { label: t("home.nav.sprint"), href: "/purchase" },
+        { label: t("home.nav.login"), href: "/auth" },
     ];
 
     return (
@@ -77,7 +77,7 @@ export function TechShell({ children, loading = false, className, showNav = true
             {/* Header */}
             <header className="relative z-30 flex items-center justify-between px-6 md:px-10 py-8">
                 {/* Left: Pill Nav (Desktop) */}
-                <nav className="hidden md:flex items-center gap-1 px-2 py-1.5 border-2 border-foreground rounded-full bg-background" aria-label="Main navigation">
+                {showNav && <nav className="hidden md:flex items-center gap-1 px-2 py-1.5 border-2 border-foreground rounded-full bg-background" aria-label="التنقل">
                     {NAV_ITEMS.map((item) => {
                         const isActive = location === item.href;
                         return (
@@ -96,18 +96,18 @@ export function TechShell({ children, loading = false, className, showNav = true
                             </Link>
                         );
                     })}
-                </nav>
+                </nav>}
 
                 {/* Mobile Menu */}
-                <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                {showNav && <Sheet open={isOpen} onOpenChange={setIsOpen}>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open mobile menu">
                             <Menu className="w-6 h-6" />
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                    <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                         <SheetHeader>
-                            <SheetTitle className="text-left font-black text-2xl tracking-tighter">MENU</SheetTitle>
+                            <SheetTitle className="text-left font-black text-2xl tracking-tighter">{t("home.nav.menu")}</SheetTitle>
                         </SheetHeader>
                         <div className="flex flex-col gap-4 mt-8">
                             {NAV_ITEMS.map((item) => {
@@ -128,7 +128,7 @@ export function TechShell({ children, loading = false, className, showNav = true
                             })}
                         </div>
                     </SheetContent>
-                </Sheet>
+                </Sheet>}
 
                 {/* Right: Tools */}
                 <div className="flex items-center gap-3" role="toolbar" aria-label="Theme and settings">

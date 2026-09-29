@@ -1,125 +1,60 @@
 import { type Server } from "node:http";
-
-import express, {
-  type Express,
-  type Request,
-  Response,
-  NextFunction,
-} from "express";
-
+import express, { type Express, type NextFunction, type Request, type Response } from "express";
+import { pool } from "./db";
 import { registerRoutes } from "./routes";
-// import { validateSecurityConfig, securityHeaders, corsMiddleware, sanitizeInput } from "./middleware/security";
-// import { httpLogger, logger } from "./middleware/logger";
-// import { initSentry, sentryErrorHandler, metricsMiddleware, metricsEndpoint, healthCheck } from "./middleware/monitoring";
-// import { initRedis } from "./cache";
-
-// Validate security configuration on startup
-// validateSecurityConfig();
-
-// Initialize Redis (optional)
-// initRedis();
 
 export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
+  const time = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true });
+  console.log(`${time} [${source}] ${message}`);
 }
 
 export const app = express();
+const proxyHops = process.env.TRUST_PROXY_HOPS;
+if (proxyHops && /^\d+$/.test(proxyHops)) app.set("trust proxy", Number(proxyHops));
 
-// Initialize Sentry (must be first)
-// initSentry(app);
-
-// Security middleware
-// app.use(securityHeaders);
-// app.use(corsMiddleware);
-
-// Logging middleware
-// app.use(httpLogger);
-
-// Metrics middleware
-// app.use(metricsMiddleware);
-
-// Health and metrics endpoints (before other routes)
-// app.get('/health', healthCheck);
-// app.get('/metrics', metricsEndpoint);
-
-declare module 'http' {
-  interface IncomingMessage {
-    rawBody: unknown
-  }
-}
-app.use(express.json({
-  verify: (req, _res, buf) => {
-    req.rawBody = buf;
-  }
-}));
-app.use(express.urlencoded({ extended: false }));
-
-// Input sanitization
-// app.use(sanitizeInput);
+app.disable("x-powered-by");
+app.use((_req, res, next) => {
+  res.set({
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  });
+  if (process.env.NODE_ENV === "production") res.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  next();
+});
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
   res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
-    }
+    if (req.path.startsWith("/api")) log(`${req.method} ${req.path} ${res.statusCode} in ${Date.now() - start}ms`);
   });
-
   next();
 });
 
-export default async function runApp(
-  setup: (app: Express, server: Server) => Promise<void>,
-) {
+export default async function runApp(setup: (app: Express, server: Server) => Promise<void>) {
   const server = await registerRoutes(app);
-
-  // Sentry error handler (must be before other error handlers)
-  // app.use(sentryErrorHandler);
-
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    // logger.error({ err, status }, 'Request error');
-    res.status(status).json({ message });
+  app.get("/health", async (_req, res) => {
+    try {
+      await pool.query("SELECT 1");
+      return res.json({ status: "ok" });
+    } catch {
+      return res.status(503).json({ status: "unavailable" });
+    }
   });
+  app.use("/api", (_req, res) => res.status(404).json({ error: "Not found" }));
 
-  // importantly run the final setup after setting up all the other routes so
-  // the catch-all route doesn't interfere with the other routes
   await setup(app, server);
-
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen(port, "0.0.0.0", () => {
-    log(`serving on port ${port}`);
+  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    const candidate = err as { status?: unknown; statusCode?: unknown };
+    const rawStatus = Number(candidate?.status ?? candidate?.statusCode);
+    const status = Number.isInteger(rawStatus) && rawStatus >= 400 && rawStatus < 600 ? rawStatus : 500;
+    if (status >= 500) console.error("Unhandled request error", err);
+    return res.status(status).json({ error: status < 500 ? "Invalid request" : "Internal server error" });
   });
+
+  const port = Number.parseInt(process.env.PORT || "5000", 10);
+  server.listen(port, "0.0.0.0", () => log(`serving on port ${port}`));
 }

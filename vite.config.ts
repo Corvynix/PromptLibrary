@@ -1,12 +1,22 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-export default defineConfig({
+export default defineConfig(async ({ mode }) => {
+  const configuredSiteUrl = loadEnv(mode, process.cwd(), "").SITE_URL;
+  if (mode === "production" && !configuredSiteUrl) throw new Error("SITE_URL is required for a production build");
+  const parsedSiteUrl = configuredSiteUrl ? new URL(configuredSiteUrl) : null;
+  if (mode === "production" && parsedSiteUrl?.protocol !== "https:") throw new Error("SITE_URL must use HTTPS in production");
+  const siteUrl = parsedSiteUrl?.origin;
+  const canonical = siteUrl
+    ? `<link rel="canonical" href="${siteUrl}/" /><meta property="og:url" content="${siteUrl}/" /><script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "WebSite", name: "أول بيعة", url: `${siteUrl}/`, inLanguage: "ar" })}</script>`
+    : "";
+  return {
   plugins: [
     react(),
     runtimeErrorOverlay(),
+    { name: "site-url-metadata", transformIndexHtml: (html: string) => html.replace("<!-- site-url-meta -->", canonical) },
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [
@@ -37,4 +47,5 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
+  };
 });

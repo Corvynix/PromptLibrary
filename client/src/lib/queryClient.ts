@@ -17,8 +17,14 @@ function getAuthHeaders(): Record<string, string> {
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    let message = "حصل خطأ. حاول تاني.";
+    try {
+      const body: unknown = await res.json();
+      if (body && typeof body === "object" && "error" in body && typeof body.error === "string") message = body.error;
+    } catch {
+      // Keep the generic message for non-JSON responses.
+    }
+    throw new Error(message);
   }
 }
 

@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { Sidebar } from "./Sidebar";
 import { SpotlightSearch } from "./SpotlightSearch";
-import { Toaster } from "@/components/ui/toaster";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { motion } from "framer-motion";
@@ -36,7 +35,6 @@ export function AppShell({ children }: AppShellProps) {
                 </div>
             </main>
 
-            <Toaster />
         </div>
     );
 }

@@ -3,12 +3,7 @@ import { useTranslation } from "react-i18next";
 
 export default function StatsStrip() {
   const { t } = useTranslation();
-  const stats = [
-    { label: t("stats.salaryLift"), value: "+38%", note: t("stats.salaryNote") },
-    { label: t("stats.cohortSize"), value: "24", note: t("stats.cohortNote") },
-    { label: t("stats.duration"), value: "12", note: t("stats.durationNote") },
-    { label: t("stats.partners"), value: "120+", note: t("stats.partnersNote") },
-  ];
+  const stats = t("home.stats", { returnObjects: true }) as Array<{ label: string; value: string; note: string }>;
   return (
     <section id="stats" className="py-12 px-6 border-y border-foreground/20">
       <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">

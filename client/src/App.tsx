@@ -1,98 +1,67 @@
-import { Switch, Route } from "wouter";
+import { ComponentType, lazy, Suspense } from "react";
+import { Redirect, Route, Switch } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { AppShell } from "@/components/layout/AppShell";
-import { useAuth } from "@/lib/auth";
-import { queryClient } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { lazy, Suspense } from "react";
-
-// Eager load critical pages
-import Landing from "@/pages/Landing";
+import { AppShell } from "@/components/layout/AppShell";
+import { Toaster } from "@/components/ui/toaster";
+import { queryClient } from "@/lib/queryClient";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import Auth from "@/pages/Auth";
-import About from "@/pages/About";
-import Terms from "@/pages/Terms";
-import Privacy from "@/pages/Privacy";
-import Support from "@/pages/Support";
+import Landing from "@/pages/Landing";
+import Purchase from "@/pages/Purchase";
 import NotFound from "@/pages/not-found";
 
-// Lazy load heavy/less critical pages
-const Apply = lazy(() => import("@/pages/Apply"));
-const ForgotPassword = lazy(() => import("@/pages/auth/ForgotPassword"));
-const VerifyEmail = lazy(() => import("@/pages/auth/VerifyEmail"));
+const Diagnosis = lazy(() => import("@/pages/Diagnosis"));
+const Dashboard = lazy(() => import("@/pages/dashboard/Dashboard"));
 const Onboarding = lazy(() => import("@/pages/auth/Onboarding"));
-const Settings = lazy(() => import("@/pages/user/Settings"));
-const Notifications = lazy(() => import("@/pages/user/Notifications"));
-const ActivityFeed = lazy(() => import("@/pages/user/ActivityFeed"));
-const Connections = lazy(() => import("@/pages/user/Connections"));
-const Cookies = lazy(() => import("@/pages/legal/Cookies"));
-const AdsDisclosure = lazy(() => import("@/pages/legal/AdsDisclosure"));
-const ServerError = lazy(() => import("@/pages/system/ServerError"));
-const Maintenance = lazy(() => import("@/pages/system/Maintenance"));
-const Changelog = lazy(() => import("@/pages/system/Changelog"));
-const ApiDocs = lazy(() => import("@/pages/system/ApiDocs"));
+const Projects = lazy(() => import("@/pages/project/Projects"));
+const Sprint = lazy(() => import("@/pages/sprint/Sprint"));
+const Community = lazy(() => import("@/pages/community/Community"));
+const Radar = lazy(() => import("@/pages/radar/Radar"));
+const Vault = lazy(() => import("@/pages/vault/Vault"));
+const Admin = lazy(() => import("@/pages/admin/Admin"));
+const LegalPage = lazy(() => import("@/pages/Legal"));
 
-function App() {
-  const { currentUser: user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center min-h-screen bg-background">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          }
-        >
-          <Switch>
-            {/* Public Landing Page */}
-            <Route path="/" component={Landing} />
-            <Route path="/apply" component={Apply} />
-
-            {/* Auth Pages */}
-            <Route path="/auth" component={Auth} />
-            <Route path="/login" component={Auth} />
-            <Route path="/register" component={Auth} />
-            <Route path="/forgot-password" component={ForgotPassword} />
-            <Route path="/verify-email" component={VerifyEmail} />
-            <Route path="/onboarding" component={Onboarding} />
-
-            {/* System Pages */}
-            <Route path="/500" component={ServerError} />
-            <Route path="/maintenance" component={Maintenance} />
-            <Route path="/changelog" component={Changelog} />
-            <Route path="/api-docs" component={ApiDocs} />
-
-            {/* Legal Pages */}
-            <Route path="/about" component={About} />
-            <Route path="/terms" component={Terms} />
-            <Route path="/privacy" component={Privacy} />
-            <Route path="/support" component={Support} />
-            <Route path="/cookies" component={Cookies} />
-            <Route path="/ads-disclosure" component={AdsDisclosure} />
-
-            {/* User Routes */}
-            <Route path="/settings" component={Settings} />
-            <Route path="/notifications" component={Notifications} />
-            <Route path="/activity" component={ActivityFeed} />
-            <Route path="/connections" component={Connections} />
-
-            {/* Fallback */}
-            <Route component={NotFound} />
-          </Switch>
-        </Suspense>
-      </QueryClientProvider>
-    </ErrorBoundary>
-  );
+function ProtectedRoute({ component: Page, requireAdmin = false }: { component: ComponentType; requireAdmin?: boolean }) {
+  const { user, isLoading } = useAuth();
+  if (isLoading) return <div className="flex min-h-screen items-center justify-center" role="status" aria-label="جار التحميل"><Loader2 className="h-7 w-7 animate-spin" /></div>;
+  if (!user) return <Redirect to={`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`} />;
+  if (requireAdmin && !user.roles.includes("admin")) return <Redirect to="/dashboard" />;
+  return <Page />;
 }
 
-export default App;
+function AppRoutes() {
+  return <Suspense fallback={<div className="flex min-h-screen items-center justify-center" role="status" aria-label="جار التحميل"><Loader2 className="h-7 w-7 animate-spin" /></div>}>
+    <Switch>
+      <Route path="/" component={Landing} />
+      <Route path="/auth" component={Auth} />
+      <Route path="/diagnose/:id" component={Diagnosis} />
+      <Route path="/diagnose" component={Diagnosis} />
+      <Route path="/purchase" component={Purchase} />
+      <Route path="/privacy">{() => <LegalPage page="privacy" />}</Route>
+      <Route path="/terms">{() => <LegalPage page="terms" />}</Route>
+      <Route path="/refund">{() => <LegalPage page="refund" />}</Route>
+      <Route path="/guidelines">{() => <LegalPage page="guidelines" />}</Route>
+      <Route path="/:rest*"><AppShell><Switch>
+        <Route path="/onboarding"><ProtectedRoute component={Onboarding} /></Route>
+        <Route path="/dashboard"><ProtectedRoute component={Dashboard} /></Route>
+        <Route path="/projects"><ProtectedRoute component={Projects} /></Route>
+        <Route path="/sprint"><ProtectedRoute component={Sprint} /></Route>
+        <Route path="/sprint/day/:dayNumber"><ProtectedRoute component={Sprint} /></Route>
+        <Route path="/sprint/crm"><ProtectedRoute component={Sprint} /></Route>
+        <Route path="/payment/status"><ProtectedRoute component={Sprint} /></Route>
+        <Route path="/community"><ProtectedRoute component={Community} /></Route>
+        <Route path="/community/post/:id"><ProtectedRoute component={Community} /></Route>
+        <Route path="/radar"><ProtectedRoute component={Radar} /></Route>
+        <Route path="/vault"><ProtectedRoute component={Vault} /></Route>
+        <Route path="/admin"><ProtectedRoute component={Admin} requireAdmin /></Route>
+        <Route component={NotFound} />
+      </Switch></AppShell></Route>
+    </Switch>
+  </Suspense>;
+}
+
+export default function App() {
+  return <ErrorBoundary><QueryClientProvider client={queryClient}><AuthProvider><AppRoutes /><Toaster /></AuthProvider></QueryClientProvider></ErrorBoundary>;
+}

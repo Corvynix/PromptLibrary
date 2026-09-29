@@ -13,19 +13,19 @@ export default function ApplyCTA() {
         viewport={{ once: true }}
         className="max-w-3xl mx-auto text-center p-12 border-2 border-foreground rounded-3xl bg-foreground text-background"
       >
-        <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-4">{t("apply.title")}</h2>
-        <p className="text-lg mb-8 opacity-80">{t("apply.subtitle")}</p>
+        <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-4">{t("home.ctaTitle")}</h2>
+        <p className="text-lg mb-8 opacity-80">{t("home.ctaSubtitle")}</p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <Link href="/apply">
+          <Link href="/diagnose">
             <Button size="lg" className="h-12 px-8 bg-background text-foreground border-2 border-foreground hover:bg-background/90 font-bold tracking-widest rounded-full">
-              {t("apply.cta")}
+              {t("home.ctaPrimary")}
             </Button>
           </Link>
-          <a href="mailto:admissions@koriq.education">
+          <Link href="/purchase">
             <Button size="lg" variant="outline" className="h-12 px-8 border-2 border-background text-background hover:bg-background hover:text-foreground font-bold tracking-widest rounded-full">
-              {t("apply.talkToAdmissions")}
+              {t("home.ctaSecondary")}
             </Button>
-          </a>
+          </Link>
         </div>
       </motion.div>
     </section>
